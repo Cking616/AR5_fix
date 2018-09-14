@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"ecat_def.h": "c",
+			"rs485_jc2jd_modbus.h": "c",
+			"globalvariable.h": "c",
+			"stm32f4xx_tim.h": "c",
+			"main.h": "c",
+			"stm32f4xx_conf.h": "c",
+			"motor_drive.h": "c"
+		}
+	}
+}

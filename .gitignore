@@ -1,0 +1,5 @@
+build/
+.tup/
+DebugConfig/
+List/
+Output/
