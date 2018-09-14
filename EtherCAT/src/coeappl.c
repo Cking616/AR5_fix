@@ -398,7 +398,7 @@ OBJCONST UCHAR OBJMEM aName0x1C33[] = "SM input parameter\000Synchronization Typ
 TOBJECT    OBJMEM * ObjDicList = NULL;
 
 /**
- * \brief List of generic application independent objects   COE数据通信对象
+ * \brief List of generic application independent objects   COE鏁版嵁閫氫俊瀵硅薄
  */
 TOBJECT    OBJMEM GenObjDic[] = {
     /* Object 0x1000 */

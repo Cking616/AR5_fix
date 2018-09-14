@@ -7,15 +7,15 @@
 
 
 #define   HARDWARE_VERSION_2_0									0
-#define   HARDWARE_VERSION_2_1									1
-#define   HARDWARE_VERSION_2_2									0
-//#define   ETHERCAT_ENABLE
+#define   HARDWARE_VERSION_2_1									0
+#define   HARDWARE_VERSION_2_2									1
+#define   ETHERCAT_ENABLE
 
 
 #define		ZZ_MOTOR															1
 #define		SMALL_PPR_982													0
 #define		MAGNET_ENCODER_FBK										1
-#define		NEW_MAG_FIXTURE												0
+#define		NEW_MAG_FIXTURE												1
 
 #define   Modbus_RTU_ENABLE                     0
 #define   BIG_ID_ENABLE                         1

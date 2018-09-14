@@ -683,7 +683,7 @@ UINT16 StartInputHandler(void)
     pSyncMan = GetSyncMan(PROCESS_DATA_OUT);   //TPDO  0x800+ 8*2 SM2
 /*ECATCHANGE_END(V5.11) HW1*/
     /* store the address of the Sync Manager Channel 2 (Outputs) */
-    nEscAddrOutputData = pSyncMan->PhysicalStartAddress;    //SM2ÎïÀíµØÖ·
+    nEscAddrOutputData = pSyncMan->PhysicalStartAddress;    //SM2ç‰©ç†åœ°å€
     /* get the number of output buffer used for calculating the address areas */
     if (pSyncMan->Settings[SM_SETTING_CONTROL_OFFSET] & SM_SETTING_MODE_ONE_BUFFER_VALUE)
     {
@@ -2037,13 +2037,27 @@ void AL_ControlRes(void)
 *////////////////////////////////////////////////////////////////////////////////////////
 void DC_CheckWatchdog(void)
 {
+    /*stTaskStat[3].lStartTim  = stTaskStat[3].lEndTim;
+    stTaskStat[3].lEndTim   = SysTick->VAL;
+        // æµ‹æ‰§è¡Œæ—¶é—´
+	if(stTaskStat[3].lStartTim >= stTaskStat[3].lEndTim)
+	{
+		stTaskStat[3].lDeltaTim = stTaskStat[3].lStartTim - stTaskStat[3].lEndTim;
+	}
+	else
+	{
+		stTaskStat[3].lDeltaTim = (1 << 24) - stTaskStat[3].lEndTim + stTaskStat[3].lStartTim;
+	}
+    stTaskStat[3].fRatio     = (float32)stTaskStat[3].lDeltaTim * 100.0f / 8400.0f;
+    stTaskStat[3].fRatioMax  = (stTaskStat[3].fRatioMax > stTaskStat[3].fRatio) ? stTaskStat[3].fRatioMax : stTaskStat[3].fRatio;
+    */
     DISABLE_ESC_INT();
     if(bDcSyncActive)
     {
 /*ECATCHANGE_START(V5.11) ESM4*/
         /*If Sync0 watchdog is enabled and expired*/
-//        if((Sync0WdValue > 0) && (Sync0WdCounter >= Sync0WdValue))
-				if((Sync0WdValue > 0) && (Sync0WdCounter > Sync0WdValue))
+        //if((Sync0WdValue > 0) && (Sync0WdCounter >= Sync0WdValue))
+        if((Sync0WdValue > 0) && (Sync0WdCounter > Sync0WdValue))
         {
                 /*Sync0 watchdog expired*/
                 bDcRunning = FALSE;
@@ -2054,9 +2068,7 @@ void DC_CheckWatchdog(void)
             {
                 Sync0WdCounter ++;
             }
-
             bDcRunning = TRUE;
-
         }
 
 

@@ -1,107 +1,3 @@
-/**
-\addtogroup EcatAppl EtherCAT application
-@{
-*/
-
-
-/**
-\file ecatappl.c
-\author EthercatSSC@beckhoff.com
-\brief Implementation
-This file contains the Process Data interface
-
-\version 5.11
-
-<br>Changes to version V5.10.1:<br>
-V5.11 COE3: change 0x10F3.2 (Sync Error limit) from UINT32 to UINT16 (according to the ETG.1020)<br>
-V5.11 ECAT1: update EEPROM access reset operation<br>
-V5.11 ECAT10: change PROTO handling to prevent compiler errors<br>
-V5.11 ECAT11: create application interface function pointer, add eeprom emulation interface functions<br>
-V5.11 ECAT2: update EEPROM access retry cycle (add 10ms delay between two retry cycles)<br>
-V5.11 ECAT3: handle bus cycle calculation for input/output only devices and create warning diag message only if calculation failed<br>
-V5.11 ECAT4: enhance SM/Sync monitoring for input/output only slaves<br>
-V5.11 ECAT6: add function to calculate bus cycle time<br>
-V5.11 ECAT8: call PDO_InputMapping only once if DC is enabled and COE is not supported<br>
-V5.11 EEPROM1: fix compiler error during pEEPROM pointer initialization<br>
-V5.11 EEPROM2: write Station alias value to EEPROM data register on EEPROM reload command<br>
-V5.11 EEPROM3: clear EEPROM error bits<br>
-V5.11 EEPROM4: prevent the variable in the EEPROM busy loop to be removed by the compiler<br>
-V5.11 ESM7: "add Sync define for 0x22 (""SYNCTYPE_SM2_SYNCHRON""), support value 0x22 for 0x1C33.1 (SM2 sync)"<br>
-<br>Changes to version V5.01:<br>
-V5.10 COE1: Define one entry description for all 0x1C3x objects and change data type of SI11,12,13 to UINT16 (according ETG.1020)<br>
-V5.10 ECAT1: Correct calculation of blinking and flashing sequence<br>
-V5.10 ECAT13: Update Synchronisation handling (FreeRun,SM Sync, Sync0, Sync1)<br>
-              Compare DC UINT configuration (by ESC Config data) vs. DC activation register settings<br>
-              Update 0x1C3x entries<br>
-V5.10 ECAT2: Prevent EEPROM data null pointer access (if the pointer is null an command error is set)<br>
-             EEPROM emulation return command error if unknown command was received<br>
-V5.10 ECAT4: Update alignment marco for 8 to 15 bit alignments (16 and 32 Bit controllers)<br>
-             Bugfix calculate LED blink frequency<br>
-V5.10 ECAT7: Add "bInitFinished" to indicate if the initialization is complete<br>
-V5.10 HW2: Change HW_GetTimer return value to UINT32<br>
-<br>Changes to version V5.0:<br>
-V5.01 APPL3: Include library demo application<br>
-V5.01 ESC1: Change ESC access function (if EEPROM Emulation is active)<br>
-V5.01 ESC2: Add missed value swapping<br>
-<br>Changes to version V4.40:<br>
-V5.0 TEST1: Add test application. See Application Note ET9300 for more details.<br>
-V5.0 ECAT2: Application specific functions are moved to application files.<br>
-V5.0 ECAT3: Global dummy variables used for dummy ESC operations.<br>
-V5.0 ESC1: ESC 32Bit Access added.<br>
-V5.0 ESC3: Add EEPROM emulation support.<br>
-V5.0 ESM3: Handling pending ESM transitions.<br>
-V5.0 ESC5: Enhance EEPROM access handling.<br>
-V5.0 PDO1: AL Event flags are not rechecked in PDO_OutputMappping(). (Already checked before call function)<br>
-V5.0 SYNC1: Add missed SM event indication (0x1C32/0x1C33 SI11).<br>
-<br>Changes to version V4.30:<br>
-V4.40 DIAG1: add diagnosis message support<br>
-V4.40 PDO1: merge content of HW_InputMapping (spihw.c/mcihw.c) to PDO_InputMapping. merge content of HW_OutputMapping (spihw.c/mcihw.c) to PDO_OutputMapping.<br>
-V4.40 PDO2: Generic process data length calculation<br>
-V4.40 ECAT2: call cyclic CheckIfLocalError() to check the local flags<br>
-V4.40 HW0: Generic hardware access functions. Add Function (PDI_Isr()), content merged from spihw.c and mcihw.c.<br>
-V4.40 WD1: define (ESC_SM_WD_SUPPORTED) to choose ESC SyncManager watchdog or local watchdog<br>
-V4.40 ESM2: Change state transition behaviour from SafeOP to OP<br>
-V4.40 TIMER1: Change bus cycle time calculation and trigger of ECAT_CheckTimer() if ECAT_TIMER_INT is reset<br>
-V4.40 HW1: Add support for fc1100 hardware<br>
-<br>Changes to version V4.20:<br>
-V4.30 EL9800: EL9800_x cyclic application is moved to el9800.c<br>
-V4.30 OBJ 3:    add object dictionary initialization<br>
-V4.30 SYNC: add CalcSMCycleTime() (calculation of bus cycle time); change synchronisation control functions<br>
-V4.30 PDO: include PDO specific functions (moved from coeappl.c).<br>
-               xxx_InputMapping(); xxx_OutputMapping(); xxx_ReadInputs(); xxx_ResetOutputs(); xxx_Application()<br>
-V4.30 CiA402: Add CiA402_StateMachine() and CiA402_Application() call<br>
-V4.20 DC 1: Add DC pending Statemachine handling<br>
-V4.20 PIC24: Add EL9800_4 (PIC24) required source code<br>
-V4.20 LED 1: Modified LED Handling<br>
-V4.11 APPL 1: The checkWatchdog() function should not called in checkTimer() if this function is triggered by an Interrupt<br>
-<br>Changes to version V4.08:<br>
-V4.10 LED 1: The handling of the EtherCAT-Error-LED was added<br>
-V4.10 AOE 3: The AoE fragment size has to be initialized during the state transition<br>
-                 from INIT to PREOP<br>
-<br>Changes to version V4.07:<br>
-V4.08 LED 1: The handling of the EtherCAT-LED can be (de-)selected by the switch LEDS_SUPPORTED<br>
-                 because the ET1100 and ET1200 have an output port which could be connected directly.<br>
-<br>Changes to version V4.01:<br>
-V4.02 ECAT 1: The watchdog timer variables shall be initialized.<br>
-<br>Changes to version V4.00:<br>
-V4.01 APPL 1: If the application is running in synchron mode and no SM event<br>
-              is received, the application should be called from the main loop<br>
-V4.01 APPL 2: In FreeRun mode the output should only be copied if the slave is in OP<br>
-<br>Changes to version V3.20:<br>
-V4.00 APPL 1: The watchdog checking should be done by a microcontroller<br>
-                 timer because the watchdog trigger of the ESC will be reset too<br>
-                 if only a part of the sync manager data is written<br>
-V4.00 APPL 2: The setting of EtherCAT state LEDs were included<br>
-V4.00 APPL 3: The outputs should be reset to a safe state,<br>
-                   when the state OP is left<br>
-V4.00 APPL 4: An example for the EEPROM access through the ESC is shown in<br>
-                   the function APPL_StartMailboxHandler<br>
-V4.00 APPL 5: The inputs should be read once when the state transition<br>
-                   from PREOP to SAFEOP is made<br>
-V4.00 APPL 6: The main function was split in MainInit and MainLoop
-*/
-
-
 /*-----------------------------------------------------------------------------------------
 ------
 ------    Includes
@@ -172,6 +68,9 @@ BOOL bInitFinished = FALSE; /** < \brief indicates if the initialization is fini
 ------    Functions
 ------
 -----------------------------------------------------------------------------------------*/
+float fRatioMax5 = 0.0;
+float fRatio5 = 0.0;
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /**
 \brief      This function will copies the inputs from the local memory to the ESC memory
@@ -180,8 +79,26 @@ BOOL bInitFinished = FALSE; /** < \brief indicates if the initialization is fini
 void PDO_InputMapping(void)
 {
     APPL_InputMapping((UINT16*)aPdInputData);
+
+    int lStartTim  = SysTick->VAL;
     HW_EscWriteIsr(((MEM_ADDR *) aPdInputData), nEscAddrInputData, nPdInputSize );
+    int lEndTim   = SysTick->VAL;
+    int lDeltaTim = 0;
+
+    if(lStartTim >= lEndTim)
+    {
+            lDeltaTim = lStartTim - lEndTim;
+    }
+    else
+    {
+            lDeltaTim = (1 << 24) - lEndTim + lStartTim;
+    }
+    fRatio5     = (float)lDeltaTim * 100.0f / 8400.0f;
+    fRatioMax5  = (fRatioMax5 > fRatio5) ? fRatioMax5 : fRatio5;
 }
+
+float fRatioMax6 = 0.0;
+float fRatio6 = 0.0;
 /////////////////////////////////////////////////////////////////////////////////////////
 /**
 \brief    This function will copies the outputs from the ESC memory to the local memory
@@ -190,8 +107,21 @@ void PDO_InputMapping(void)
 *////////////////////////////////////////////////////////////////////////////////////////
 void PDO_OutputMapping(void)
 {
+    int lStartTim  = SysTick->VAL;
+    HW_EscReadIsr(((MEM_ADDR *)aPdOutputData), nEscAddrOutputData, nPdOutputSize );  //è¯»SM2å¯¹åº”çš„ç‰©ç†åœ°å€0x1200ä¸­çš„å€¼
+    int lEndTim   = SysTick->VAL;
+    int lDeltaTim = 0;
 
-    HW_EscReadIsr(((MEM_ADDR *)aPdOutputData), nEscAddrOutputData, nPdOutputSize );  //¶ÁSM2¶ÔÓ¦µÄÎïÀíµØÖ·0x1200ÖÐµÄÖµ
+    if(lStartTim >= lEndTim)
+    {
+       lDeltaTim = lStartTim - lEndTim;
+    }
+    else
+    {
+        lDeltaTim = (1 << 24) - lEndTim + lStartTim;
+    }
+    fRatio6    = (float)lDeltaTim * 100.0f / 8400.0f;
+    fRatioMax6  = (fRatioMax6 > fRatio6) ? fRatioMax6 : fRatio6;
 
     APPL_OutputMapping((UINT16*) aPdOutputData);
 }
@@ -286,7 +216,7 @@ void PDI_Isr(void)
         UINT16  ALEvent = HW_GetALEventRegister_Isr();   //AL Event Request 0x220
         ALEvent = SWAPWORD(ALEvent);
 
-        if ( ALEvent & PROCESS_OUTPUT_EVENT )  //SM2ÖÐ¶Ï
+        if ( ALEvent & PROCESS_OUTPUT_EVENT )  //SM2ä¸­æ–­
         {
             if(bDcRunning && bDcSyncActive)
             {
@@ -307,7 +237,7 @@ void PDI_Isr(void)
             /*
                 handle output process data event
             */
-            if ( bEcatOutputUpdateRunning )   //½øÈëOPÌ¬
+            if ( bEcatOutputUpdateRunning )   //è¿›å…¥OPæ€
             {
                 /* slave is in OP, update the outputs */
                 PDO_OutputMapping();
@@ -368,20 +298,20 @@ void PDI_Isr(void)
 
 void Sync0_Isr(void)
 {
- /*   stTaskStat[4].lStartTim  = stTaskStat[4].lEndTim;
-    stTaskStat[4].lEndTim   = SysTick->VAL;
-    // ²âÖ´ÐÐÊ±¼ä
-	if(stTaskStat[4].lStartTim >= stTaskStat[4].lEndTim)
-	{
-		stTaskStat[4].lDeltaTim = stTaskStat[4].lStartTim - stTaskStat[4].lEndTim;
-	}
-	else
-	{
-		stTaskStat[4].lDeltaTim = (1 << 24) - stTaskStat[4].lEndTim + stTaskStat[4].lStartTim;
-	}
-    stTaskStat[4].fRatio     = (float32)stTaskStat[4].lDeltaTim * 100.0f / 8400.0f;
-    stTaskStat[4].fRatioMax  = (stTaskStat[4].fRatioMax > stTaskStat[4].fRatio) ? stTaskStat[4].fRatioMax : stTaskStat[4].fRatio;
-*/
+   // stTaskStat[4].lStartTim  = stTaskStat[4].lEndTim;
+   // stTaskStat[4].lEndTim   = SysTick->VAL;
+    // æµ‹æ‰§è¡Œæ—¶é—´
+	//if(stTaskStat[4].lStartTim >= stTaskStat[4].lEndTim)
+	//{
+	//	stTaskStat[4].lDeltaTim = stTaskStat[4].lStartTim - stTaskStat[4].lEndTim;
+	//}
+	//else
+	//{
+	//	stTaskStat[4].lDeltaTim = (1 << 24) - stTaskStat[4].lEndTim + stTaskStat[4].lStartTim;
+	//}
+  //  stTaskStat[4].fRatio     = (float32)stTaskStat[4].lDeltaTim * 100.0f / 8400.0f;
+  //  stTaskStat[4].fRatioMax  = (stTaskStat[4].fRatioMax > stTaskStat[4].fRatio) ? stTaskStat[4].fRatioMax : stTaskStat[4].fRatio;
+
     Sync0WdCounter = 0;  //LED_9=0 ;
     if(bDcSyncActive)
     {
@@ -608,7 +538,7 @@ void MainLoop(void)
      /* call EtherCAT functions */
     ECAT_Main();
     if(bEcatInputUpdateRunning)  //EtherCAT slave is at least in SAFE-OPERATIONAL,
-    CiA402_StateMachine();
+        CiA402_StateMachine();
 
      /* call lower prior application part */
     COE_Main();

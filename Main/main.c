@@ -37,35 +37,33 @@ int main(void)
 		}
 		
 		delaycnt = 0;
-
-		
+	
 		GPIO_Config();
 		
-		TIM_Config();
+
+		#ifdef  ETHERCAT_ENABLE
+			HW_Init();
+			MainInit();
+			CiA402_Init();
+			APPL_GenerateMapping(&nPdInputSize,&nPdOutputSize);
+			bRunApplication = TRUE;
+		#endif
 		
-		ADC_Config();
-
-		ENC_Config();		
-
+		ENC_Config();	
+		
 		DMA_Config();
-
+		
+		ADC_Config();		
 		#ifdef ETHERCAT_ENABLE
 		SPI2_Config();
 		#else
 		SPI3_Config();	
 		#endif
 		
-//		#ifdef  ETHERCAT_ENABLE
-//		HW_Init();
-//		MainInit();
-//		CiA402_Init();
-//		APPL_GenerateMapping(&nPdInputSize,&nPdOutputSize);
-//		bRunApplication = TRUE;
-//		#endif
-		
-
 		PWM_Config();		
 		
+		TIM_Config();
+				
 		NVIC_Config();
 
 		g_stJC2JD.init(BAUDRATE_RS485);
@@ -121,21 +119,15 @@ int main(void)
 		#endif
 
 #endif 
-		
-		
-		
-//		#ifdef  ETHERCAT_ENABLE
-//		if(bRunApplication == TRUE)
-//		{
-//			MainLoop();
-//		}
-//		#endif
-			
-			
-			
-			
+					
 			if(Flag_10_ms == 1)
-			{								
+			{
+				#ifdef  ETHERCAT_ENABLE
+					if(bRunApplication == TRUE)
+					{
+						MainLoop();
+					}
+				#endif								
 				Flag_10_ms = 0;
 			}
 			

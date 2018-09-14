@@ -315,7 +315,7 @@ V5.01 : Start file change log
 //9 to 32767        RESERVED
 
 
-#define MAX_AXES    2 /**< \brief Number of supported axes*/
+#define MAX_AXES    1 /**< \brief Number of supported axes*/
 
 /*ECATCHANGE_START(V5.11) CiA402 1*/
 /*ECATCHANGE_END(V5.11) CiA402 1*/
@@ -591,11 +591,11 @@ typedef struct OBJ_STRUCT_PACKED_START
     TOBJ1600 sRxPDOMap0; /**< \brief csv/csp RxPDO (0x1600)*/
     TOBJ1601 sRxPDOMap1; /**< \brief csp RxPDO (0x1601)*/
     TOBJ1602 sRxPDOMap2; /**< \brief csv RxPDO (0x1602)*/
-	  TOBJ1600 sRxPDOMap3; /**< \brief csv/csp RxPDO (0x1603)*/
+	  TOBJ1603 sRxPDOMap3; /**< \brief csv/csp RxPDO (0x1603)*/
     TOBJ1A00 sTxPDOMap0; /**< \brief csv/csp TxPDO (0x1A00)*/
     TOBJ1A01 sTxPDOMap1; /**< \brief csp TxPDO (0x1A01)*/
     TOBJ1A02 sTxPDOMap2; /**< \brief csv TxPDO (0x1A02)*/
-	  TOBJ1A00 sTxPDOMap3; /**< \brief csv/csp TxPDO (0x1A03)*/
+	  TOBJ1A03 sTxPDOMap3; /**< \brief csv/csp TxPDO (0x1A03)*/
 
     UINT16 objErrorCode; /**< \brief Error Code (0x603F)*/
     UINT16 objControlWord; /**< \brief Control Word (0x6040)*/
@@ -608,6 +608,7 @@ typedef struct OBJ_STRUCT_PACKED_START
     INT16 objModesOfOperationDisplay; /**< \brief Mode of Operation Display (0x6061)*/
     INT32 objPositionActualValue; /**< \brief Position Actual Value (0x6064)*/
     INT32 objVelocityActualValue; /**< \brief Actual Velocity Value (0x606C)*/
+    INT16 objTargetTorque;/**< \brief Torque Actual Value (0x6072)*/
     INT16 objTorqueActualValue; /**< \brief Torque Actual Value (0x6077)*/
     INT32 objTargetPosition; /**< \brief Target Position (0x607A)*/
     TOBJ607D objSoftwarePositionLimit; /**< \brief Software Position limit (0x607D)*/
@@ -617,6 +618,18 @@ typedef struct OBJ_STRUCT_PACKED_START
     INT32 objTargetVelocity; /**< \brief Target Velocity (0x60FF)*/
     UINT32 objSupportedDriveModes; /**< \brief Supported Drive Modes (0x6502)*/
 	INT32 objExternalPositionValue; /**< \brief Position Actual Value (0x20B6)*/
+    INT32 IdPropGain;
+    INT32 IdIntegGain;
+    INT32 IdDiffGain;   
+    INT32 IqPropGain;
+    INT32 IqIntegGain;
+    INT32 IqDiffGain;
+    INT32 SpeedPropGain;
+    INT32 SpeedIntegGain;
+    INT32 SpeedDiffGain;  
+    INT32 PositionPropGain;
+    INT32 PositionIntegGain;
+    INT32 PositionDiffGain;  
 }OBJ_STRUCT_PACKED_END
 CiA402Objects;
 
@@ -707,7 +720,7 @@ OBJCONST TSDOINFOENTRYDESC	OBJMEM asEntryDesc0x1600[] = {
    {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 004*/
 /*ECATCHANGE_START(V5.11) CiA402 1*/
    {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 005*/
-	 {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}}; /* SubIndex 006*/
+   {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}}; /* SubIndex 006*/
 /*ECATCHANGE_END(V5.11) CiA402 1*/
 
 
@@ -763,7 +776,7 @@ OBJCONST TSDOINFOENTRYDESC	OBJMEM asEntryDesc0x1603[] = {
    {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 004*/
 /*ECATCHANGE_START(V5.11) CiA402 1*/
    {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 005*/
-	 {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}}; /* SubIndex 006*/
+   {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}}; /* SubIndex 006*/
 /*ECATCHANGE_END(V5.11) CiA402 1*/
 
 
@@ -788,7 +801,8 @@ OBJCONST TSDOINFOENTRYDESC	OBJMEM asEntryDesc0x1A00[] = {
 /*ECATCHANGE_START(V5.11) CiA402 1*/
    {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 005 */
    {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 006 */
-   {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}}; /* SubIndex 007 */
+   {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 007 */
+   {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}}; /* SubIndex 008 */
 /*ECATCHANGE_END(V5.11) CiA402 1*/
 
 
@@ -847,9 +861,9 @@ OBJCONST TSDOINFOENTRYDESC	OBJMEM asEntryDesc0x1A03[] = {
    {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 004*/
 /*ECATCHANGE_START(V5.11) CiA402 1*/
    {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 005 */
-	 {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 006 */
-	 {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}}; /* SubIndex 007 */
-/*ECATCHANGE_END(V5.11) CiA402 1*/
+   {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 006 */
+   {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}, /* SubIndex 007 */
+   {DEFTYPE_UNSIGNED32, 0x20, ACCESS_READ}}; /* SubIndex 008 */
 
 
 /**
@@ -936,8 +950,14 @@ OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x606C = {DEFTYPE_INTEGER32, 0x20
 /** \brief Object 0x606C (Velocity Actual Value) object name*/
 OBJCONST UCHAR OBJMEM aName0x606C[] = "Velocity Actual Value";
 
+/** \brief Object 0x6072 entry description*/
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x6071 = {DEFTYPE_INTEGER16, 0x10, ACCESS_READWRITE|OBJACCESS_RXPDOMAPPING};
+
+/** \brief Object 0x6072  object name*/
+OBJCONST UCHAR OBJMEM aName0x6071[] = "Target Torque";
+
 /** \brief Object 0x6077 (Torque Actual Value) entry description*/
-OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x6077 = {DEFTYPE_INTEGER16, 0x10, ACCESS_READ};
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x6077 = {DEFTYPE_INTEGER16, 0x10, ACCESS_READ|OBJACCESS_TXPDOMAPPING};
 
 /** \brief Object 0x6077 (Torque Actual Value) object name*/
 OBJCONST UCHAR OBJMEM aName0x6077[] = "Torque Actual Value";
@@ -1094,9 +1114,55 @@ OBJCONST UCHAR OBJMEM aName0xF050[] = "Module detected list";
 /** \brief Object 0x20B6 (External Position Actual Value) entry description*/
 OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20B6 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READ|OBJACCESS_TXPDOMAPPING)};
 
-/** \brief Object 0x6064 (Position Actual Value) object name*/
 OBJCONST UCHAR OBJMEM aName0x20B6[] = "External Position Actual Value";
 
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20C0 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20C0[] = "Id PropGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20C1 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20C1[] = "Id IntegGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20C2 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20C2[] = "Id DiffGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20C3 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20C3[] = "Iq PropGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20C4 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20C4[] = "Iq IntegGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20C5 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20C5[] = "Iq DiffGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20D0 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20D0[] = "Speed PropGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20D1 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20D1[] = "Speed IntegGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20D2 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20D2[] = "Speed DiffGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20E0 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20E0[] = "Position PropGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20E1 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20E1[] = "Position IntegGain";
+
+OBJCONST TSDOINFOENTRYDESC    OBJMEM sEntryDesc0x20E2 = {DEFTYPE_INTEGER32, 0x20, (ACCESS_READWRITE)};
+
+OBJCONST UCHAR OBJMEM aName0x20E2[] = "Position DiffGain";
 /** @}*/
 #endif
 
@@ -1115,7 +1181,7 @@ OBJCONST UCHAR OBJMEM aName0x20B6[] = "External Position Actual Value";
  */
 PROTO TOBJ1C12 sRxPDOassign
 #ifdef _CiA402_
-= {1,{0x1600,0x0}}
+= {1,{0x1600}}
 #endif
 ;
 
@@ -1129,7 +1195,7 @@ PROTO TOBJ1C12 sRxPDOassign
  */
 PROTO TOBJ1C13 sTxPDOassign
 #ifdef _CiA402_
-= {1,{0x1A00,0x0}}
+= {1,{0x1A00}}
 #endif
 ;
 /** @}*/
@@ -1162,7 +1228,7 @@ PROTO TOBJF000 sModulardeviceprofile
  */
 PROTO TOBJF010 sModuleProfileInfo
 #ifdef _CiA402_
-= {1,{DEVICE_PROFILE_TYPE,0}}
+= {1,{DEVICE_PROFILE_TYPE}}
 #endif
 ;
 
@@ -1175,7 +1241,7 @@ PROTO TOBJF010 sModuleProfileInfo
  */
 PROTO TOBJF030 sConfiguredModuleIdentList
 #ifdef _CiA402_
-= {1,{0x119800,0x419800}}
+= {1,{0x119800}}
 #endif
 ;
 
@@ -1191,7 +1257,7 @@ PROTO UINT8 Write0xF030( UINT16 index, UINT8 subindex, UINT32 dataSize, UINT16 M
  */
 PROTO TOBJF050 sDetectedModuleIdentList
 #ifdef _CiA402_
-= {1,{0x119800,0x419800}}
+= {1,{0x119800}}
 #endif
 ;
 /** @}*/
@@ -1208,14 +1274,14 @@ PROTO TOBJF050 sDetectedModuleIdentList
 PROTO CiA402Objects DefCiA402ObjectValues
 #ifdef _CiA402_
 = {
-/*ECATCHANGE_START(V5.11) CiA402 1*/
-{6, {0x60400010,0x607A0020,0x60FF0020,0x60B20010,0x60600008,0x00000008}},    /* TOBJ1600*///¿ØÖÆ×Ö Ä¿±êÎ»ÖÃ Ä¿±êËÙ¶È Ä£Ê½Éè¶¨ Æ«ÒÆ×ª¾Ø
+/*    æŽ§åˆ¶å­—     ç›®æ ‡ä½ç½®  ç›®æ ‡é€Ÿåº¦     ç›®æ ‡è½¬çŸ© æ¨¡å¼è®¾å®š*/
+{6, {0x60400010,0x607A0020,0x60FF0020,0x60710010,0x60600008,0x00000008}},
 /*ECATCHANGE_END(V5.11) CiA402 1*/
 {2, {0x60400010,0x607A0020}}, /*TOBJ1601*/
 {2, {0x60400010,0x60FF0020}}, /*TOBJ1602*/
-{6, {0x60400010,0x607A0020,0x60FF0020,0x60B20010,0x60600008,0x00000008}},    /* TOBJ1603*/
-/*ECATCHANGE_START(V5.11) CiA402 1*/
-{7, {0x60410010,0x60640020,0x606C0020,0x20B60020,0x60770010,0x60610008,0x00000008}}, /*TOBJ1A00*///µ±Ç°×´Ì¬ µ±Ç°Î»ÖÃ µ±Ç°ËÙ¶È Ä£Ê½ÏÔÊ¾ Íâ²¿Î»ÖÃ µ±Ç°×ª¾Ø
+{6, {0x60400010,0x607A0020,0x60FF0020,0x60710010,0x60600008,0x00000008}},    /* TOBJ1603*/
+/*    å½“å‰çŠ¶æ€  å½“å‰ä½ç½®   å½“å‰é€Ÿåº¦    å¤–éƒ¨ä½ç½®   å½“å‰è½¬çŸ©   æ¨¡å¼æ˜¾ç¤º */
+{7, {0x60410010,0x60640020,0x606C0020,0x20B60020,0x60770010,0x60610008,0x00000008}}, /*TOBJ1A00*///
 /*ECATCHANGE_END(V5.11) CiA402 1*/
 {2, {0x60410010,0x60640020}}, /*TOBJ1A01*/
 {2, {0x60410010,0x60640020}},/*TOBJ1A02*/
@@ -1231,6 +1297,7 @@ QUICKSTOP_RAMP,/*(INT16) FaultReactionCode 0x605E*/
 0x0,/*(INT16) Mode Of Operation Display 0x6061*/
 0x0,/*(INT32) Position Actual Value 0x6064*/
 0x0,/*(INT32) Velocity Actual Value 0x606C*/
+0x0,/*(INT16) Target Torque  0x6071*/
 0x0,/*(INT16) Torque Actual Value 0x6077*/
 0x0,/*(INT32) Target Position 0x607A*/
 {2,0x88CA6C00,0x77359400},/*TOBJ607D Software Position Limit (minLimit: -2000000000 / maxLimit: 2000000000)*/
@@ -1239,7 +1306,19 @@ QUICKSTOP_RAMP,/*(INT16) FaultReactionCode 0x605E*/
 {(UINT16)2,(UINT8)1,(INT8)-3},/*TOBJ60C2 Interpolation Time Period*/
 0x0,/*(INT32) Target Velocity    0x60FF*/
 0x0,/*(UINT32) Supported Drive Modes 0x6502*/
-0x0/*(UINT32)  External Position Actual Value 0x20B6*/
+0x0,/*(UINT32)  External Position Actual Value 0x20B6*/
+0,/* 0x20C0*/
+0,/* 0x20C1*/
+0,/* 0x20C2*/
+0,/* 0x20C3*/
+0,/* 0x20C4*/
+0,/* 0x20C5*/
+0,/* 0x20D0*/
+0,/* 0x20D1*/
+0,/* 0x20D2*/
+0,/* 0x20E0*/
+0,/* 0x20E1*/
+0,/* 0x20E2*/
 }
 #endif
 ;
@@ -1319,6 +1398,8 @@ PROTO TOBJECT    OBJMEM DefCiA402AxisObjDic[]
    {NULL,NULL, 0x6064, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x6064, aName0x6064, NULL, NULL, NULL, 0x0000 },
    /* Object 0x606C */
    {NULL,NULL, 0x606C, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x606C, aName0x606C, NULL, NULL, NULL, 0x0000 },
+      /* Object 0x6071 */
+   {NULL,NULL, 0x6071, {DEFTYPE_INTEGER16 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x6071, aName0x6071, NULL, NULL, NULL, 0x0000 },
    /* Object 0x6077 */
    {NULL,NULL, 0x6077, {DEFTYPE_INTEGER16 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x6077, aName0x6077, NULL, NULL, NULL, 0x0000 },
    /* Object 0x607D */
@@ -1337,6 +1418,30 @@ PROTO TOBJECT    OBJMEM DefCiA402AxisObjDic[]
    {NULL,NULL, 0x6502, {DEFTYPE_UNSIGNED32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x6502, aName0x6502, NULL, NULL, NULL, 0x0000 },
    /* Object 0x20B6 */
    {NULL,NULL, 0x20B6, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20B6, aName0x20B6, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20C0, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20C0, aName0x20C0, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20C1, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20C1, aName0x20C1, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20C2, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20C2, aName0x20C2, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20C3, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20C3, aName0x20C3, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20C4, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20C4, aName0x20C4, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20C5, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20C5, aName0x20C5, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20D0, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20D0, aName0x20D0, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20D1, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20D1, aName0x20D1, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20D2, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20D2, aName0x20D2, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20E0, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20E0, aName0x20E0, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20E1, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20E1, aName0x20E1, NULL, NULL, NULL, 0x0000 },
+
+    {NULL,NULL, 0x20E2, {DEFTYPE_INTEGER32 , 0 | (OBJCODE_VAR << 8)}, &sEntryDesc0x20E2, aName0x20E2, NULL, NULL, NULL, 0x0000 },
 /*ECATCHANGE_START(V5.11) COE1*/
    {NULL,NULL, 0xFFFF, {0, 0}, NULL, NULL, NULL, NULL, NULL, 0x000}}
 /*ECATCHANGE_END(V5.11) COE1*/

@@ -41,7 +41,7 @@ V5.01 : Start file change log
 #include "mcihw.h"
 #endif
 #if STM32F407_HW
-#include "el9800hw.h"
+#include "stm32f405hw.h"
 #endif
 
 /*-----------------------------------------------------------------------------------------

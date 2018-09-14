@@ -12,7 +12,8 @@
 			"stm32f4xx_tim.h": "c",
 			"main.h": "c",
 			"stm32f4xx_conf.h": "c",
-			"motor_drive.h": "c"
+			"motor_drive.h": "c",
+			"include_c.h": "c"
 		}
 	}
 }

@@ -877,7 +877,7 @@ UINT8 OBJ_Read( UINT16 index, UINT8 subindex, UINT32 objSize, OBJCONST TOBJECT O
         {
             /* an ENUM description is read */
             UINT16 size;
-            UINT16 MBXMEM *pVarPtr = (UINT16 MBXMEM *) pObjEntry->pVarPtr;
+            UINT16 MBXMEM *pVarPtr = (unsigned short MBXMEM *) pObjEntry->pVarPtr;
             CHAR **p;
 
             /* we get the corresponding entry description */
@@ -887,7 +887,7 @@ UINT8 OBJ_Read( UINT16 index, UINT8 subindex, UINT32 objSize, OBJCONST TOBJECT O
             p = (CHAR **) pVarPtr;
             pVarPtr = (UINT16 MBXMEM *)p[subindex-1];
 
-            if((((UINT16 )pVarPtr) & 0x1) == 0x1)
+            if((((unsigned short )pVarPtr) & 0x1) == 0x1)
             {
                 /*enum is stored at an odd address*/
                 UINT16 cnt = 0;

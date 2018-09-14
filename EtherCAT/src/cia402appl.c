@@ -38,10 +38,12 @@ V4.30 : create file (state machine; handling state transition options; input fee
 -----------------------------------------------------------------------------------------*/
 
 
-#include "ecat_def.h"
 
-#include "include_c.h"
 
+//#include "include_c.h"
+#include "M1_statemachine.h"
+#include "Motor_Drive.h"
+#include "Control.h"
 
 /* ECATCHANGE_START(V5.11) ECAT11*/
 #include "applInterface.h"
@@ -54,8 +56,10 @@ V4.30 : create file (state machine; handling state transition options; input fee
 #undef _CiA402_
 
 #if STM32F407_HW
-#include "el9800hw.h"
+#include "stm32f405hw.h"
 #endif
+
+#include "ecat_def.h"
 
 struct SERVO_CONTROL_WORDS_Bit{
 	u16 Switch_On         :1;
@@ -196,6 +200,19 @@ UINT16 CiA402_Init(void)
         {
         TOBJECT OBJMEM *pDiCEntry = LocalAxes[AxisCnt].ObjDic;
 
+        LocalAxes[AxisCnt].Objects.IdPropGain = CURRENT_D_KP * 1000;
+        LocalAxes[AxisCnt].Objects.IdIntegGain = CURRENT_D_KI * 1000;
+        LocalAxes[AxisCnt].Objects.IdDiffGain = CURRENT_D_KD * 1000;
+        LocalAxes[AxisCnt].Objects.IqPropGain = CURRENT_Q_KP * 1000;
+        LocalAxes[AxisCnt].Objects.IqIntegGain = CURRENT_Q_KI * 1000;
+        LocalAxes[AxisCnt].Objects.IqDiffGain = CURRENT_Q_KD * 1000;
+        LocalAxes[AxisCnt].Objects.SpeedPropGain = SPEED_KP * 1000;
+        LocalAxes[AxisCnt].Objects.SpeedIntegGain = SPEED_KI * 1000;
+        LocalAxes[AxisCnt].Objects.SpeedDiffGain = 0;
+        LocalAxes[AxisCnt].Objects.PositionPropGain = POSITIONLOOP_KP * 1000;
+        LocalAxes[AxisCnt].Objects.PositionIntegGain = 0;
+        LocalAxes[AxisCnt].Objects.PositionDiffGain = 0;
+
         /*adapt Object index and assign Var pointer*/
         while(pDiCEntry->Index != 0xFFFF)
         {
@@ -228,8 +245,7 @@ UINT16 CiA402_Init(void)
                 pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.sTxPDOMap3;
                 break;
             case 0x603F:
-                //pDiCEntry->pVarPtr = &gsM1_Drive.sFaultId.unCtrlErr.ulWord;//&LocalAxes[AxisCnt].Objects.objErrorCode;        //ECAT_MOD
-								pDiCEntry->pVarPtr = &gsM1_Drive.sFaultId.R;
+                pDiCEntry->pVarPtr = &gsM1_Drive.sFaultId.R;//&LocalAxes[AxisCnt].Objects.objErrorCode;        //ECAT_MOD
                 break;
             case 0x6040:
                 pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.objControlWord;
@@ -261,6 +277,9 @@ UINT16 CiA402_Init(void)
             case 0x606C:
                 pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.objVelocityActualValue;
                 break;
+            case 0x6071:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.objTargetTorque;
+                break;
             case 0x6077:
                 pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.objTorqueActualValue;
                 break;
@@ -288,6 +307,42 @@ UINT16 CiA402_Init(void)
             case 0x20B6:
                 pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.objExternalPositionValue;
                 break;
+            case 0x20C0:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.IdPropGain;
+                break;
+            case 0x20C1:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.IdIntegGain;
+                break;
+            case 0x20C2:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.IdDiffGain;
+                break;
+            case 0x20C3:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.IqPropGain;
+                break;
+            case 0x20C4:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.IqIntegGain;
+                break;
+            case 0x20C5:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.IqDiffGain;
+                break;
+            case 0x20D0:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.SpeedPropGain;
+                break;
+            case 0x20D1:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.SpeedIntegGain;
+                break;
+            case 0x20D2:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.SpeedDiffGain;
+                break;
+            case 0x20E0:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.PositionPropGain;
+                break;
+            case 0x20E1:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.PositionIntegGain;
+                break;
+            case 0x20E2:
+                pDiCEntry->pVarPtr = &LocalAxes[AxisCnt].Objects.PositionDiffGain;
+                break;        
             default :
                 //bObjectFound = FALSE;
             break;
@@ -347,7 +402,7 @@ void CiA402_DeallocateAxis(void)
         "ETG Implementation Guideline for the CiA402 Axis Profile" located on the EtherCAT.org download section
 
 *////////////////////////////////////////////////////////////////////////////////////////
-void CiA402_StateMachine(void)    //ÔÚmainÖÐÔËÐÐ
+void CiA402_StateMachine(void)    //åœ¨mainä¸­è¿è¡Œ
 {
     TCiA402Axis *pCiA402Axis;
     UINT16 StatusWord = 0;
@@ -718,8 +773,8 @@ BOOL CiA402_TransitionAction(INT16 Characteristic,TCiA402Axis *pCiA402Axis)
 *////////////////////////////////////////////////////////////////////////////////////////
 void CiA402_Application(TCiA402Axis *pCiA402Axis)
 {
-
-
+    //gsM1_Drive.sSpeed.sSpeedPiParams.f32PropGain = ((float)pCiA402Axis->Objects.kp) / 10000;
+    //gsM1_Drive.sSpeed.sSpeedPiParams.f32IntegGain = ((float) pCiA402Axis->Objects.ki) / 1000;
     /*clear "Drive follows the command value" flag if the target values from the master overwritten by the local application*/
     if(pCiA402Axis->u16PendingOptionCode != 0 &&
         (pCiA402Axis->Objects.objModesOfOperationDisplay == CYCLIC_SYNC_POSITION_MODE ||
@@ -1341,13 +1396,23 @@ void APPL_InputMapping(UINT16* pData)
 
         AxisIndex = ((sTxPDOassign.aEntries[j] & 0xF0) >> 4);
 
-//        LocalAxes[AxisIndex].Objects.objPositionActualValue = ((int32)stPosLoop.fFbkAcc) & 0xFFFFFFFF; //ECAT_MOD
-				LocalAxes[AxisIndex].Objects.objPositionActualValue = ((int32)gsM1_Drive.sPositionControl.f32PositionComp) & 0xFFFFFFFF;
-        LocalAxes[AxisIndex].Objects.objVelocityActualValue = (int32)gsM1_Drive.sSpeed.f32SpeedFilt;
-        LocalAxes[AxisIndex].Objects.objExternalPositionValue = LocalAxes[AxisIndex].Objects.objPositionActualValue + 10;//TEST
-//        LocalAxes[AxisIndex].Objects.objTorqueActualValue = (int16)(gsM1_Drive.sFocPMSM.sIDQ.f32Q * Kt * 1000.0f / TE_RATED);
-				LocalAxes[AxisIndex].Objects.objTorqueActualValue = (int16)(gsM1_Drive.sFocPMSM.sIDQ.f32Q * Kt * 1000.0f);
+        LocalAxes[AxisIndex].Objects.objPositionActualValue = (int) (gsM1_Drive.sPositionEnc.f32PositionMech * 1000.0f) & 0xFFFFFFFF; //ECAT_MOD
+        LocalAxes[AxisIndex].Objects.objVelocityActualValue = (int)gsM1_Drive.sSpeed.f32SpeedFilt;
+        LocalAxes[AxisIndex].Objects.objExternalPositionValue = (int) (gsM1_Drive.sPositionControl.f32Position) & 0xFFFFFFFF;
+        LocalAxes[AxisIndex].Objects.objTorqueActualValue = (short)(gsM1_Drive.sFocPMSM.sIDQ.f32Q * Kt * 10000.0f);
 
+        LocalAxes[AxisIndex].Objects.IdPropGain = gsM1_Drive.sFocPMSM.sIdPiParams.f32PropGain * 1000;
+        LocalAxes[AxisIndex].Objects.IdIntegGain = gsM1_Drive.sFocPMSM.sIdPiParams.f32IntegGain * 1000;
+        LocalAxes[AxisIndex].Objects.IdDiffGain = gsM1_Drive.sFocPMSM.sIdPiParams.f32DiffGain * 1000;
+        LocalAxes[AxisIndex].Objects.IqPropGain = gsM1_Drive.sFocPMSM.sIqPiParams.f32PropGain * 1000;
+        LocalAxes[AxisIndex].Objects.IqIntegGain = gsM1_Drive.sFocPMSM.sIqPiParams.f32IntegGain * 1000;
+        LocalAxes[AxisIndex].Objects.IqDiffGain = gsM1_Drive.sFocPMSM.sIqPiParams.f32DiffGain * 1000;
+        LocalAxes[AxisIndex].Objects.SpeedPropGain = gsM1_Drive.sSpeed.sSpeedPiParams.f32PropGain * 1000;
+        LocalAxes[AxisIndex].Objects.SpeedIntegGain = gsM1_Drive.sSpeed.sSpeedPiParams.f32IntegGain * 1000;
+        LocalAxes[AxisIndex].Objects.SpeedDiffGain = gsM1_Drive.sSpeed.sSpeedPiParams.f32DiffGain * 1000;
+        LocalAxes[AxisIndex].Objects.PositionPropGain = gsM1_Drive.sPositionControl.sPositionPiParams.f32PropGain * 1000;
+        LocalAxes[AxisIndex].Objects.PositionIntegGain = gsM1_Drive.sPositionControl.sPositionPiParams.f32IntegGain * 1000;
+        LocalAxes[AxisIndex].Objects.PositionDiffGain = gsM1_Drive.sPositionControl.sPositionPiParams.f32DiffGain * 1000;
 
         switch ((sTxPDOassign.aEntries[j]& 0x000F))
         {
@@ -1416,7 +1481,7 @@ void APPL_OutputMapping(UINT16* pData)
             LocalAxes[AxisIndex].Objects.objTargetPosition = Data+ ((SWAPWORD(*pTmpData++)) << 16);  //0x607A0020
             Data = (SWAPWORD(*pTmpData++));
             LocalAxes[AxisIndex].Objects.objTargetVelocity = Data+ ((SWAPWORD(*pTmpData++)) << 16);  //0x60FF0020
-            LocalAxes[AxisIndex].Objects.objTorqueOffset = SWAPWORD(*pTmpData++);                  //0x60B20010
+            LocalAxes[AxisIndex].Objects.objTargetTorque = SWAPWORD(*pTmpData++);                  //0x60710010
             LocalAxes[AxisIndex].Objects.objModesOfOperation = (SWAPWORD(*pTmpData++))& 0x00FF;    //0x60600008
             break;
           case 1:    //csp RxPDO    entries
@@ -1437,14 +1502,31 @@ void APPL_OutputMapping(UINT16* pData)
             LocalAxes[AxisIndex].Objects.objTargetPosition  = Data+((SWAPWORD(*pTmpData++))<<16);  //0x607A0020
             Data  =(SWAPWORD(*pTmpData++));
             LocalAxes[AxisIndex].Objects.objTargetVelocity  = Data+((SWAPWORD(*pTmpData++))<<16);  //0x60FF0020
-            LocalAxes[AxisIndex].Objects.objTorqueOffset = SWAPWORD(*pTmpData++);                  //0x60B20010
+            LocalAxes[AxisIndex].Objects.objTargetTorque = SWAPWORD(*pTmpData++);                  //0x60710010
             LocalAxes[AxisIndex].Objects.objModesOfOperation = (SWAPWORD(*pTmpData++))& 0x00FF;    //0x60600008;
             break;
         }
 
-//        stPosLoop.lCmd = LocalAxes[AxisIndex].Objects.objTargetPosition;               //ECAT_MOD
-				gsM1_Drive.sPositionControl.f32PositionCmd = LocalAxes[AxisIndex].Objects.objTargetPosition;
+        gsM1_Drive.sPositionControl.f32PositionCmd = (float)LocalAxes[AxisIndex].Objects.objTargetPosition / 1000.0f;               //ECAT_MOD
         gsM1_Drive.sSpeed.f32SpeedCmd = LocalAxes[AxisIndex].Objects.objTargetVelocity;
+        if(LocalAxes[AxisIndex].Objects.objModesOfOperation == 10)
+        {
+            gsM1_Drive.sFocPMSM.sIDQReq.f32Q = (float)LocalAxes[AxisIndex].Objects.objTargetTorque / HARMONIC_AMPLIFY / Kt / 100.0f;
+        }
+
+        gsM1_Drive.sFocPMSM.sIdPiParams.f32PropGain = ((float)LocalAxes[AxisIndex].Objects.IdPropGain) / 1000;
+        gsM1_Drive.sFocPMSM.sIdPiParams.f32IntegGain = ((float)LocalAxes[AxisIndex].Objects.IdIntegGain) / 1000;
+        gsM1_Drive.sFocPMSM.sIdPiParams.f32DiffGain = ((float)LocalAxes[AxisIndex].Objects.IdDiffGain) / 1000;
+        gsM1_Drive.sFocPMSM.sIqPiParams.f32PropGain = ((float)LocalAxes[AxisIndex].Objects.IqPropGain) / 1000;
+        gsM1_Drive.sFocPMSM.sIqPiParams.f32IntegGain = ((float)LocalAxes[AxisIndex].Objects.IqIntegGain) / 1000;
+        gsM1_Drive.sFocPMSM.sIqPiParams.f32DiffGain = ((float)LocalAxes[AxisIndex].Objects.IqDiffGain) / 1000;
+        gsM1_Drive.sSpeed.sSpeedPiParams.f32PropGain = ((float)LocalAxes[AxisIndex].Objects.SpeedPropGain) / 1000;
+        gsM1_Drive.sSpeed.sSpeedPiParams.f32IntegGain = ((float)LocalAxes[AxisIndex].Objects.SpeedIntegGain) / 1000;
+        gsM1_Drive.sSpeed.sSpeedPiParams.f32DiffGain = ((float)LocalAxes[AxisIndex].Objects.SpeedDiffGain) / 1000;
+        gsM1_Drive.sPositionControl.sPositionPiParams.f32PropGain = ((float)LocalAxes[AxisIndex].Objects.PositionPropGain) / 1000;
+        gsM1_Drive.sPositionControl.sPositionPiParams.f32IntegGain = ((float)LocalAxes[AxisIndex].Objects.PositionIntegGain) / 1000;
+        gsM1_Drive.sPositionControl.sPositionPiParams.f32DiffGain = ((float)LocalAxes[AxisIndex].Objects.PositionDiffGain) / 1000;
+
         switch (LocalAxes[AxisIndex].Objects.objModesOfOperation)
 		{
 		case 2:  //Velocity Mode

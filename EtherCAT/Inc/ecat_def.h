@@ -404,15 +404,15 @@ ESC_EEPROM_ACCESS_SUPPORT: If this switch is set the slave stack provides functi
 
 /**
 FALSE: Will be used for variables from type BOOL */
-//#ifndef FALSE
+#ifndef FALSE
 //#define FALSE                                     0
-//#endif
+#endif
 
 /**
 TRUE: Will be used for variables from type BOOL  */
-//#ifndef TRUE
+#ifndef TRUE
 //#define TRUE                                      1
-//#endif
+#endif
 
 /**
 BOOL: Should be adapted to the boolean type of the microcontroller */
@@ -833,13 +833,13 @@ SERIAL_NUMBER: Object 0x1018 SI4 (EtherCAT product serial number) */
 /**
 DEVICE_PROFILE_TYPE: Slave device type (Object 0x1000)  */
 #ifndef DEVICE_PROFILE_TYPE
-#define DEVICE_PROFILE_TYPE                0x00020192
+#define DEVICE_PROFILE_TYPE                0x20180829
 #endif
 
 /**
 DEVICE_NAME: Name of the slave device (Object 0x1008) */
 #ifndef DEVICE_NAME
-#define DEVICE_NAME                       "SSC-Device"        // "PIC24 EtherCAT Slave"
+#define DEVICE_NAME                       "ASAGE-JOINT"        // "PIC24 EtherCAT Slave"
 #endif
 
 /**
@@ -851,7 +851,7 @@ DEVICE_NAME_LEN: Length of 'DEVICE_NAME' without '\0' */
 /**
 DEVICE_HW_VERSION: Hardware version of the slave device (Object 0x1009) */
 #ifndef DEVICE_HW_VERSION
-#define DEVICE_HW_VERSION                    "0.7"
+#define DEVICE_HW_VERSION                    "1.0"
 #endif
 
 /**
@@ -863,7 +863,7 @@ DEVICE_HW_VERSION_LEN: Length of 'DEVICE_HW_VERSION' without '\0' */
 /**
 DEVICE_SW_VERSION: Software version of the slave device (Object 0x100A) */
 #ifndef DEVICE_SW_VERSION
-#define DEVICE_SW_VERSION                         "5.11"
+#define DEVICE_SW_VERSION                         "1.0"
 #endif
 
 /**
@@ -998,4 +998,5 @@ PD_INPUT_DELAY_TIME: Input delay time in ns the slave is supporting (entry 0x1C3
 
 
 #endif // _ECATDEF_H_
+
 
