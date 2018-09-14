@@ -16,6 +16,10 @@
 #include "Motor_Drive.h"
 #include "include_c.h"
 
+#ifdef SYSVIEW_DEBUG
+#include "SEGGER_SYSVIEW.h"
+#endif
+
 u32 tickcnt;
 u16 delaycnt;
 
@@ -52,20 +56,25 @@ int main(void)
 		ENC_Config();	
 		
 		DMA_Config();
-		
-		ADC_Config();		
+					
 		#ifdef ETHERCAT_ENABLE
 		SPI2_Config();
 		#else
 		SPI3_Config();	
 		#endif
 		
-		PWM_Config();		
+		PWM_Config();	
+		
+		ADC_Config();
 		
 		TIM_Config();
 				
 		NVIC_Config();
 
+		#ifdef SYSVIEW_DEBUG
+		SEGGER_SYSVIEW_Conf();
+		#endif
+	
 		g_stJC2JD.init(BAUDRATE_RS485);
 
 		
@@ -94,15 +103,11 @@ int main(void)
 
 #endif
 
-		
-
 		initGlobal();
 		
-
+		
     while(1)
-    { 				
-				
-       
+    {		
 #if Modbus_RTU_ENABLE ==1
 
 			eMBPoll();
@@ -148,13 +153,116 @@ int main(void)
 				if(gsM1_Drive.sFaultId.B.OverCurrent == 0)
 				{
 					gLEDState();
+					
 				}
 				Flag_500_ms = 0;
 			}
 			
 			if(Flag_1000_ms == 1)
 			{
-				
+				#ifdef SYSVIEW_DEBUG
+				if(gsM1_Drive.sFaultId.R > 0)
+				{
+					if(gsM1_Drive.sFaultId.B.UnderDCBusVoltage == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Under DCBusVoltage");
+					}
+
+					if(gsM1_Drive.sFaultId.B.OverDCBusVoltage == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Over DCBusVoltage");
+					}
+
+					if(gsM1_Drive.sFaultId.B.OverCurrent == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Over Current");
+					}
+
+					if(gsM1_Drive.sFaultId.B.Overload == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Overload");
+					}
+
+					if(gsM1_Drive.sFaultId.B.OverHeat == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Over Heat");
+					}
+
+					if(gsM1_Drive.sFaultId.B.OverSpeed == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Over Speed");
+					}
+
+					if(gsM1_Drive.sFaultId.B.LockRotor == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: LockRotor");
+					}
+
+					if(gsM1_Drive.sFaultId.B.LossPhase == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Loss Phase");
+					}
+
+					if(gsM1_Drive.sFaultId.B.OffCancError == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Off CancError");
+					}
+
+					if(gsM1_Drive.sFaultId.B.MagnetEncoderError == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Magnet Encoder Error");
+					}
+
+					if(gsM1_Drive.sFaultId.B.OpticalEncoderError == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Optical Encoder Error");
+					}
+
+					if(gsM1_Drive.sFaultId.B.BrakeError == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Brake Error");
+					}
+
+					if(gsM1_Drive.sFaultId.B.OppositeDirection == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Opposite Direction");
+					}
+
+					if(gsM1_Drive.sFaultId.B.StartUpFail == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: StartUp Fail");
+					}
+
+					if(gsM1_Drive.sFaultId.B.MagnetEncoderCRCError == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Magnet EncoderCRC Error");
+					}
+
+					if(gsM1_Drive.sFaultId.B.FlashError == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Flash Error");
+					}
+
+					if(gsM1_Drive.sFaultId.B.PhaseWShortCirciut == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: PhaseW ShortCirciut");
+					}
+
+					if(gsM1_Drive.sFaultId.B.PowerSupplyOff == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Power Supply Off");
+					}
+
+					if(gsM1_Drive.sFaultId.B.BrakeStuckError == 1)
+					{
+						SEGGER_SYSVIEW_Error("E: Brake Stuck Error");
+					}
+				}
+				else{
+					SEGGER_SYSVIEW_Print("Running!");
+				}
+				#endif
+
 				#if AUTORUN == 1	
 
 					if(autocalibcnt)
@@ -162,17 +270,17 @@ int main(void)
 						autocalibcnt--;
 						if(autocalibcnt == 0)
 						{
-							gsM1_Ctrl.uiCtrl = 8;
+							gsM1_Ctrl.uiCtrl = 1;
+							gsM1_Drive.uw16CtrlMode = SPEED_CONTROL;
 						}
 					}	
 					
-					if((autoruncnt != 0)&&(autocalibcnt == 0)&&(gsM1_Drive.uw16CtrlMode == SPEED_CONTROL))
+					if(autocalibcnt == 0)
 					{
 						autoruncnt--;
 						if(autoruncnt == 0)
 						{
-							gsM1_Ctrl.uiCtrl = 1;
-
+							gsM1_Drive.uw16CtrlMode = SPEED_CONTROL;
 							gsM1_Drive.sSpeed.f32SpeedCmd = AUTORUN_SPEED;
 						}
 					}
@@ -181,7 +289,6 @@ int main(void)
 					
 				Flag_1000_ms = 0;
 			}
-
 		}
 	
 }

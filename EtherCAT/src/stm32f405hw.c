@@ -17,8 +17,11 @@
 #include "stm32f4xx_it.h"
 #include "RS232_USART.h"
 #include "stm32f4xx_conf.h"
+#include "Configuration.h"
 
-//#include "SEGGER_SYSVIEW.h"
+#ifdef SYSVIEW_DEBUG
+#include "SEGGER_SYSVIEW.h"
+#endif
 
 void mem_test(void);
 void IRQ_EXTI0_Configuration(void);
@@ -835,10 +838,14 @@ void HW_EscWriteIsr( MEM_ADDR *pData, UINT16 Address, UINT16 Len )
 
 void  EcatIsr(void)
 {
-   //SEGGER_SYSVIEW_RecordEnterISR();
+	#ifdef SYSVIEW_DEBUG
+  SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
    PDI_Isr();
 		ACK_ESC_INT;
-	//SEGGER_SYSVIEW_RecordExitISR();
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif
 
 }
 #endif     // AL_EVENT_ENABLED
@@ -855,10 +862,14 @@ void  EcatIsr(void)
 
 void Sync0Isr(void)
 {
-	//SEGGER_SYSVIEW_RecordEnterISR();
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
    Sync0_Isr();
 	ACK_SYNC0_INT;
-//SEGGER_SYSVIEW_RecordExitISR();
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif
 }
 /*ECATCHANGE_START(V5.10) HW3*/
 /*
@@ -888,10 +899,14 @@ void Sync1Isr(void)
  */
 void TimerIsr(void)
 {
-	   //SEGGER_SYSVIEW_RecordEnterISR();
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
 		ECAT_CheckTimer();
 		ECAT_TIMER_ACK_INT;
-	//SEGGER_SYSVIEW_RecordExitISR();
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif
 }
 
 #endif

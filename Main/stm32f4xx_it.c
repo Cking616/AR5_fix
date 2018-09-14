@@ -39,7 +39,11 @@
 #include "StateMachine.h"
 #include "Control.h"
 #include "Motor_Drive.h"
+#include "Configuration.h"
 
+#ifdef SYSVIEW_DEBUG
+#include "SEGGER_SYSVIEW.h"
+#endif
 
 extern s32 Turn_Number;
 extern s16 Electrical_Angle;
@@ -57,15 +61,28 @@ s32 ADC_duration_start;
 
 void NMI_Handler(void)
 {
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
+	
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif	
 }
 
 
 void HardFault_Handler(void)
 {
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
   {
   }
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif	
 }
 
 /**
@@ -75,10 +92,16 @@ void HardFault_Handler(void)
   */
 void MemManage_Handler(void)
 {
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
   /* Go to infinite loop when Memory Manage exception occurs */
   while (1)
   {
   }
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif	
 }
 
 /**
@@ -88,10 +111,16 @@ void MemManage_Handler(void)
   */
 void BusFault_Handler(void)
 {
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
   /* Go to infinite loop when Bus Fault exception occurs */
   while (1)
   {
   }
+		#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif	
 }
 
 /**
@@ -101,10 +130,17 @@ void BusFault_Handler(void)
   */
 void UsageFault_Handler(void)
 {
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
+
   /* Go to infinite loop when Usage Fault exception occurs */
   while (1)
   {
   }
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif	
 }
 
 /**
@@ -114,6 +150,12 @@ void UsageFault_Handler(void)
   */
 void SVC_Handler(void)
 {
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif	
 }
 
 /**
@@ -123,6 +165,12 @@ void SVC_Handler(void)
   */
 void DebugMon_Handler(void)
 {
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif	
 }
 
 /**
@@ -132,6 +180,12 @@ void DebugMon_Handler(void)
   */
 void PendSV_Handler(void)
 {
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif	
 }
 
 
@@ -174,7 +228,10 @@ void SysTick_Handler(void)
 
 
 void TIM4_IRQHandler(void)
-{		
+{
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif	
 	if(SET==TIM_GetITStatus(TIM4, TIM_IT_Update))
 	{	
 		if(gsM1_Drive.uw16CtrlMode != OPENLOOP_PWM)
@@ -194,13 +251,17 @@ void TIM4_IRQHandler(void)
 		
 		TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
 	}	
-
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif
 }
 
 
 void DMA1_Stream0_IRQHandler(void)
 {
-	
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
 	#if RENISHAW == 1
 	
 		if(DMA_GetITStatus(DMA1_Stream0,DMA_IT_TCIF0))
@@ -224,13 +285,18 @@ void DMA1_Stream0_IRQHandler(void)
 		}
 	
 	#endif
-
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif
 }
 
 
 
 void DMA1_Stream3_IRQHandler(void)
 {	
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
 	if(DMA_GetITStatus(DMA1_Stream3,DMA_IT_TCIF3))
 	{			
 		SPI_Cmd(SPI2, DISABLE); 
@@ -239,12 +305,17 @@ void DMA1_Stream3_IRQHandler(void)
 				
 		DMA_ClearITPendingBit(DMA1_Stream3,DMA_IT_TCIF3); 			
 	}
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif
 }
 
 
 void ADC_IRQHandler(void)
 {
-	ADC_duration_start = SysTick->VAL;
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordEnterISR();
+	#endif
 	
 
   if((ADC1->SR & ADC_FLAG_JEOC) == ADC_FLAG_JEOC)
@@ -261,17 +332,9 @@ void ADC_IRQHandler(void)
   }
 	
 	
-	if(ADC_duration_start >= SysTick->VAL)
-	{
-		ADC_duration = ADC_duration_start - SysTick->VAL;
-	}
-	else
-	{
-		ADC_duration = (1 << 24) - SysTick->VAL + ADC_duration_start;
-	}
-	
-  ADC_duration_ratio     = (float)ADC_duration * 100.0f / 8400.0f;
-  ADC_duration_max  = (ADC_duration_max > ADC_duration_ratio) ? ADC_duration_max : ADC_duration_ratio;
+	#ifdef SYSVIEW_DEBUG
+	SEGGER_SYSVIEW_RecordExitISR();
+	#endif
 
 }
 

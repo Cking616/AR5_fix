@@ -112,12 +112,16 @@ build{
         'STM32F4Driver/Sou/stm32f4xx_usart.c',
         'STM32F4Driver/Sou/stm32f4xx_rcc.c',
         'STM32F4Driver/Sou/stm32f4xx_dbgmcu.c',
-        'CMSISCore/Sou/system_stm32f4xx.c'
+        'CMSISCore/Sou/system_stm32f4xx.c',
+        'SystemViewer/SEGGER_RTT.c',
+        'SystemViewer/SEGGER_SYSVIEW.c',
+        'SystemViewer/SEGGER_SYSVIEW_Config_NoOS.c'
     },
     includes={
         'CMSISCore/Inc',
         'Gcc/CMSIS/Include',
         'Main',
+        'SystemViewer',
         'StateMachine',
         'EtherCAT/Inc',
         'STM32_MODBUS/modbus/include',

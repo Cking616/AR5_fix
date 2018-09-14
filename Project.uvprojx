@@ -10,12 +10,11 @@
       <TargetName>FLASH</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F405RG</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.1.0.8</PackID>
+          <PackID>Keil.STM32F4xx_DFP.2.13.0</PackID>
           <PackURL>http://www.keil.com/pack</PackURL>
           <Cpu>IROM(0x08000000,0x100000) IRAM(0x20000000,0x20000) IRAM2(0x10000000,0x10000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -85,8 +84,6 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
-            <nStopA1X>0</nStopA1X>
-            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -125,6 +122,47 @@
             <HexOffset>0</HexOffset>
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
+          <Simulator>
+            <UseSimulator>0</UseSimulator>
+            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
+            <RunToMain>1</RunToMain>
+            <RestoreBreakpoints>1</RestoreBreakpoints>
+            <RestoreWatchpoints>1</RestoreWatchpoints>
+            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
+            <RestoreFunctions>1</RestoreFunctions>
+            <RestoreToolbox>1</RestoreToolbox>
+            <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
+            <RestoreSysVw>1</RestoreSysVw>
+          </Simulator>
+          <Target>
+            <UseTarget>1</UseTarget>
+            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
+            <RunToMain>1</RunToMain>
+            <RestoreBreakpoints>1</RestoreBreakpoints>
+            <RestoreWatchpoints>1</RestoreWatchpoints>
+            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
+            <RestoreFunctions>0</RestoreFunctions>
+            <RestoreToolbox>1</RestoreToolbox>
+            <RestoreTracepoints>1</RestoreTracepoints>
+            <RestoreSysVw>1</RestoreSysVw>
+          </Target>
+          <RunDebugAfterBuild>0</RunDebugAfterBuild>
+          <TargetSelection>6</TargetSelection>
+          <SimDlls>
+            <CpuDll></CpuDll>
+            <CpuDllArguments></CpuDllArguments>
+            <PeripheralDll></PeripheralDll>
+            <PeripheralDllArguments></PeripheralDllArguments>
+            <InitializationFile></InitializationFile>
+          </SimDlls>
+          <TargetDlls>
+            <CpuDll></CpuDll>
+            <CpuDllArguments></CpuDllArguments>
+            <PeripheralDll></PeripheralDll>
+            <PeripheralDllArguments></PeripheralDllArguments>
+            <InitializationFile></InitializationFile>
+            <Driver>Segger\JL2CM3.dll</Driver>
+          </TargetDlls>
         </DebugOption>
         <Utilities>
           <Flash1>
@@ -189,7 +227,6 @@
             <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
-            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -324,18 +361,11 @@
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
             <useXO>0</useXO>
-            <v6Lang>1</v6Lang>
-            <v6LangP>1</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
-            <v6Lto>0</v6Lto>
-            <v6WtE>0</v6WtE>
-            <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,__FPU_PRESENT ,USE_STDPERIPH_DRIVER,ARM_MATH_CM4, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING,CORE=CORE_CONTEX_M4,COMPILER=COMPILER_KIEL, __CC_ARM</Define>
               <Undefine></Undefine>
-              <IncludePath>.\BasicLibrary;.\CMSISCore\Inc;.\CMSISDSP\Inc;.\STM32F4Driver\Inc;.\CSP;.\Component;.\Framework;.\Main;.\Packet;.\EntherCAT;.\canopen;.\STM32_MODBUS\modbus\ascii;.\STM32_MODBUS\modbus\functions;.\STM32_MODBUS\modbus\include;.\STM32_MODBUS\modbus\port;.\STM32_MODBUS\modbus\rtu;.\STM32_MODBUS\modbus\tcp;.\StateMachine;.\EtherCAT\Inc;.\EtherCAT\src;.\EtherCAT\port</IncludePath>
+              <IncludePath>.\BasicLibrary;.\CMSISCore\Inc;.\CMSISDSP\Inc;.\STM32F4Driver\Inc;.\CSP;.\Component;.\Framework;.\Main;.\Packet;.\EntherCAT;.\canopen;.\STM32_MODBUS\modbus\ascii;.\STM32_MODBUS\modbus\functions;.\STM32_MODBUS\modbus\include;.\STM32_MODBUS\modbus\port;.\STM32_MODBUS\modbus\rtu;.\STM32_MODBUS\modbus\tcp;.\StateMachine;.\EtherCAT\Inc;.\SystemViewer</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -348,7 +378,6 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -760,16 +789,6 @@
           <GroupName>EtherCAT</GroupName>
           <Files>
             <File>
-              <FileName>aoeappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\aoeappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>bootmode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\bootmode.c</FilePath>
-            </File>
-            <File>
               <FileName>cia402appl.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\EtherCAT\src\cia402appl.c</FilePath>
@@ -778,16 +797,6 @@
               <FileName>coeappl.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\EtherCAT\src\coeappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>diag.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\diag.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecataoe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecataoe.c</FilePath>
             </File>
             <File>
               <FileName>ecatappl.c</FileName>
@@ -800,39 +809,9 @@
               <FilePath>.\EtherCAT\src\ecatcoe.c</FilePath>
             </File>
             <File>
-              <FileName>ecateoe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecateoe.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecatfoe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecatfoe.c</FilePath>
-            </File>
-            <File>
               <FileName>ecatslv.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\EtherCAT\src\ecatslv.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecatsoe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecatsoe.c</FilePath>
-            </File>
-            <File>
-              <FileName>emcy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\emcy.c</FilePath>
-            </File>
-            <File>
-              <FileName>eoeappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\eoeappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>foeappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\foeappl.c</FilePath>
             </File>
             <File>
               <FileName>mailbox.c</FileName>
@@ -845,54 +824,39 @@
               <FilePath>.\EtherCAT\src\objdef.c</FilePath>
             </File>
             <File>
-              <FileName>sampleappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\sampleappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>SampleApplicationInterface.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\SampleApplicationInterface.c</FilePath>
-            </File>
-            <File>
               <FileName>sdoserv.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\EtherCAT\src\sdoserv.c</FilePath>
             </File>
             <File>
-              <FileName>testappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\testappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>el9800hw.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\el9800hw.c</FilePath>
-            </File>
-            <File>
-              <FileName>EXIT.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\EXIT.c</FilePath>
-            </File>
-            <File>
-              <FileName>includes.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\includes.c</FilePath>
-            </File>
-            <File>
               <FileName>SPI1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\SPI1.c</FilePath>
+              <FilePath>.\EtherCAT\src\SPI1.c</FilePath>
             </File>
             <File>
-              <FileName>sys.c</FileName>
+              <FileName>stm32f405hw.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\sys.c</FilePath>
+              <FilePath>.\EtherCAT\src\stm32f405hw.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SystemViewer</GroupName>
+          <Files>
+            <File>
+              <FileName>SEGGER_RTT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SystemViewer\SEGGER_RTT.c</FilePath>
             </File>
             <File>
-              <FileName>Timer.c</FileName>
+              <FileName>SEGGER_SYSVIEW.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\Timer.c</FilePath>
+              <FilePath>.\SystemViewer\SEGGER_SYSVIEW.c</FilePath>
+            </File>
+            <File>
+              <FileName>SEGGER_SYSVIEW_Config_NoOS.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SystemViewer\SEGGER_SYSVIEW_Config_NoOS.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -974,8 +938,6 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
-            <nStopA1X>0</nStopA1X>
-            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -1014,6 +976,47 @@
             <HexOffset>0</HexOffset>
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
+          <Simulator>
+            <UseSimulator>0</UseSimulator>
+            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
+            <RunToMain>1</RunToMain>
+            <RestoreBreakpoints>1</RestoreBreakpoints>
+            <RestoreWatchpoints>1</RestoreWatchpoints>
+            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
+            <RestoreFunctions>1</RestoreFunctions>
+            <RestoreToolbox>1</RestoreToolbox>
+            <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
+            <RestoreSysVw>1</RestoreSysVw>
+          </Simulator>
+          <Target>
+            <UseTarget>1</UseTarget>
+            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
+            <RunToMain>1</RunToMain>
+            <RestoreBreakpoints>1</RestoreBreakpoints>
+            <RestoreWatchpoints>1</RestoreWatchpoints>
+            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
+            <RestoreFunctions>0</RestoreFunctions>
+            <RestoreToolbox>1</RestoreToolbox>
+            <RestoreTracepoints>0</RestoreTracepoints>
+            <RestoreSysVw>1</RestoreSysVw>
+          </Target>
+          <RunDebugAfterBuild>0</RunDebugAfterBuild>
+          <TargetSelection>6</TargetSelection>
+          <SimDlls>
+            <CpuDll></CpuDll>
+            <CpuDllArguments></CpuDllArguments>
+            <PeripheralDll></PeripheralDll>
+            <PeripheralDllArguments></PeripheralDllArguments>
+            <InitializationFile></InitializationFile>
+          </SimDlls>
+          <TargetDlls>
+            <CpuDll></CpuDll>
+            <CpuDllArguments></CpuDllArguments>
+            <PeripheralDll></PeripheralDll>
+            <PeripheralDllArguments></PeripheralDllArguments>
+            <InitializationFile>.\STM32F40_41xxx\ram.ini</InitializationFile>
+            <Driver>Segger\JL2CM3.dll</Driver>
+          </TargetDlls>
         </DebugOption>
         <Utilities>
           <Flash1>
@@ -1078,7 +1081,6 @@
             <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
-            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -1213,13 +1215,6 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
-            <v6Lang>1</v6Lang>
-            <v6LangP>1</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
-            <v6Lto>0</v6Lto>
-            <v6WtE>0</v6WtE>
-            <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>__FPU_PRESENT ,USE_STDPERIPH_DRIVER,ARM_MATH_CM4, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING,CORE=CORE_CONTEX_M4,COMPILER=COMPILER_KIEL,VECTTAB_RAM,VECT_TAB_SRAM</Define>
@@ -1237,7 +1232,6 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -1649,16 +1643,6 @@
           <GroupName>EtherCAT</GroupName>
           <Files>
             <File>
-              <FileName>aoeappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\aoeappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>bootmode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\bootmode.c</FilePath>
-            </File>
-            <File>
               <FileName>cia402appl.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\EtherCAT\src\cia402appl.c</FilePath>
@@ -1667,16 +1651,6 @@
               <FileName>coeappl.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\EtherCAT\src\coeappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>diag.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\diag.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecataoe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecataoe.c</FilePath>
             </File>
             <File>
               <FileName>ecatappl.c</FileName>
@@ -1689,39 +1663,9 @@
               <FilePath>.\EtherCAT\src\ecatcoe.c</FilePath>
             </File>
             <File>
-              <FileName>ecateoe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecateoe.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecatfoe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecatfoe.c</FilePath>
-            </File>
-            <File>
               <FileName>ecatslv.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\EtherCAT\src\ecatslv.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecatsoe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecatsoe.c</FilePath>
-            </File>
-            <File>
-              <FileName>emcy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\emcy.c</FilePath>
-            </File>
-            <File>
-              <FileName>eoeappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\eoeappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>foeappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\foeappl.c</FilePath>
             </File>
             <File>
               <FileName>mailbox.c</FileName>
@@ -1734,65 +1678,44 @@
               <FilePath>.\EtherCAT\src\objdef.c</FilePath>
             </File>
             <File>
-              <FileName>sampleappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\sampleappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>SampleApplicationInterface.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\SampleApplicationInterface.c</FilePath>
-            </File>
-            <File>
               <FileName>sdoserv.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\EtherCAT\src\sdoserv.c</FilePath>
             </File>
             <File>
-              <FileName>testappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\testappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>el9800hw.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\el9800hw.c</FilePath>
-            </File>
-            <File>
-              <FileName>EXIT.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\EXIT.c</FilePath>
-            </File>
-            <File>
-              <FileName>includes.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\includes.c</FilePath>
-            </File>
-            <File>
               <FileName>SPI1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\SPI1.c</FilePath>
+              <FilePath>.\EtherCAT\src\SPI1.c</FilePath>
             </File>
             <File>
-              <FileName>sys.c</FileName>
+              <FileName>stm32f405hw.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\sys.c</FilePath>
+              <FilePath>.\EtherCAT\src\stm32f405hw.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>SystemViewer</GroupName>
+          <Files>
+            <File>
+              <FileName>SEGGER_RTT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SystemViewer\SEGGER_RTT.c</FilePath>
             </File>
             <File>
-              <FileName>Timer.c</FileName>
+              <FileName>SEGGER_SYSVIEW.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\EtherCAT\port\Timer.c</FilePath>
+              <FilePath>.\SystemViewer\SEGGER_SYSVIEW.c</FilePath>
+            </File>
+            <File>
+              <FileName>SEGGER_SYSVIEW_Config_NoOS.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SystemViewer\SEGGER_SYSVIEW_Config_NoOS.c</FilePath>
             </File>
           </Files>
         </Group>
       </Groups>
     </Target>
   </Targets>
-
-  <RTE>
-    <apis/>
-    <components/>
-    <files/>
-  </RTE>
 
 </Project>

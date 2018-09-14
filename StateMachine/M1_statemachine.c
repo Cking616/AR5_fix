@@ -179,13 +179,10 @@ static void M1_StateFault(void)
 		
 		if((lCtrlErrOld == 0) && (gsM1_Drive.sFaultId.R > 0))
 		{
-//				CiA402_LocalError((Uint16)(gsM1_Drive.sFaultId.unCtrlErr.ulWord & 0xFFFF));         //ECAT_MOD
 			CiA402_LocalError((Uint16)(gsM1_Drive.sFaultId.R & 0xFFFF));
 		}
 
-//		lCtrlErrOld = gsM1_Drive.sFaultId.unCtrlErr.ulWord;
-		lCtrlErrOld = gsM1_Drive.sFaultId.R;
-		
+		lCtrlErrOld = gsM1_Drive.sFaultId.R;	
 }
 
 

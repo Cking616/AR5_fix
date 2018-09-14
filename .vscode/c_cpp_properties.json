@@ -5,6 +5,7 @@
             "includePath": [
                 "${workspaceRoot}/Main",
                 "${workspaceRoot}/StateMachine",
+                "${workspaceRoot}/SystemViewer",
                 "${workspaceRoot}/EtherCAT/Inc",
                 "${workspaceRoot}/STM32F4Driver/Inc",
                 "${workspaceRoot}/CMSISCore/Inc",
@@ -48,6 +49,7 @@
             "includePath": [
                 "${workspaceRoot}/Main",
                 "${workspaceRoot}/StateMachine",
+                "${workspaceRoot}/SystemViewer",
                 "${workspaceRoot}/EtherCAT/Inc",
                 "${workspaceRoot}/STM32F4Driver/Inc",
                 "${workspaceRoot}/CMSISCore/Inc",

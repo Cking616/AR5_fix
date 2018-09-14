@@ -10,7 +10,7 @@
 #define   HARDWARE_VERSION_2_1									0
 #define   HARDWARE_VERSION_2_2									1
 #define   ETHERCAT_ENABLE
-
+#define 	SYSVIEW_DEBUG
 
 #define		ZZ_MOTOR															1
 #define		SMALL_PPR_982													0
