@@ -1893,10 +1893,10 @@ void PositionHold(void)
 
 
 #ifdef HFI
-
+u32 rst_delay = 0;	
 void HFI_Search(void)
 {
- u32 rst_delay;	
+
 
 	switch(gsM1_Drive.sHFISearch.u8Step)
 	{

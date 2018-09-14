@@ -30,43 +30,6 @@
 #include "GlobalVariable.h"
 #include "HardwareConfig.h"
 
-//-------------------------------- Define --------------------------------//
-//#ifndef LITTLE_ENDIAN
-//#define LITTLE_ENDIAN 1234
-//#endif
-
-//#ifndef BIG_ENDIAN
-//#define BIG_ENDIAN 4321
-//#endif
-
-//#ifndef BYTE_ORDER
-//#define BYTE_ORDER LITTLE_ENDIAN
-//#endif
-
-//#if BYTE_ORDER == BIG_ENDIAN
-//	#define MB_HTONS(x) x
-//	#define MB_NTOHS(x) x
-//	#define MB_HTONL(x) x
-//	#define MB_NTOHL(x) x
-//#else /* BYTE_ORDER != BIG_ENDIAN */
-//	#define MB_HTONS(x) ((((x) & 0xff) << 8) | (((x) & 0xff00) >> 8))
-//	#define MB_NTOHS(x) MB_HTONS(x)
-//	#define MB_HTONL(x) ((((x) & 0xff) << 24) | \
-//                     (((x) & 0xff00) << 8) | \
-//                     (((x) & 0xff0000UL) >> 8) | \
-//                     (((x) & 0xff000000UL) >> 24))
-//	#define MB_NTOHL(x) MB_HTONL(x)
-//#endif
-
-//#define MB_HTONS(x) ((((x) & 0xff) << 8) | (((x) & 0xff00) >> 8))
-//#define MB_NTOHS(x) MB_HTONS(x)
-//#define MB_HTONL(x) ((((x) & 0xff) << 8) | \
-//					(((x) & 0xff00) >> 8) | \
-//					(((x) & 0xff0000UL) << 8) | \
-//					(((x) & 0xff000000UL) >> 8))
-//#define MB_NTOHL(x) MB_HTONL(x)
-
-
 //------------------------------- Typedef---------------------------------//
 typedef enum
 {
