@@ -7,6 +7,8 @@ FLAGS += '-D__weak="__attribute__((weak))"'
 FLAGS += '-D__packed="__attribute__((__packed__))"'
 FLAGS += '-DUSE_STDPERIPH_DRIVER'
 FLAGS += '-DSTM32F40_41xxx'
+FLAGS += '-D__FPU_PRESENT=1'
+FLAGS += '-D__VFP_FP__'
 FLAGS += '-DARM_MATH_CM4'
 FLAGS += '-DARM_MATH_MATRIX_CHECK'
 FLAGS += '-DARM_MATH_ROUNDING'
@@ -26,12 +28,12 @@ boarddir = 'Gcc'
 LDFLAGS += '-T'..boarddir..'/STM32F405RGTx_FLASH.ld'
 LDFLAGS += '-L'..boarddir..'/CMSIS/Lib' -- lib dir
 LDFLAGS += '-lc -lm -lnosys -larm_cortexM4lf_math' -- libs
-LDFLAGS += '-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -specs=nosys.specs -specs=nano.specs -u _printf_float -u _scanf_float -Wl,--cref -Wl,--gc-sections'
+LDFLAGS += '-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -specs=nosys.specs -specs=nano.specs -u _printf_float -u _scanf_float -Wl,--cref -Wl,--gc-sections'
 LDFLAGS += '-Wl,--undefined=uxTopUsedPriority'
 
 
 -- common flags for ASM, C and C++
-OPT += '-O0'
+OPT += '-O2'
 OPT += '-ffast-math -fno-finite-math-only'
 tup.append_table(FLAGS, OPT)
 tup.append_table(LDFLAGS, OPT)

@@ -20,8 +20,8 @@
 #include "SEGGER_SYSVIEW.h"
 #endif
 
-u32 tickcnt;
-u16 delaycnt;
+u32 tickcnt =0;
+u16 delaycnt = 0;
 
 int main(void)
 { 
@@ -130,7 +130,7 @@ int main(void)
 				#ifdef  ETHERCAT_ENABLE
 					if(bRunApplication == TRUE)
 					{
-						MainLoop();
+						//MainLoop();
 					}
 				#endif								
 				Flag_10_ms = 0;

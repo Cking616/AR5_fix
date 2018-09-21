@@ -18,14 +18,14 @@
 #define		NEW_MAG_FIXTURE												1
 
 #define   Modbus_RTU_ENABLE                     0
-#define   BIG_ID_ENABLE                         1
+#define   BIG_ID_ENABLE                         0
 
 #define		HARDWARE_TEST													0			
 #define   RENISHAW															1
 #define   KOLLMORGEN														0
 
 
-#define   AUTORUN																0
+#define   AUTORUN																1
 #define   AUTORUN_SPEED													500   
 
 

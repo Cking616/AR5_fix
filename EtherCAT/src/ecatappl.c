@@ -68,8 +68,7 @@ BOOL bInitFinished = FALSE; /** < \brief indicates if the initialization is fini
 ------    Functions
 ------
 -----------------------------------------------------------------------------------------*/
-float fRatioMax5 = 0.0;
-float fRatio5 = 0.0;
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /**
@@ -79,26 +78,10 @@ float fRatio5 = 0.0;
 void PDO_InputMapping(void)
 {
     APPL_InputMapping((UINT16*)aPdInputData);
-
-    int lStartTim  = SysTick->VAL;
     HW_EscWriteIsr(((MEM_ADDR *) aPdInputData), nEscAddrInputData, nPdInputSize );
-    int lEndTim   = SysTick->VAL;
-    int lDeltaTim = 0;
-
-    if(lStartTim >= lEndTim)
-    {
-            lDeltaTim = lStartTim - lEndTim;
-    }
-    else
-    {
-            lDeltaTim = (1 << 24) - lEndTim + lStartTim;
-    }
-    fRatio5     = (float)lDeltaTim * 100.0f / 8400.0f;
-    fRatioMax5  = (fRatioMax5 > fRatio5) ? fRatioMax5 : fRatio5;
 }
 
-float fRatioMax6 = 0.0;
-float fRatio6 = 0.0;
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /**
 \brief    This function will copies the outputs from the ESC memory to the local memory
@@ -107,22 +90,7 @@ float fRatio6 = 0.0;
 *////////////////////////////////////////////////////////////////////////////////////////
 void PDO_OutputMapping(void)
 {
-    int lStartTim  = SysTick->VAL;
     HW_EscReadIsr(((MEM_ADDR *)aPdOutputData), nEscAddrOutputData, nPdOutputSize );  //读SM2对应的物理地址0x1200中的值
-    int lEndTim   = SysTick->VAL;
-    int lDeltaTim = 0;
-
-    if(lStartTim >= lEndTim)
-    {
-       lDeltaTim = lStartTim - lEndTim;
-    }
-    else
-    {
-        lDeltaTim = (1 << 24) - lEndTim + lStartTim;
-    }
-    fRatio6    = (float)lDeltaTim * 100.0f / 8400.0f;
-    fRatioMax6  = (fRatioMax6 > fRatio6) ? fRatioMax6 : fRatio6;
-
     APPL_OutputMapping((UINT16*) aPdOutputData);
 }
 

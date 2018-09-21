@@ -35,9 +35,6 @@
 * Attention		 : None
 *******************************************************************************/
 
-u8  SPI_TxBuf1[64];
-u8  SPI_RxBuf1[64];
-
 void SPI1_Init(void)
 {
     SPI_InitTypeDef  SPI_InitStructure;

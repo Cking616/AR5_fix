@@ -317,6 +317,10 @@ void DMA1_Stream3_IRQHandler(void)
 	#endif
 }
 
+#if 0
+int max_adc_time = 0;
+float max_e_value = 0.0f;
+#endif
 
 void ADC_IRQHandler(void)
 {
@@ -324,16 +328,39 @@ void ADC_IRQHandler(void)
 	SEGGER_SYSVIEW_RecordEnterISR();
 	#endif
 	
-
+  
   if((ADC1->SR & ADC_FLAG_JEOC) == ADC_FLAG_JEOC)
   {
-	
+#if 0
+	int lStartTim  = SysTick->VAL;
+#endif
+		
 		ADC_Value_Read();	
 
 		geM1_StateRunLoop = FAST;
 
 		SM_StateMachine(&gsM1_Ctrl);
+		
+#if 0
+	int lEndTim   = SysTick->VAL;
+	int lDeltaTim = 0;
+	if(lStartTim >= lEndTim)
+    {
+    	lDeltaTim = lStartTim - lEndTim;
+    }
+    else
+    {
+        lDeltaTim = (1 << 24) - lEndTim + lStartTim;
+    }
 
+	if(lDeltaTim > max_adc_time)
+	{
+		max_adc_time = lDeltaTim;
+		max_e_value = gsM1_Drive.sPositionEnc.f32PositionEl;
+	}
+ 
+#endif
+	
     ADC1->SR = ~(u32)ADC_FLAG_JEOC;
 
   }

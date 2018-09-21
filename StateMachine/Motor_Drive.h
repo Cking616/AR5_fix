@@ -16,18 +16,18 @@
 
 	#if KOLLMORGEN == 1
 	
-		#define POLE_PAIR_NUM     	 			(u8)6   						/* 极对数Number of motor pole pairs */
-		#define RS           							0.388F     					/* 电阻Stator resistance , ohm*/ 
-		#define LS           							0.00055F    			  /*电感 Stator inductance , H */
+		#define POLE_PAIR_NUM     	 			(u8)6   						/* 鏋佸鏁癗umber of motor pole pairs */
+		#define RS           							0.388F     					/* 鐢甸樆Stator resistance , ohm*/ 
+		#define LS           							0.00055F    			  /*鐢垫劅 Stator inductance , H */
 		#define Lamda											0.0167F
 
   #endif
 	
 	#if ZZ_MOTOR == 1
 	
-		#define POLE_PAIR_NUM     	 			(u8)4   						/* 极对数Number of motor pole pairs */
-		#define RS           							0.09F     		      /* 电阻Stator resistance , ohm*/ 
-		#define LS           							0.000335F           /* 电感 Stator inductance , H */
+		#define POLE_PAIR_NUM     	 			(u8)4   						/* 鏋佸鏁癗umber of motor pole pairs */
+		#define RS           							0.09F     		      /* 鐢甸樆Stator resistance , ohm*/ 
+		#define LS           							0.000335F           /* 鐢垫劅 Stator inductance , H */
 		#define Lamda											0.019F
 		#define Kt												0.114F							/* Torque Constant Nm/A  */
 		#define Kv												8.1F							  /* BEMF Constant V/KRPM */
@@ -35,9 +35,9 @@
 	
 	#else
 
-		#define POLE_PAIR_NUM     	 			(u8)8   						/* 极对数Number of motor pole pairs */
-		#define RS           							0.08669F     		    /* 电阻Stator resistance , ohm*/ 
-		#define LS           							0.0002238F          /* 电感 Stator inductance , H */
+		#define POLE_PAIR_NUM     	 			(u8)8   						/* 鏋佸鏁癗umber of motor pole pairs */
+		#define RS           							0.08669F     		    /* 鐢甸樆Stator resistance , ohm*/ 
+		#define LS           							0.0002238F          /* 鐢垫劅 Stator inductance , H */
 //		#define Lamda											0.00918F
 		#define Lamda											0.00992F
 		#define Kt												0.119F							/* Torque Constant Nm/A  */
@@ -51,9 +51,9 @@
 
 	#if ZZ_MOTOR == 1
 	
-		#define POLE_PAIR_NUM     	 			(u8)4   						/* 极对数Number of motor pole pairs */
-		#define RS           							0.9F     		        /* 电阻Stator resistance , ohm*/ 
-		#define LS           							0.00206F            /* 电感 Stator inductance , H */
+		#define POLE_PAIR_NUM     	 			(u8)4   						/* 鏋佸鏁癗umber of motor pole pairs */
+		#define RS           							0.9F     		        /* 鐢甸樆Stator resistance , ohm*/ 
+		#define LS           							0.00206F            /* 鐢垫劅 Stator inductance , H */
 		#define Lamda											0.0175F
 		#define Kt												0.105F							/* Torque Constant Nm/A  */
 		#define Kv												7.43F							  /* BEMF Constant V/KRPM */
@@ -61,9 +61,9 @@
 	
 	#else
 
-		#define POLE_PAIR_NUM     	 			(u8)8   						/* 极对数Number of motor pole pairs */
-		#define RS           							0.3537F     		    /* 电阻Stator resistance , ohm*/ 
-		#define LS           							0.0002988F          /* 电感 Stator inductance , H */
+		#define POLE_PAIR_NUM     	 			(u8)8   						/* 鏋佸鏁癗umber of motor pole pairs */
+		#define RS           							0.3537F     		    /* 鐢甸樆Stator resistance , ohm*/ 
+		#define LS           							0.0002988F          /* 鐢垫劅 Stator inductance , H */
 		#define Lamda											0.00705F
 		#define Kt												0.0846F							/* Torque Constant Nm/A  */
 		#define Kv												10.32F							/* BEMF Constant V/KRPM */

@@ -1112,9 +1112,8 @@ void Motor_Drive_FOC(void)
 
 
 void Motor_Drive_Get_Electrical_Angle(void)
-{ 
+{
 	gsM1_Drive.sPositionEnc.f32PositionEl = fmodf((float)(TIM8->CNT)/2.0f/(float)ENCODER_PPR*(float)POLE_PAIR_NUM*PI + gsM1_Drive.sPositionEnc.f32MagnetOffsetRadEl, PI*2.0f);	
-	
 	gsM1_Drive.sFocPMSM.sAnglePosEl.f32Cos = arm_cos_f32(gsM1_Drive.sPositionEnc.f32PositionEl);
 	gsM1_Drive.sFocPMSM.sAnglePosEl.f32Sin = arm_sin_f32(gsM1_Drive.sPositionEnc.f32PositionEl);
 }

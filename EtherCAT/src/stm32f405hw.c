@@ -209,7 +209,7 @@ void TIM_Configuration(uint8_t period)		//100us
     TIM_TimeBaseStructure.TIM_Period = 1000-1; //200;		 					
       																   
     TIM_TimeBaseStructure.TIM_Prescaler = 83;				        
-    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; 			
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV2; 			
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; 		
     TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
     TIM_ClearFlag(TIM5, TIM_FLAG_Update);							    

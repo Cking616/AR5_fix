@@ -45,17 +45,17 @@ Volt_Components Stat_Volt_alpha_beta;
 volatile Curr_Components Stat_Curr_q_d_ref;  
 
 
-u8 counter_1_ms 		= 0;
-u8 counter_10_ms 		= 0;
-u8 counter_50_ms 		= 0;
-u8 counter_100_ms 	= 0;
-u8 counter_500_ms 	= 0;
+volatile u8 counter_1_ms 		= 0;
+volatile u8 counter_10_ms 		= 0;
+volatile u8 counter_50_ms 		= 0;
+volatile u8 counter_100_ms 	= 0;
+volatile u8 counter_500_ms 	= 0;
 
-u8 Flag_10_ms 		= 0;
-u8 Flag_50_ms 		= 0;
-u8 Flag_100_ms 		= 0;
-u8 Flag_500_ms 		= 0;
-u8 Flag_1000_ms 	= 0;
+volatile u8 Flag_10_ms 		= 0;
+volatile u8 Flag_50_ms 		= 0;
+volatile u8 Flag_100_ms 		= 0;
+volatile u8 Flag_500_ms 		= 0;
+volatile u8 Flag_1000_ms 	= 0;
 
 extern uint8_t SPI3_Rx_Buff[];
 extern __IO u8 guc_RS485_Error_Flag;
