@@ -33,7 +33,7 @@ LDFLAGS += '-Wl,--undefined=uxTopUsedPriority'
 
 
 -- common flags for ASM, C and C++
-OPT += '-O2'
+OPT += '-O3'
 OPT += '-ffast-math -fno-finite-math-only'
 tup.append_table(FLAGS, OPT)
 tup.append_table(LDFLAGS, OPT)
