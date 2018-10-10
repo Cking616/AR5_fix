@@ -403,6 +403,7 @@ static void ISR_GetInterruptRegister(void)
     HW_EscReadIsr((MEM_ADDR *)&EscALEvent.Word, 0x220, 2);
 }
 
+extern void __init_delay_ms(int ms);
  /*
  * 描    述：LAN9252_reset
  * 功    能：复位LAN9252此芯片
@@ -432,34 +433,11 @@ void LAN9252_reset(void)// PF8为#RST
 
     GPIO_ResetBits(GPIOC,GPIO_Pin_10);
 
-    int delaycnt = 0;
-    int tickcnt = SysTick->VAL;
-    while(delaycnt < 200)
-	{
-		tickcnt = SysTick->VAL;
-		while(tickcnt - SysTick->VAL < 168000)
-		{
-		}
-			
-		delaycnt++;
-	}
-		
-	delaycnt = 0;
+    __init_delay_ms(50);
 
     GPIO_SetBits(GPIOC,GPIO_Pin_10);
 
-    tickcnt = SysTick->VAL;
-    while(delaycnt < 200)
-	{
-		tickcnt = SysTick->VAL;
-		while(tickcnt - SysTick->VAL < 168000)
-		{
-		}
-			
-		delaycnt++;
-	}
-		
-	delaycnt = 0;
+    __init_delay_ms(50);
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 /**

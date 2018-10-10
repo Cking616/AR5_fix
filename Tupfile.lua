@@ -8,10 +8,10 @@ FLAGS += '-D__packed="__attribute__((__packed__))"'
 FLAGS += '-DUSE_STDPERIPH_DRIVER'
 FLAGS += '-DSTM32F40_41xxx'
 FLAGS += '-D__FPU_PRESENT=1'
-FLAGS += '-D__VFP_FP__'
 FLAGS += '-DARM_MATH_CM4'
 FLAGS += '-DARM_MATH_MATRIX_CHECK'
 FLAGS += '-DARM_MATH_ROUNDING'
+FLAGS += '-DUSE_USB_OTG_FS'
 
 FLAGS += '-mthumb'
 FLAGS += '-mcpu=cortex-m4'
@@ -33,7 +33,7 @@ LDFLAGS += '-Wl,--undefined=uxTopUsedPriority'
 
 
 -- common flags for ASM, C and C++
-OPT += '-O3'
+OPT += '-Og'
 OPT += '-ffast-math -fno-finite-math-only'
 tup.append_table(FLAGS, OPT)
 tup.append_table(LDFLAGS, OPT)
@@ -58,6 +58,7 @@ build{
     packages={},
     sources={
         'Main/main.c',
+        'Main/DataInterface.c',
         'EtherCAT/src/coeappl.c',
         'EtherCAT/src/ecatappl.c',
         'EtherCAT/src/ecatcoe.c',
@@ -117,12 +118,25 @@ build{
         'CMSISCore/Sou/system_stm32f4xx.c',
         'SystemViewer/SEGGER_RTT.c',
         'SystemViewer/SEGGER_SYSVIEW.c',
-        'SystemViewer/SEGGER_SYSVIEW_Config_NoOS.c'
+        'SystemViewer/SEGGER_SYSVIEW_Config_NoOS.c',
+        'USB/usb_bsp.c',
+        'USB/usb_core.c',
+        'USB/usb_dcd_int.c',
+        'USB/usb_dcd.c',
+        'USB/USB.c',
+        'USB/usbd_cdc_core.c',
+        'USB/usbd_cdc_vcp.c',
+        'USB/usbd_core.c',
+        'USB/usbd_desc.c',
+        'USB/usbd_ioreq.c',
+        'USB/usbd_req.c',
+        'USB/usbd_usr.c'
     },
     includes={
         'CMSISCore/Inc',
         'Gcc/CMSIS/Include',
         'Main',
+        'USB',
         'SystemViewer',
         'StateMachine',
         'EtherCAT/Inc',

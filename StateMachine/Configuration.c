@@ -20,7 +20,7 @@ void GPIO_Config(void)
 	GPIO_InitTypeDef GPIO_InitStructure; 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC|RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE, ENABLE);
 	
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
+  	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG,ENABLE);
 
@@ -138,7 +138,7 @@ void GPIO_Config(void)
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
     GPIO_Init(GPIOC, &GPIO_InitStructure);  
 
-		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;     
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;     
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
@@ -179,12 +179,12 @@ void GPIO_Config(void)
 void TIM_Config(void)
 {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 
     TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
     TIM_TimeBaseStructure.TIM_Prescaler = 83;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStructure.TIM_Period = 1000-1;
+    TIM_TimeBaseStructure.TIM_Period = 1000 - 1;
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV2;
     TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
@@ -211,8 +211,6 @@ void ADC_Config(void)
 
 		ADC_DeInit();
 		ADC_DeInit();
-
-
 
     ADC_CommonInitStructure.ADC_Mode = ADC_DualMode_InjecSimult;
     ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;
@@ -614,7 +612,7 @@ void PWM_Config(void)
     TIM_GenerateEvent(TIM1, TIM_EventSource_Update);  
     
     TIM_ClearFlag(TIM1, TIM_FLAG_Update);  
-		TIM_ITConfig(TIM1, TIM_IT_Update,DISABLE ); 
+	TIM_ITConfig(TIM1, TIM_IT_Update,DISABLE ); 
 
     DBGMCU_APB2PeriphConfig(DBGMCU_TIM1_STOP, ENABLE);  
     TIM_Cmd(TIM1, ENABLE);
@@ -628,21 +626,19 @@ void NVIC_Config(void)
 {
     NVIC_InitTypeDef NVIC_InitStructure;
 
-		NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-	
-		NVIC_InitStructure.NVIC_IRQChannel = ADC_IRQn;
-		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;	
-		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-		NVIC_Init(&NVIC_InitStructure);
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 
-
-    NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure); 
 
+	NVIC_InitStructure.NVIC_IRQChannel = ADC_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;	
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
 
 #ifdef  ETHERCAT_ENABLE		//ECAT_MOD
     NVIC_InitStructure.NVIC_IRQChannel = DMA1_Stream3_IRQn;
@@ -675,15 +671,38 @@ void NVIC_Config(void)
     NVIC_Init(&NVIC_InitStructure);
 
 	//#if ECAT_TIMER_INT
-		NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
-		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
-		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-		NVIC_Init(&NVIC_InitStructure);
+	NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
 	//#endif
 #endif
 }
 
+//*****************************************************************************
+// Function Name:   CAN_Config
+// Version:         V1.0
+// Input:           none
+// Output:          none
+// Return:
+// Description:     CAN¼Ä´æÆ÷ÅäÖÃ
+// History:         none
+//******************************************************************************
+void USBConfig(void)
+{
+	GPIO_InitTypeDef      GPIO_InitStruct;
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11|GPIO_Pin_12;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_OTG_FS);
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_OTG_FS);
+
+}
 
 
 

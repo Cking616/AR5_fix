@@ -437,7 +437,7 @@ void MotorDrive_Init(void)
 		gsM1_Drive.sHFISearch.f32SearchingAngle[3]           = 0;
 		gsM1_Drive.sHFISearch.f32SearchingAngle[4]           = 0;
 		gsM1_Drive.sHFISearch.u16ResponseCurrentCnt          = 0;
-		gsM1_Drive.sHFISearch.u32EstAngleCnt                 = 0;
+		//gsM1_Drive.sHFISearch.u32EstAngleCnt                 = 0;
 		gsM1_Drive.sHFISearch.u32HFI_Duration                = 0;
 		gsM1_Drive.sHFISearch.u32IqAvgOverDuration           = 0;
 		gsM1_Drive.sHFISearch.u32IqAvgUnderDuration          = 0;
@@ -1165,19 +1165,19 @@ void RampControl(float cmd, float step, float period, float *out)
 void PositionCtrlInit(void)
 {
 	
-	static u16 i;
+	static u16 inc;
 	static u32 u32MagnetEncoderPosition_AVG;
-	float f32ME_Position;
+	float f32ME_Position = 0;
 	
 	gsM1_Drive.sPositionEnc.u8MagnetEncInitPositionCheck = 1;
 	
-	while(i < 512)
+	while(inc < 512)
 	{
 		if(gsM1_Drive.sPositionEnc.u8MagnetEncoderUpdateFlag == 1)
 		{
 			u32MagnetEncoderPosition_AVG += gsM1_Drive.sPositionEnc.u32MagnetEncoderPosition;
 			gsM1_Drive.sPositionEnc.u8MagnetEncoderUpdateFlag = 0;
-			i++;
+			inc++;
 		}
 		
 		if((gsM1_Drive.sFaultId.B.MagnetEncoderError != 0)||(gsM1_Drive.sFaultId.B.MagnetEncoderCRCError != 0))
@@ -1890,9 +1890,11 @@ void PositionHold(void)
 
 
 
-
 #ifdef HFI
 u32 rst_delay = 0;	
+
+float f32Idh_table[180] = {0};
+
 void HFI_Search(void)
 {
 
@@ -2013,7 +2015,12 @@ void HFI_Search(void)
 				else
 				{
 					gsM1_Drive.sHFISearch.f32EstAngle += 1.0f;
-					gsM1_Drive.sHFISearch.u32EstAngleCnt++;
+					if(gsM1_Drive.sHFISearch.f32EstAngle >= 10.0f)
+					{
+						int index = gsM1_Drive.sHFISearch.f32EstAngle - 10;
+						f32Idh_table[index] = gsM1_Drive.sHFISearch.f32Idh;
+					}
+					//gsM1_Drive.sHFISearch.u32EstAngleCnt++;
 				}
 			}
 		

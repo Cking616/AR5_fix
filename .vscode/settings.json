@@ -4,5 +4,6 @@
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
     "files.exclude": {
         "build": true
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

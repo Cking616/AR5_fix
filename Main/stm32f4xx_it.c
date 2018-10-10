@@ -40,6 +40,7 @@
 #include "Control.h"
 #include "Motor_Drive.h"
 #include "Configuration.h"
+#include "include_c.h"
 
 #ifdef SYSVIEW_DEBUG
 #include "SEGGER_SYSVIEW.h"
@@ -57,7 +58,8 @@ float ADC_duration_max,ADC_duration_ratio;
 s32 ADC_duration_start;
 
 
-
+extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
+extern uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
 
 void NMI_Handler(void)
 {
@@ -230,12 +232,18 @@ int g_motor_position = 0;
 int g_motor_speed = 0;
 int g_motor_torque = 0;
 
+extern float f32Idh_table[180];
+int g_Idh_table = 0;
+int table_index = 0;
+
 void TIM4_IRQHandler(void)
 {
 	#ifdef SYSVIEW_DEBUG
 	SEGGER_SYSVIEW_RecordEnterISR();
 	#endif	
 	
+	g_Idh_table = f32Idh_table[table_index] * 1000;
+	table_index = (table_index + 1) % 180;
 	g_motor_position = (int) (gsM1_Drive.sPositionEnc.f32PositionMech) & 0xFFFFFFFF;
 	g_motor_speed = (int)(gsM1_Drive.sSpeed.f32SpeedFilt * 100);
 	g_motor_torque = (short)(gsM1_Drive.sFocPMSM.sIDQ.f32Q * Kt * 10000.0f);
@@ -256,6 +264,11 @@ void TIM4_IRQHandler(void)
 
 		SM_StateMachine(&gsM1_Ctrl);
 		
+#ifdef  USB_ENABLE
+		USBD_OTG_ISR_Handler (&USB_OTG_dev);
+	    USB_Reply_Func();
+#endif
+
 		TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
 	}	
 	#ifdef SYSVIEW_DEBUG
@@ -332,19 +345,28 @@ void ADC_IRQHandler(void)
   if((ADC1->SR & ADC_FLAG_JEOC) == ADC_FLAG_JEOC)
   {
 
-#if 1
+#if 0
 	int lStartTim  = SysTick->VAL;
 #endif	
 		
-		ADC_Value_Read();	
+	ADC_Value_Read();	
 
-		geM1_StateRunLoop = FAST;
+	geM1_StateRunLoop = FAST;
 
-		SM_StateMachine(&gsM1_Ctrl);
+	SM_StateMachine(&gsM1_Ctrl);
 		
+ #ifdef  USB_ENABLE
+
+	if ((stScopePara.iCommType == COMM_USB_MODE) &&
+		(stScopePara.iTransEnable == 1))
+	{
+		USB_ScopeDataBuffer();
+	}
+#endif
+
     ADC1->SR = ~(u32)ADC_FLAG_JEOC;
-		
-#if 1
+
+#if 0
 	int lEndTim   = SysTick->VAL;
 	int lDeltaTim = 0;
 	if(lStartTim >= lEndTim)

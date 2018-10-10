@@ -442,7 +442,7 @@ typedef struct
 	
 	u8																u8Step;
 	float															f32EstAngle;
-	u32																u32EstAngleCnt;
+	//u32																u32EstAngleCnt;
 	float															f32RadCnt;
 	float															f32IqAvg;
 	u32																u32IqAvgOverDuration;

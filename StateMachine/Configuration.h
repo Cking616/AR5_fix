@@ -10,7 +10,9 @@
 #define   HARDWARE_VERSION_2_1									0
 #define   HARDWARE_VERSION_2_2									1
 #define   ETHERCAT_ENABLE
-#define 	SYSVIEW_DEBUG
+//#define   ETHERCAT_RUN
+#define   SYSVIEW_DEBUG
+#define   USB_ENABLE
 
 #define		ZZ_MOTOR															1
 #define		SMALL_PPR_982													0
@@ -18,14 +20,14 @@
 #define		NEW_MAG_FIXTURE												1
 
 #define   Modbus_RTU_ENABLE                     0
-#define   BIG_ID_ENABLE                         0
+#define   BIG_ID_ENABLE                         1
 
 #define		HARDWARE_TEST													0			
 #define   RENISHAW															1
 #define   KOLLMORGEN														0
 
 
-#define   AUTORUN																1
+#define   AUTORUN																0
 #define   AUTORUN_SPEED													500   
 
 
@@ -126,6 +128,10 @@ void NVIC_Config(void);
 #ifdef ETHERCAT_ENABLE
 void SPI2_Config(void);
 #endif
+
+#ifdef USB_ENABLE
+void USBConfig(void);
+#endif 
 
 #endif
 

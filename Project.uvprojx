@@ -363,9 +363,9 @@
             <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>STM32F40_41xxx,__FPU_PRESENT ,USE_STDPERIPH_DRIVER,ARM_MATH_CM4, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING,CORE=CORE_CONTEX_M4,COMPILER=COMPILER_KIEL, __CC_ARM</Define>
+              <Define>STM32F40_41xxx,__FPU_PRESENT ,USE_STDPERIPH_DRIVER,ARM_MATH_CM4, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING,CORE=CORE_CONTEX_M4,COMPILER=COMPILER_KIEL, __CC_ARM,USE_USB_OTG_FS</Define>
               <Undefine></Undefine>
-              <IncludePath>.\BasicLibrary;.\CMSISCore\Inc;.\CMSISDSP\Inc;.\STM32F4Driver\Inc;.\CSP;.\Component;.\Framework;.\Main;.\Packet;.\EntherCAT;.\canopen;.\STM32_MODBUS\modbus\ascii;.\STM32_MODBUS\modbus\functions;.\STM32_MODBUS\modbus\include;.\STM32_MODBUS\modbus\port;.\STM32_MODBUS\modbus\rtu;.\STM32_MODBUS\modbus\tcp;.\StateMachine;.\EtherCAT\Inc;.\SystemViewer</IncludePath>
+              <IncludePath>.\BasicLibrary;.\CMSISCore\Inc;.\CMSISDSP\Inc;.\STM32F4Driver\Inc;.\CSP;.\Component;.\Framework;.\Main;.\Packet;.\EntherCAT;.\canopen;.\STM32_MODBUS\modbus\ascii;.\STM32_MODBUS\modbus\functions;.\STM32_MODBUS\modbus\include;.\STM32_MODBUS\modbus\port;.\STM32_MODBUS\modbus\rtu;.\STM32_MODBUS\modbus\tcp;.\StateMachine;.\EtherCAT\Inc;.\SystemViewer;.\USB</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -653,6 +653,11 @@
               <FileType>1</FileType>
               <FilePath>.\Main\RS485_USART.c</FilePath>
             </File>
+            <File>
+              <FileName>DataInterface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Main\DataInterface.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -857,6 +862,71 @@
               <FileName>SEGGER_SYSVIEW_Config_NoOS.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\SystemViewer\SEGGER_SYSVIEW_Config_NoOS.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USB</GroupName>
+          <Files>
+            <File>
+              <FileName>usbd_usr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_usr.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_req.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_req.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_ioreq.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_ioreq.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_cdc_vcp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_cdc_vcp.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_cdc_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_cdc_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_dcd_int.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usb_dcd_int.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_dcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usb_dcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usb_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_bsp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usb_bsp.c</FilePath>
+            </File>
+            <File>
+              <FileName>USB.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\USB.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1507,6 +1577,11 @@
               <FileType>1</FileType>
               <FilePath>.\Main\RS485_USART.c</FilePath>
             </File>
+            <File>
+              <FileName>DataInterface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Main\DataInterface.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1711,6 +1786,71 @@
               <FileName>SEGGER_SYSVIEW_Config_NoOS.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\SystemViewer\SEGGER_SYSVIEW_Config_NoOS.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USB</GroupName>
+          <Files>
+            <File>
+              <FileName>usbd_usr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_usr.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_req.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_req.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_ioreq.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_ioreq.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_cdc_vcp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_cdc_vcp.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_cdc_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usbd_cdc_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_dcd_int.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usb_dcd_int.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_dcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usb_dcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usb_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_bsp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\usb_bsp.c</FilePath>
+            </File>
+            <File>
+              <FileName>USB.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\USB\USB.c</FilePath>
             </File>
           </Files>
         </Group>

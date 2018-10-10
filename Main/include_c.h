@@ -29,7 +29,7 @@
 #include "Configuration.h"
 #include "StateMachine.h"
 #include "M1_statemachine.h"
-//#include "DataInterface.h"
+#include "DataInterface.h"
 
 #include "Control.h"
 #include "Motor_Drive.h"
@@ -59,17 +59,17 @@
 
 
 //USB
-//#include "USB.h"
-//#include "VDclass.h"
-//#include "usbd_cdc_core.h"
-//#include "usbd_desc.h"
-//#include "usbd_usr.h"
-//#include "usbd_core.h"
-//#include "usbd_req.h"
-//#include "usbd_conf.h"
-//#include "usb_regs.h"
-//#include "usbd_def.h"
-//#include "usbd_ioreq.h"
+#include "USB.h"
+#include "VDclass.h"
+#include "usbd_cdc_core.h"
+#include "usbd_desc.h"
+#include "usbd_usr.h"
+#include "usbd_core.h"
+#include "usbd_req.h"
+#include "usbd_conf.h"
+#include "usb_regs.h"
+#include "usbd_def.h"
+#include "usbd_ioreq.h"
 
 //EtherCAT
 

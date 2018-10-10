@@ -213,9 +213,9 @@ static void M1_StateInit(void)
 	
 #endif
 	
-#if HARDWARE_VERSION_2_2 == 1		
-
-  if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 1)
+#if HARDWARE_VERSION_2_2 == 1
+  //if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 1)		
+  if((GPIOB->IDR & GPIO_Pin_14) == 1)
 		gsM1_Drive.sFaultId.B.PhaseWShortCirciut = 1;
 	
 #endif

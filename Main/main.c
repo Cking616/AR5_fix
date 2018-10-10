@@ -20,8 +20,30 @@
 #include "SEGGER_SYSVIEW.h"
 #endif
 
-u32 tickcnt =0;
-u16 delaycnt = 0;
+
+void __init_delay_ms(int ms)
+{
+	static u32 tickcnt;
+	static u16 delaycnt;
+	tickcnt =0;
+	delaycnt = 0;
+	while(delaycnt < ms)
+	{
+		tickcnt = SysTick->VAL;
+		while(1)
+		{
+			if(tickcnt > SysTick->VAL)
+			{
+				if(tickcnt - SysTick->VAL >= 168000) break;
+			}
+			else
+			{
+				if(((1 << 24) - SysTick->VAL + tickcnt) >= 168000) break;
+			}
+		}
+		delaycnt++;
+	}
+}
 
 int main(void)
 { 
@@ -29,68 +51,53 @@ int main(void)
 		SysTick->LOAD = 0x00FFFFFF;
 		SysTick->CTRL |= 0x0001;
 		
-		while(delaycnt < 200)
-		{
-			tickcnt = SysTick->VAL;
-			while(tickcnt - SysTick->VAL < 168000)
-			{
 
-			}
-			
-			delaycnt++;
-		}
-		
-		delaycnt = 0;
-	
+		__init_delay_ms(200);
+
 		GPIO_Config();
-		
 
-		#ifdef  ETHERCAT_ENABLE
-			HW_Init();
-			MainInit();
-			CiA402_Init();
-			APPL_GenerateMapping(&nPdInputSize,&nPdOutputSize);
-			bRunApplication = TRUE;
-		#endif
-		
+#ifdef  ETHERCAT_ENABLE
+	#ifdef ETHERCAT_RUN
+		HW_Init();
+		MainInit();
+		CiA402_Init();
+		APPL_GenerateMapping(&nPdInputSize,&nPdOutputSize);
+		bRunApplication = TRUE;
+	#endif
+#endif	
+
 		ENC_Config();	
 		
 		DMA_Config();
 					
-		#ifdef ETHERCAT_ENABLE
+#ifdef ETHERCAT_ENABLE
 		SPI2_Config();
-		#else
+#else
 		SPI3_Config();	
-		#endif
+#endif
 		
 		PWM_Config();	
 		
-		ADC_Config();
-		
 		TIM_Config();
+
+		ADC_Config();
 				
+#ifdef  USB_ENABLE
+	    USBConfig();                        // USB  ÅäÖÃ
+	    USBInitial();
+#endif
+
+#ifdef SYSVIEW_DEBUG
+		SEGGER_SYSVIEW_Conf();
+#endif
+
 		NVIC_Config();
 
-		#ifdef SYSVIEW_DEBUG
-		SEGGER_SYSVIEW_Conf();
-		#endif
-	
-		g_stJC2JD.init(BAUDRATE_RS485);
+#ifndef ETHERCAT_ENABLE
+			g_stJC2JD.init(BAUDRATE_RS485);	
+#endif
 
-		
-		while(delaycnt < 200)
-		{
-			tickcnt = SysTick->VAL;
-			while(tickcnt - SysTick->VAL < 168000)
-			{
-			}
-			
-			delaycnt++;
-		}
-		
-		delaycnt = 0;
-
-				
+		__init_delay_ms(50);
 
 #if MAGNET_ENCODER_ALERT_ON == 1		
 		PositionCtrlInit();
@@ -105,7 +112,6 @@ int main(void)
 
 		initGlobal();
 		
-		
     while(1)
     {		
 #if Modbus_RTU_ENABLE ==1
@@ -115,26 +121,66 @@ int main(void)
 #else 
 
 		#if SIN_POSITION_TEST == 0
-			
+		
+		#ifndef ETHERCAT_ENABLE
 		if(guc_RS485_Flag == 1)
 		{
 			g_stJC2JD.Inst_Process();
 		}
-			
+		#endif	
+
 		#endif
 
 #endif 
-					
+
+#if 1
+		if ((gsM1_Ctrl.eState != RUN) && (gsM1_Ctrl.eState != ALIGN))
+		{
+			if(stParaList.iParaRecover == 1)
+			{
+				PararecoverProcess();
+				stParaList.iParaRecover = 0;
+			}
+			if (stParaList.iParaSave == 1)
+			{
+				ParaSaveProcess();
+				stParaList.iParaSave = 0;
+			}
+
+			if ((stParaList.iSysReset == 1) && (stParaList.iParaRecover == 0) && (stParaList.iParaSave == 0))
+			{
+				SysResetProcess();
+				stParaList.iSysReset = 0;
+			}
+		}
+#endif
+
+#ifdef  USB_ENABLE
+	    if(Flag_1000_ms == 1)
+		{
+			if(lResetCnt != 0)
+			{
+			    lResetCnt++;
+			}
+			if(lResetCnt >= 4) //3S
+            {
+                //ResertUsb();
+                lResetCnt = 0;
+            }
+		}
+#endif
+
 			if(Flag_10_ms == 1)
 			{
 				#ifdef  ETHERCAT_ENABLE
 					if(bRunApplication == TRUE)
 					{
-						//MainLoop();
+						MainLoop();
 					}
 				#endif								
 				Flag_10_ms = 0;
 			}
+			
 			
 			if(Flag_50_ms == 1)
 			{
