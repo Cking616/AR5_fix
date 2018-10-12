@@ -221,7 +221,7 @@ uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
         {
             return 0;
         }
-        if (gintr_status.b.inepint)   //IN¶ËµãÖĞ¶Ï
+        if (gintr_status.b.inepint)   //INç«¯ç‚¹ä¸­æ–­
         {
             USB_OTG_DIEPINTn_TypeDef  diepint;
 
@@ -288,7 +288,7 @@ uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
             //retval |= DCD_HandleInEP_ISR(pdev);
         }
 
-        if (gintr_status.b.outepintr) //OUT¶ËµãÖĞ¶Ï
+        if (gintr_status.b.outepintr) //OUTç«¯ç‚¹ä¸­æ–­
         {
             uint32_t ep_intr;
             USB_OTG_DOEPINTn_TypeDef  doepint;
@@ -302,7 +302,7 @@ uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
             {
                 if (ep_intr & 0x1)    //IN0
                 {
-                    doepint.d32 = USB_OTG_ReadDevOutEP_itr(pdev, epnum);  //OUT¶ËµãÖĞ¶Ï¼Ä´æÆ÷ xB08
+                    doepint.d32 = USB_OTG_ReadDevOutEP_itr(pdev, epnum);  //OUTç«¯ç‚¹ä¸­æ–­å¯„å­˜å™¨ xB08
 
                     /* Transfer complete */
                     if ( doepint.b.xfercompl )
@@ -336,7 +336,7 @@ uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
                         CLEAR_OUT_EP_INTR(epnum, epdisabled);
                     }
                     /* Setup Phase Done (control EPs) */
-                    if ( doepint.b.setup )  //SETUP½×¶ÎÍê³É
+                    if ( doepint.b.setup )  //SETUPé˜¶æ®µå®Œæˆ
                     {
                         /* inform the upper layer that a setup packet is available */
                         /* SETUP COMPLETE */

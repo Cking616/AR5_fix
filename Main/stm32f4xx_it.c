@@ -232,7 +232,7 @@ int g_motor_position = 0;
 int g_motor_speed = 0;
 int g_motor_torque = 0;
 
-extern float f32Idh_table[180];
+//extern float f32Idh_table[180];
 int g_Idh_table = 0;
 int table_index = 0;
 
@@ -242,7 +242,7 @@ void TIM4_IRQHandler(void)
 	SEGGER_SYSVIEW_RecordEnterISR();
 	#endif	
 	
-	g_Idh_table = f32Idh_table[table_index] * 1000;
+	//g_Idh_table = f32Idh_table[table_index] * 1000;
 	table_index = (table_index + 1) % 180;
 	g_motor_position = (int) (gsM1_Drive.sPositionEnc.f32PositionMech) & 0xFFFFFFFF;
 	g_motor_speed = (int)(gsM1_Drive.sSpeed.f32SpeedFilt * 100);
@@ -266,7 +266,7 @@ void TIM4_IRQHandler(void)
 		
 #ifdef  USB_ENABLE
 		USBD_OTG_ISR_Handler (&USB_OTG_dev);
-	    USB_Reply_Func();
+	 	USB_Reply_Func();
 #endif
 
 		TIM_ClearITPendingBit(TIM4, TIM_IT_Update);

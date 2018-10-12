@@ -115,7 +115,7 @@ void USB_DataBuffer(Uint8 *data,int16 length)
 // Function Name:   USB_Reply_Func
 // Version:         V1.0
 // Input:           none
-// Output:  ªÿ∏¥∆’Õ®∂¡»°”Î…Ë÷√≤Œ ˝£¨∂Àø⁄0x82
+// Output:  ÂõûÂ§çÊôÆÈÄöËØªÂèñ‰∏éËÆæÁΩÆÂèÇÊï∞ÔºåÁ´ØÂè£0x82
 // Description:
 //########################################################################################
 void USB_Reply_Func()
@@ -167,8 +167,8 @@ int16 USB_CRCCalculate(int16* iTxBufferPtr)
 //########################################################################################
 // Function Name:   UsbFrameUnpack
 // Input:           unRecivFrame
-// Output:          iReturnValue 0:’˝≥£ 1 CRC¥ÌŒÛ
-// Description:     ∂‘USB–≠“Èµƒµ•∏ˆ÷°Ω·ππΩ¯––Ω‚Œˆ
+// Output:          iReturnValue 0:Ê≠£Â∏∏ 1 CRCÈîôËØØ
+// Description:     ÂØπUSBÂçèËÆÆÁöÑÂçï‰∏™Â∏ßÁªìÊûÑËøõË°åËß£Êûê
 //########################################################################################
 int32 UsbFrameUnpack(UnionTypeUSBSingleData unRecivFrame, UnionTypeUSBSingleData* pSendFrame)
 {
@@ -187,7 +187,7 @@ int32 UsbFrameUnpack(UnionTypeUSBSingleData unRecivFrame, UnionTypeUSBSingleData
 
         if (lDataID >= 0x200000)
         {
-            if(unRecivFrame.Bits.bCmdIndex == 0x01)//–¥≤Ÿ◊˜
+            if(unRecivFrame.Bits.bCmdIndex == 0x01)//ÂÜôÊìç‰Ωú
             {
 				lReturnValue = DataInterface(COMM_PROTOCOL_DS402, COMM_DATA_INPUT, lDataID, (Uint16*)&iDataLength, &lDataValue);
 
@@ -208,14 +208,14 @@ int32 UsbFrameUnpack(UnionTypeUSBSingleData unRecivFrame, UnionTypeUSBSingleData
                 pSendFrame->Bits.bResult        = 0x01;
                 pSendFrame->Bits.bCRC           = USB_CRCCalculate(pSendFrame->iWord);
             }
-            else if (unRecivFrame.Bits.bCmdIndex == 0x03)// ∂¡≤Ÿ◊˜
+            else if (unRecivFrame.Bits.bCmdIndex == 0x03)// ËØªÊìç‰Ωú
             {
                 lDataValue = 0;
 
-			    // ∂¡»°ƒ⁄≤ø ˝æ›
+			    // ËØªÂèñÂÜÖÈÉ®Êï∞ÊçÆ
                 lReturnValue    = DataInterface(COMM_PROTOCOL_DS402, COMM_DATA_OUTPUT, lDataID, (Uint16*)&iDataLength, &lDataValue);
 
-				// ªÿ∏¥ ˝æ›◊È÷°
+				// ÂõûÂ§çÊï∞ÊçÆÁªÑÂ∏ß
                 pSendFrame->Bits.bHeadLow       = 0xAA;
                 pSendFrame->Bits.bHeadHigh      = 0x55;
                 pSendFrame->Bits.bCmdIndex      = 0x04;
@@ -297,7 +297,7 @@ void USB_HeartBeat(void)
 //########################################################################################
 void USB_ScopeDataBuffer(void)
 {
-	// ≤®–Œ ˝æ›∂¡»°
+	// Ê≥¢ÂΩ¢Êï∞ÊçÆËØªÂèñ
     ScopeDataProcess(stScopePara.iChMode[0], stScopePara.iChParaLength[0], stScopePara.ulChIndex[0], &stScopePara.pChAddr[0], (Uint32*)&stUSBScopeData.lCh1DataBuffer[iScopeWritePtr]);
     ScopeDataProcess(stScopePara.iChMode[1], stScopePara.iChParaLength[1], stScopePara.ulChIndex[1], &stScopePara.pChAddr[1], (Uint32*)&stUSBScopeData.lCh2DataBuffer[iScopeWritePtr]);
     ScopeDataProcess(stScopePara.iChMode[2], stScopePara.iChParaLength[2], stScopePara.ulChIndex[2], &stScopePara.pChAddr[2], (Uint32*)&stUSBScopeData.lCh3DataBuffer[iScopeWritePtr]);

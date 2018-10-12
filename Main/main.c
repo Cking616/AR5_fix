@@ -133,7 +133,7 @@ int main(void)
 
 #endif 
 
-#if 1
+#if 0
 		if ((gsM1_Ctrl.eState != RUN) && (gsM1_Ctrl.eState != ALIGN))
 		{
 			if(stParaList.iParaRecover == 1)

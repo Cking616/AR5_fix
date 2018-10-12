@@ -349,7 +349,7 @@ static uint8_t  usbd_cdc_DeInit (void  *pdev,
 
   DCD_EP_Close(pdev,
               0x83);
-// ¹Ø±Õ¶àÓà¹ÜµÀ
+// å…³é—­å¤šä½™ç®¡é“
 //  DCD_EP_Close(pdev,
 //              0x84);
 
@@ -465,17 +465,17 @@ int32 iScopeCnt;
 static uint8_t  usbd_cdc_SOF (void *pdev)
 {
     uint16_t i = 0;
-	uint16_t Index = 0;
+	  uint16_t Index = 0;
 
     lResetCnt = 1;
 
-	//20£¨ms£© * 20(k) * 4(Byte) * 4(Í¨µÀ)
+	//20ï¼ˆmsï¼‰ * 20(k) * 4(Byte) * 4(é€šé“)
     iScopeCnt = iScopeWritePtr - iScopeWritePtrOld;
     if(iScopeCnt < 0)
     {
         iScopeCnt = iScopeCnt + SCOPE_BUFFER;
     }
-    if(iScopeCnt >= SCOPE_MAXCNT)  //±¾Ó¦ÎªSCOPE_MAXCNT-1£¬±ÜÃâiScopeWritePtrÒÑ¾­¼Ó1£¬µ«ÊÇ²¢Î´½ø»º´æÊı×é
+    if(iScopeCnt >= SCOPE_MAXCNT)  //æœ¬åº”ä¸ºSCOPE_MAXCNT-1ï¼Œé¿å…iScopeWritePtrå·²ç»åŠ 1ï¼Œä½†æ˜¯å¹¶æœªè¿›ç¼“å­˜æ•°ç»„
     {
         Index = iScopeWritePtrOld;
         for (i = 0; i < SCOPE_MAXCNT; i++)

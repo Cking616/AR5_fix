@@ -1893,7 +1893,7 @@ void PositionHold(void)
 #ifdef HFI
 u32 rst_delay = 0;	
 
-float f32Idh_table[180] = {0};
+//float f32Idh_table[180] = {0};
 
 void HFI_Search(void)
 {
@@ -2015,12 +2015,11 @@ void HFI_Search(void)
 				else
 				{
 					gsM1_Drive.sHFISearch.f32EstAngle += 1.0f;
-					if(gsM1_Drive.sHFISearch.f32EstAngle >= 10.0f)
-					{
-						int index = gsM1_Drive.sHFISearch.f32EstAngle - 10;
-						f32Idh_table[index] = gsM1_Drive.sHFISearch.f32Idh;
-					}
-					//gsM1_Drive.sHFISearch.u32EstAngleCnt++;
+					//if(gsM1_Drive.sHFISearch.f32EstAngle >= 10.0f)
+					//{
+					//	int index = gsM1_Drive.sHFISearch.f32EstAngle - 10;
+						//f32Idh_table[index] = gsM1_Drive.sHFISearch.f32Idh;
+					//}	
 				}
 			}
 		
