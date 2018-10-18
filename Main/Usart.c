@@ -39,7 +39,7 @@ uint8_t USART1_State;
 //uint8_t UART4_State;
 
 
-/* Table of CRC values for high¨Corder byte */
+/* Table of CRC values for highâ€“order byte */
 static unsigned char auchCRCHi[] = {
 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81,
 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
@@ -61,7 +61,7 @@ static unsigned char auchCRCHi[] = {
 0x40
 } ;
 
-/* Table of CRC values for low¨Corder byte */
+/* Table of CRC values for lowâ€“order byte */
 static char auchCRCLo[] = {
 0x00, 0xC0, 0xC1, 0x01, 0xC3, 0x03, 0x02, 0xC2, 0xC6, 0x06, 0x07, 0xC7, 0x05, 0xC5, 0xC4,
 0x04, 0xCC, 0x0C, 0x0D, 0xCD, 0x0F, 0xCF, 0xCE, 0x0E, 0x0A, 0xCA, 0xCB, 0x0B, 0xC9, 0x09,
@@ -118,7 +118,7 @@ void USART1_Configuration(void)
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOB, ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
 
-    //ÊÕ·¢¿ØÖÆ PA11
+    //æ”¶å‘æ§åˆ¶ PA11
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;     
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -127,7 +127,7 @@ void USART1_Configuration(void)
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     
-    GPIO_ResetBits(GPIOA,GPIO_Pin_11); //Ê¹ÄÜ485Ğ¾Æ¬½ÓÊÕ
+    GPIO_ResetBits(GPIOA,GPIO_Pin_11); //ä½¿èƒ½485èŠ¯ç‰‡æ¥æ”¶
   
 
   
@@ -153,15 +153,15 @@ void USART1_Configuration(void)
  
 
 //    /* Enable the DMA Interrupt */
-//    NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream7_IRQn;   // ·¢ËÍDMAÍ¨µÀµÄÖĞ¶ÏÅäÖÃ
-//    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;     // ÓÅÏÈ¼¶ÉèÖÃ
+//    NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream7_IRQn;   // å‘é€DMAé€šé“çš„ä¸­æ–­é…ç½®
+//    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;     // ä¼˜å…ˆçº§è®¾ç½®
 //    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 //    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 //    NVIC_Init(&NVIC_InitStructure);
 
 
     
-    DMA_Cmd(DMA2_Stream7, DISABLE);                           // ¹ØDMAÍ¨µÀ
+    DMA_Cmd(DMA2_Stream7, DISABLE);                           // å…³DMAé€šé“
     DMA_DeInit(DMA2_Stream7);       
 
     //USART1 TX DMA2 channel config (triggered by USART1 Tx event)
@@ -183,14 +183,9 @@ void USART1_Configuration(void)
     DMA_Init(DMA2_Stream7, &DMA_InitUSART1_TX);
 
   //  DMA_ITConfig(DMA2_Stream7, DMA_IT_TC, ENABLE);   
+    //USART1æ¥æ”¶ 
 
- 
- 
- 
- 
-    //USART1½ÓÊÕ 
-
-    DMA_Cmd(DMA2_Stream2, DISABLE);                           // ¹ØDMAÍ¨µÀ
+    DMA_Cmd(DMA2_Stream2, DISABLE);                           // å…³DMAé€šé“
     DMA_DeInit(DMA2_Stream2);  
     DMA_InitUSART1_RX.DMA_Channel = DMA_Channel_4;  
     DMA_InitUSART1_RX.DMA_PeripheralBaseAddr = (uint32_t)&(USART1->DR);
@@ -240,7 +235,7 @@ void USART1_Configuration(void)
 
 
     /* Enable USART3 Receive and Transmit interrupts */
-   USART_ITConfig(USART1, USART_IT_IDLE, ENABLE);  // ¿ªÆô ´®¿Ú¿ÕÏĞIDEL ÖĞ¶Ï
+   USART_ITConfig(USART1, USART_IT_IDLE, ENABLE);  // å¼€å¯ ä¸²å£ç©ºé—²IDEL ä¸­æ–­
 //   USART_ITConfig(USART1,USART_IT_TC,ENABLE);
   
       USART_Cmd(USART1, ENABLE);
@@ -282,7 +277,7 @@ void gSendUSART1CMD1(void)
 
 //    USART1_RXBufPtr=0;
     
-    GPIO_SetBits(GPIOA,GPIO_Pin_11); //Ê¹ÄÜ485Ğ¾Æ¬·¢ËÍ
+    GPIO_SetBits(GPIOA,GPIO_Pin_11); //ä½¿èƒ½485èŠ¯ç‰‡å‘é€
 
     
 
@@ -386,7 +381,7 @@ void gSendUSART1CMD1(void)
 
     DMA_ClearFlag(DMA2_Stream7, DMA_IT_TCIF7);
     
-    while (DMA_GetCmdStatus(DMA2_Stream7) != DISABLE){}//µÈ´ıDMA¿ÉÅäÖÃ 
+    while (DMA_GetCmdStatus(DMA2_Stream7) != DISABLE){}//ç­‰å¾…DMAå¯é…ç½® 
     
 
     DMA_SetCurrDataCounter(DMA2_Stream7, 8);
@@ -431,7 +426,7 @@ void gSendUSART1CMD1(void)
 
 ////    //USART_ClearITPendingBit(USART1,USART_IT_TC); 
 ////    
-    GPIO_ResetBits(GPIOA,GPIO_Pin_11); //Ê¹ÄÜ485Ğ¾Æ¬½ÓÊÕ
+    GPIO_ResetBits(GPIOA,GPIO_Pin_11); //ä½¿èƒ½485èŠ¯ç‰‡æ¥æ”¶
 
 //    DMA_Cmd(DMA2_Stream2, ENABLE);  
 
@@ -467,7 +462,7 @@ void gSendUSART1CMD2(void)
 
 //        s32 temp=PositionActual2*360*1000/131072;
 
-        s32 temp=PositionActual2*2.74658;  //ÕÛËã³ÉÊä³ö¶Ë½Ç¶È£¬µ¥Î»0.001¶È
+        s32 temp=PositionActual2*2.74658;  //æŠ˜ç®—æˆè¾“å‡ºç«¯è§’åº¦ï¼Œå•ä½0.001åº¦
 
 //          s16 temp2=hRot_Speed2*2746.58;
 
@@ -478,13 +473,13 @@ void gSendUSART1CMD2(void)
 
 //         s16 temp2=hRot_Speed*1000/20000*360*1000/101;
 
- s16 temp2=hRot_Speed*17.82F;    //ÕÛËã³ÉÊä³ö¶ËËÙ¶È£¬µ¥Î»0.01¶È
+ s16 temp2=hRot_Speed*17.82F;    //æŠ˜ç®—æˆè¾“å‡ºç«¯é€Ÿåº¦ï¼Œå•ä½0.01åº¦
 
 #endif
 
 #if BIG_ID_ENABLE==0
 
- s16 temp2=hRot_Speed*89.1F;    //ÕÛËã³ÉÊä³ö¶ËËÙ¶È£¬µ¥Î»0.01¶È
+ s16 temp2=hRot_Speed*89.1F;    //æŠ˜ç®—æˆè¾“å‡ºç«¯é€Ÿåº¦ï¼Œå•ä½0.01åº¦
 
 #endif
 
@@ -498,7 +493,7 @@ void gSendUSART1CMD2(void)
 //     USART1_RXBufPtr=0;
 
     
-    GPIO_SetBits(GPIOA,GPIO_Pin_11); //Ê¹ÄÜ485Ğ¾Æ¬·¢ËÍ
+    GPIO_SetBits(GPIOA,GPIO_Pin_11); //ä½¿èƒ½485èŠ¯ç‰‡å‘é€
    
 
     DMA_ClearITPendingBit(DMA2_Stream7, DMA_IT_TCIF7); 
@@ -591,7 +586,7 @@ void gSendUSART1CMD2(void)
 
     DMA_ClearFlag(DMA2_Stream7, DMA_IT_TCIF7);
     
-    while (DMA_GetCmdStatus(DMA2_Stream7) != DISABLE){}//µÈ´ıDMA¿ÉÅäÖÃ
+    while (DMA_GetCmdStatus(DMA2_Stream7) != DISABLE){}//ç­‰å¾…DMAå¯é…ç½®
     
 
 
@@ -638,7 +633,7 @@ void gSendUSART1CMD2(void)
 
 ////       // USART_ClearITPendingBit(USART1,USART_IT_TC); 
 ////    
-        GPIO_ResetBits(GPIOA,GPIO_Pin_11); //Ê¹ÄÜ485Ğ¾Æ¬½ÓÊÕ
+        GPIO_ResetBits(GPIOA,GPIO_Pin_11); //ä½¿èƒ½485èŠ¯ç‰‡æ¥æ”¶
 
 //        DMA_Cmd(DMA2_Stream2, ENABLE);  
 
@@ -677,7 +672,7 @@ void gSendUSART1CMD2(void)
 //		temp = DMA_GetCurrDataCounter(DMA2_Stream2);
 
 //  
-//    	  //¼ì²é¶ÔÊÇ·ñ½ÓÊÕµ½Êı¾İ
+//    	  //æ£€æŸ¥å¯¹æ˜¯å¦æ¥æ”¶åˆ°æ•°æ®
 //        while( USART1_RXBufPtr != (RX_BUF_SIZE - DMA_GetCurrDataCounter(DMA2_Stream2)) )
 //        {
 //            USART1_ProcessNextCharacter(USART1_RXBuf[USART1_RXBufPtr++]); 
@@ -691,7 +686,7 @@ void gSendUSART1CMD2(void)
 
 //        DMA_SetCurrDataCounter(DMA2_Stream2,RX_BUF_SIZE);
 
-//        //´ò¿ªDMA  
+//        //æ‰“å¼€DMA  
 //        DMA_Cmd(DMA2_Stream2,ENABLE);  
 
 //        
@@ -712,7 +707,7 @@ void gSendUSART1CMD2(void)
 *******************************************************************************/
 //void HandleUSARTReception(void)
 //{
-//	  //¼ì²é¶ÔÊÇ·ñ½ÓÊÕµ½Êı¾İ
+//	  //æ£€æŸ¥å¯¹æ˜¯å¦æ¥æ”¶åˆ°æ•°æ®
 //    if( USART1_RXBufPtr != (RX_BUF_SIZE - DMA_GetCurrDataCounter(DMA2_Stream2)) )
 //    {
 //        USART1_ProcessNextCharacter(USART1_RXBuf[USART1_RXBufPtr++]); 
@@ -1517,7 +1512,7 @@ void USART1_ProcessNextCharacter(u8 data)
 //        {
 
 
-//               GPIO_ResetBits(GPIOA,GPIO_Pin_11); //Ê¹ÄÜ485Ğ¾Æ¬½ÓÊÕ
+//               GPIO_ResetBits(GPIOA,GPIO_Pin_11); //ä½¿èƒ½485èŠ¯ç‰‡æ¥æ”¶
 
 //              
 //          DMA_ClearITPendingBit(DMA2_Stream7,DMA_IT_TCIF7); 
@@ -1528,13 +1523,13 @@ void USART1_ProcessNextCharacter(u8 data)
 
 unsigned short CRC16(unsigned char *puchMsg, unsigned short usDataLen)
 {
-    unsigned char uchCRCHi = 0xFF ; /* ³õÊ¼»¯¸ß×Ö½Ú*/
-    unsigned char uchCRCLo = 0xFF ; /* ³õÊ¼»¯µÍ×Ö½Ú*/
-    unsigned uIndex ; /*°ÑCRC±í*/
+    unsigned char uchCRCHi = 0xFF ; /* åˆå§‹åŒ–é«˜å­—èŠ‚*/
+    unsigned char uchCRCLo = 0xFF ; /* åˆå§‹åŒ–ä½å­—èŠ‚*/
+    unsigned uIndex ; /*æŠŠCRCè¡¨*/
     
-    while (usDataLen--) /*Í¨¹ıÊı¾İ»º³åÆ÷*/
+    while (usDataLen--) /*é€šè¿‡æ•°æ®ç¼“å†²å™¨*/
     {
-        uIndex = uchCRCHi ^(*puchMsg++) ; /*¼ÆËãCRC */
+        uIndex = uchCRCHi ^(*puchMsg++) ; /*è®¡ç®—CRC */
         uchCRCHi = uchCRCLo ^ auchCRCHi[uIndex] ;
         uchCRCLo = auchCRCLo[uIndex] ;
     }
@@ -1559,27 +1554,27 @@ unsigned short CRC16(unsigned char *puchMsg, unsigned short usDataLen)
 //}
 
 
-//´ÖÑÓÊ±º¯Êı£¬Î¢Ãë 
+//ç²—å»¶æ—¶å‡½æ•°ï¼Œå¾®ç§’ 
 void delay_us(u16 time)
 {         
       u16 i=0;      
       while(time--)   
      {       
-         i=10;  //×Ô¼º¶¨Òå      
+         i=10;  //è‡ªå·±å®šä¹‰      
          while(i--)
             {}
       } 
 
 }  
 
-////ºÁÃë¼¶µÄÑÓÊ±  
+////æ¯«ç§’çº§çš„å»¶æ—¶  
 //void delay_ms(u16 time) 
 //{        
 
 //        u16 i=0;      
 //        while(time--)   
 //        {       
-//                  i=12000;  //×Ô¼º¶¨Òå       
+//                  i=12000;  //è‡ªå·±å®šä¹‰       
 //                   while(i--)
 //                    {}
 //        }
@@ -1607,13 +1602,13 @@ void delay_us(u16 time)
 
 //     
 
-//    GPIO_ResetBits(GPIOA,GPIO_Pin_11); //Ê¹ÄÜ485Ğ¾Æ¬½ÓÊÕ
+//    GPIO_ResetBits(GPIOA,GPIO_Pin_11); //ä½¿èƒ½485èŠ¯ç‰‡æ¥æ”¶
 
 //    DMA_Cmd(DMA2_Stream2, DISABLE);  
 
 //    DMA_ClearFlag(DMA2_Stream2, DMA_IT_TCIF2);
 
-//    while (DMA_GetCmdStatus(DMA2_Stream2) != DISABLE){}//µÈ´ıDMA¿ÉÅäÖÃ
+//    while (DMA_GetCmdStatus(DMA2_Stream2) != DISABLE){}//ç­‰å¾…DMAå¯é…ç½®
 //    
 //    DMA_SetCurrDataCounter(DMA2_Stream2, 13);
 
@@ -1670,13 +1665,13 @@ void delay_us(u16 time)
 //     
 //     u32 lPrevious_time_cnt=TIM2->CNT; 
 //    
-//    GPIO_ResetBits(GPIOA,GPIO_Pin_11); //Ê¹ÄÜ485Ğ¾Æ¬½ÓÊÕ
+//    GPIO_ResetBits(GPIOA,GPIO_Pin_11); //ä½¿èƒ½485èŠ¯ç‰‡æ¥æ”¶
 
 //    DMA_Cmd(DMA2_Stream2, DISABLE);  
 
 //    DMA_ClearFlag(DMA2_Stream2, DMA_IT_TCIF2);
 
-//    while (DMA_GetCmdStatus(DMA2_Stream2) != DISABLE){}//µÈ´ıDMA¿ÉÅäÖÃ
+//    while (DMA_GetCmdStatus(DMA2_Stream2) != DISABLE){}//ç­‰å¾…DMAå¯é…ç½®
 //    
 //    DMA_SetCurrDataCounter(DMA2_Stream2, 8);
 

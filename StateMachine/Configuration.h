@@ -10,9 +10,9 @@
 #define   HARDWARE_VERSION_2_1									0
 #define   HARDWARE_VERSION_2_2									1
 #define   ETHERCAT_ENABLE
-//#define   ETHERCAT_RUN
+#define   ETHERCAT_RUN
 //#define   SYSVIEW_DEBUG
-//#define   USB_ENABLE
+#define   USB_ENABLE
 
 #define		ZZ_MOTOR															1
 #define		SMALL_PPR_982													0
@@ -27,7 +27,7 @@
 #define   KOLLMORGEN														0
 
 
-#define   AUTORUN																1
+#define   AUTORUN																0
 #define   AUTORUN_SPEED													500   
 
 
