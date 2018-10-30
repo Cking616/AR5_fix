@@ -30,16 +30,16 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
 
-#include "stm32f4xx_conf.h"
+#include "GlobalVariable.h"
 #include "main.h"
 #include "math.h"
-#include "GlobalVariable.h"
+#include "stm32f4xx_conf.h"
 
-#include "M1_statemachine.h"
-#include "StateMachine.h"
-#include "Control.h"
-#include "Motor_Drive.h"
 #include "Configuration.h"
+#include "Control.h"
+#include "M1_statemachine.h"
+#include "Motor_Drive.h"
+#include "StateMachine.h"
 #include "include_c.h"
 
 #ifdef SYSVIEW_DEBUG
@@ -52,39 +52,33 @@ extern s16 Electrical_Angle;
 float tim4_duration;
 s32 tim4_duration_start;
 
-
 s32 ADC_duration;
-float ADC_duration_max,ADC_duration_ratio;
+float ADC_duration_max, ADC_duration_ratio;
 s32 ADC_duration_start;
 
+extern USB_OTG_CORE_HANDLE USB_OTG_dev;
+extern uint32_t USBD_OTG_ISR_Handler(USB_OTG_CORE_HANDLE *pdev);
 
-extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
-extern uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
+void NMI_Handler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
+#endif
 
-void NMI_Handler(void)
-{
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
-	
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif	
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
-
-void HardFault_Handler(void)
-{
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
-  /* Go to infinite loop when Hard Fault exception occurs */
-  while (1)
-  {
-  }
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif	
+void HardFault_Handler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+    /* Go to infinite loop when Hard Fault exception occurs */
+    while (1) {
+    }
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
 /**
@@ -92,18 +86,16 @@ void HardFault_Handler(void)
   * @param  None
   * @retval None
   */
-void MemManage_Handler(void)
-{
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
-  /* Go to infinite loop when Memory Manage exception occurs */
-  while (1)
-  {
-  }
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif	
+void MemManage_Handler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+    /* Go to infinite loop when Memory Manage exception occurs */
+    while (1) {
+    }
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
 /**
@@ -111,18 +103,16 @@ void MemManage_Handler(void)
   * @param  None
   * @retval None
   */
-void BusFault_Handler(void)
-{
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
-  /* Go to infinite loop when Bus Fault exception occurs */
-  while (1)
-  {
-  }
-		#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif	
+void BusFault_Handler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+    /* Go to infinite loop when Bus Fault exception occurs */
+    while (1) {
+    }
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
 /**
@@ -130,19 +120,17 @@ void BusFault_Handler(void)
   * @param  None
   * @retval None
   */
-void UsageFault_Handler(void)
-{
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
+void UsageFault_Handler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
+#endif
 
-  /* Go to infinite loop when Usage Fault exception occurs */
-  while (1)
-  {
-  }
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif	
+    /* Go to infinite loop when Usage Fault exception occurs */
+    while (1) {
+    }
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
 /**
@@ -150,14 +138,13 @@ void UsageFault_Handler(void)
   * @param  None
   * @retval None
   */
-void SVC_Handler(void)
-{
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif	
+void SVC_Handler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
 /**
@@ -165,14 +152,13 @@ void SVC_Handler(void)
   * @param  None
   * @retval None
   */
-void DebugMon_Handler(void)
-{
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif	
+void DebugMon_Handler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
 /**
@@ -180,18 +166,14 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-void PendSV_Handler(void)
-{
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif	
+void PendSV_Handler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
-
-
-
 
 /**
   * @brief  This function handles SysTick Handler.
@@ -202,9 +184,6 @@ void SysTick_Handler(void)
 {
 }
 */
-
-
-
 
 /******************************************************************************/
 /*         STM32F4xx Peripherals Interrupt Handlers           */
@@ -224,11 +203,9 @@ void SysTick_Handler(void)
 
 /**
   * @}
-  */ 
+  */
 
-
-
-int g_motor_position = 0;
+int g_motor_position_cmd = 0;
 int g_motor_speed = 0;
 int g_motor_torque = 0;
 
@@ -236,98 +213,87 @@ int g_motor_torque = 0;
 int g_Idh_table = 0;
 int table_index = 0;
 
-void TIM4_IRQHandler(void)
-{
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif	
-	
-	//g_Idh_table = f32Idh_table[table_index] * 1000;
-	table_index = (table_index + 1) % 180;
-	g_motor_position = (int) (gsM1_Drive.sPositionEnc.f32PositionMech) & 0xFFFFFFFF;
-	g_motor_speed = (int)(gsM1_Drive.sSpeed.f32SpeedFilt * 100);
-	g_motor_torque = (short)(gsM1_Drive.sFocPMSM.sIDQ.f32Q * Kt * 10000.0f);
-	if(SET==TIM_GetITStatus(TIM4, TIM_IT_Update))
-	{	
-		if(gsM1_Drive.uw16CtrlMode != OPENLOOP_PWM)
-		{
-			Fault_Management();
-		}
-	
-		One_ms_Tick();
-	
-		Enc_Speed_Cal();		
-	
-		MagnetEncDataRead();
-
-		geM1_StateRunLoop = SLOW;
-
-		SM_StateMachine(&gsM1_Ctrl);
-		
-#ifdef  USB_ENABLE
-		USBD_OTG_ISR_Handler (&USB_OTG_dev);
-	 	USB_Reply_Func();
+void TIM4_IRQHandler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
 #endif
 
-		TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
-	}	
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif
+    //g_Idh_table = f32Idh_table[table_index] * 1000;
+    table_index = (table_index + 1) % 180;
+    g_motor_position_cmd = (int)(gsM1_Drive.sPositionControl.f32PositionCmd * 100) & 0xFFFFFFFF;
+    g_motor_speed = (int)(gsM1_Drive.sSpeed.f32SpeedFilt * 100);
+    g_motor_torque = (short)(gsM1_Drive.sFocPMSM.sIDQ.f32Q * Kt * 10000.0f);
+    if (SET == TIM_GetITStatus(TIM4, TIM_IT_Update)) {
+        if (gsM1_Drive.uw16CtrlMode != OPENLOOP_PWM) {
+            Fault_Management();
+        }
+
+        One_ms_Tick();
+
+        Enc_Speed_Cal();
+
+        MagnetEncDataRead();
+
+        geM1_StateRunLoop = SLOW;
+
+        SM_StateMachine(&gsM1_Ctrl);
+
+#ifdef USB_ENABLE
+        USBD_OTG_ISR_Handler(&USB_OTG_dev);
+        USB_Reply_Func();
+#endif
+
+        TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+    }
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
+void DMA1_Stream0_IRQHandler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+#if RENISHAW == 1
 
-void DMA1_Stream0_IRQHandler(void)
-{
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
-	#if RENISHAW == 1
-	
-		if(DMA_GetITStatus(DMA1_Stream0,DMA_IT_TCIF0))
-		{			
-			SPI_Cmd(SPI3, DISABLE); 
+    if (DMA_GetITStatus(DMA1_Stream0, DMA_IT_TCIF0)) {
+        SPI_Cmd(SPI3, DISABLE);
 
-			GPIO_SetBits(GPIOA,GPIO_Pin_15); 
-					
-			DMA_ClearITPendingBit(DMA1_Stream0,DMA_IT_TCIF0); 			
-		}
+        GPIO_SetBits(GPIOA, GPIO_Pin_15);
 
-	#else
-	
-		if(DMA_GetITStatus(DMA1_Stream0,DMA_IT_TCIF0))
-		{
-			SPI_Cmd(SPI3, DISABLE); 
+        DMA_ClearITPendingBit(DMA1_Stream0, DMA_IT_TCIF0);
+    }
 
-			GPIO_ResetBits(GPIOA,GPIO_Pin_15); 
-					
-			DMA_ClearITPendingBit(DMA1_Stream0,DMA_IT_TCIF0); 		
-		}
-	
-	#endif
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif
+#else
+
+    if (DMA_GetITStatus(DMA1_Stream0, DMA_IT_TCIF0)) {
+        SPI_Cmd(SPI3, DISABLE);
+
+        GPIO_ResetBits(GPIOA, GPIO_Pin_15);
+
+        DMA_ClearITPendingBit(DMA1_Stream0, DMA_IT_TCIF0);
+    }
+
+#endif
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
+void DMA1_Stream3_IRQHandler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
+#endif
+    if (DMA_GetITStatus(DMA1_Stream3, DMA_IT_TCIF3)) {
+        SPI_Cmd(SPI2, DISABLE);
 
+        GPIO_SetBits(GPIOB, GPIO_Pin_12);
 
-void DMA1_Stream3_IRQHandler(void)
-{	
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
-	if(DMA_GetITStatus(DMA1_Stream3,DMA_IT_TCIF3))
-	{			
-		SPI_Cmd(SPI2, DISABLE); 
-
-		GPIO_SetBits(GPIOB,GPIO_Pin_12); 
-				
-		DMA_ClearITPendingBit(DMA1_Stream3,DMA_IT_TCIF3); 			
-	}
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif
+        DMA_ClearITPendingBit(DMA1_Stream3, DMA_IT_TCIF3);
+    }
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
 
 #if 1
@@ -335,36 +301,31 @@ int max_adc_time = 0;
 float max_e_value = 0.0f;
 #endif
 
-void ADC_IRQHandler(void)
-{
-	
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordEnterISR();
-	#endif
-	
-  if((ADC1->SR & ADC_FLAG_JEOC) == ADC_FLAG_JEOC)
-  {
-
-#if 0
-	int lStartTim  = SysTick->VAL;
-#endif	
-		
-	ADC_Value_Read();	
-
-	geM1_StateRunLoop = FAST;
-
-	SM_StateMachine(&gsM1_Ctrl);
-		
- #ifdef  USB_ENABLE
-
-	if ((stScopePara.iCommType == COMM_USB_MODE) &&
-		(stScopePara.iTransEnable == 1))
-	{
-		USB_ScopeDataBuffer();
-	}
+void ADC_IRQHandler(void) {
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordEnterISR();
 #endif
 
-    ADC1->SR = ~(u32)ADC_FLAG_JEOC;
+    if ((ADC1->SR & ADC_FLAG_JEOC) == ADC_FLAG_JEOC) {
+#if 0
+	int lStartTim  = SysTick->VAL;
+#endif
+
+        ADC_Value_Read();
+
+        geM1_StateRunLoop = FAST;
+
+        SM_StateMachine(&gsM1_Ctrl);
+
+#ifdef USB_ENABLE
+
+        if ((stScopePara.iCommType == COMM_USB_MODE) &&
+            (stScopePara.iTransEnable == 1)) {
+            USB_ScopeDataBuffer();
+        }
+#endif
+
+        ADC1->SR = ~(u32)ADC_FLAG_JEOC;
 
 #if 0
 	int lEndTim   = SysTick->VAL;
@@ -384,15 +345,9 @@ void ADC_IRQHandler(void)
 		max_e_value = gsM1_Drive.sPositionEnc.f32PositionEl;
 	}
 #endif
-	
-  }
-	
-	#ifdef SYSVIEW_DEBUG
-	SEGGER_SYSVIEW_RecordExitISR();
-	#endif
-	
+    }
+
+#ifdef SYSVIEW_DEBUG
+    SEGGER_SYSVIEW_RecordExitISR();
+#endif
 }
-
-
-
-

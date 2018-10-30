@@ -817,9 +817,9 @@ void HW_EscWriteIsr( MEM_ADDR *pData, UINT16 Address, UINT16 Len )
 void  EcatIsr(void)
 {
 	#ifdef SYSVIEW_DEBUG
-  SEGGER_SYSVIEW_RecordEnterISR();
+    SEGGER_SYSVIEW_RecordEnterISR();
 	#endif
-   PDI_Isr();
+    PDI_Isr();
 		ACK_ESC_INT;
 	#ifdef SYSVIEW_DEBUG
 	SEGGER_SYSVIEW_RecordExitISR();

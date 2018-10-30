@@ -2,14 +2,14 @@
 <EtherCATInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="EtherCATInfo.xsd" Version="1.6">
   <Vendor>
     <Id>#x9</Id>
-    <Name>ACTI</Name>
+    <Name>Asage-Robots</Name>
   </Vendor>
   <Descriptions>
     <Groups>
       <Group SortOrder="0">
-        <Type>ECAT-EVB</Type>
-        <Name LcId="1031">ECAT-EVB</Name>
-        <Name LcId="1033">ECAT-EVB</Name>
+        <Type>Asage-Robots</Type>
+        <Name LcId="1031">Asage-Robots</Name>
+        <Name LcId="1033">Asage-Robots</Name>
         <ImageData16x14>424DD8020000000000003600000028000000100000000E0000000100180000000000A2020000120B0000120B000000000000000000001306E31306E3190CE42B1FE62B1FE61306E31F13E5190CE42519E51306E31306E3190CE42F24E7190CE41306E31306E31306E31306E35F56EC645CED645CED4137E91F13E5473DE95F57EC3227E71306E3473DE95A51EC271BE61306E31306E31409CA524CC68E8AD74F48C1615CC82218D03E36BF716BCE746FCE453DC01307CE3931BA7D78D27671D1150CB21409CA1712801B1D1D1B1D1D1B1D1D1B1D1D120B891B1D1D1B1D1D1B1D1D1B1D1D120B891B1D1D1B1D1D1B1D1D1B1D1D1712801712807F8080D4D5D5D4D5D5383939120B89545656D4D5D5D4D5D5626464130C89292B2BD4D5D5D4D5D56264641915801712804647471B1D1DAAAAAAD4D5D5130E82383939292B2B717272D4D5D5151183D4D5D57F80801B1D1D7172721E1C81191580464747D4D5D5D4D5D51B1D1D19158A292B2BD4D5D5D4D5D5292B2B1B1B8AD4D5D56264641B1D1D1B1D1D2427821E1D81D4D5D54647476264643839391E208BD4D5D57F8080464747545656242A8BD4D5D59B9C9C292B2BAAAAAA2D3683252882464747D4D5D5D4D5D51B1D1D272D85292B2BD4D5D5D4D5D5292B2B2E37861B1D1DD4D5D5D4D5D5464747394484323BB52324812122822426822526824554C0323883292B822A2D83353C84424CBF3238843940842E32834853865D6EBB5262EB3E43E83334E74147E94349E9535FEB4D56EA5662EB484DEA545DEB636FED545AEA5A63EC6671ED8CA0F290A5F2748AEF6B7BEE5D68EC6874ED788AEF8397F17684EF7986EF8C9FF2818FF1818EF08E9DF18A97F18791F19BA9F3B0C0F691A4F291A2F28390F192A1F29CACF3A3B3F498A6F3A4B3F4AEBDF5B0BEF59EA8F3A3ADF4BBC7F7C4D1F8CAD7F8CED9F9B4C4F6B8C8F6ACB8F59AA3F3B6C1F6C5D2F8C2CDF8CCD7F9D2DDF9D5E0FAD2DAF9D5DCF9DFE7FBE2E9FBE5EBFBE8EEFB0000</ImageData16x14>
       </Group>
     </Groups>
@@ -1129,7 +1129,7 @@
 								<Type>UDINT</Type>
 								<BitSize>32</BitSize>
 								<Info>
-									<DefaultData>0x00020192</DefaultData>
+									<DefaultData>00020192</DefaultData>
 								</Info>
 								<Flags>
 									<Access>ro</Access>
@@ -1181,7 +1181,7 @@
 								<Type>STRING(4)</Type>
 								<BitSize>32</BitSize>
 								<Info>
-									<DefaultData>352E3130</DefaultData>
+									<DefaultData>03523130</DefaultData>
 								</Info>
 								<Flags>
 									<Access>ro</Access>
@@ -1767,7 +1767,7 @@
 									<SubItem>
 										<Name>Error Code</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1785,7 +1785,7 @@
 									<SubItem>
 										<Name>Control Word</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1804,7 +1804,7 @@
 									<SubItem>
 										<Name>Status Word</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1823,7 +1823,7 @@
 									<SubItem>
 										<Name>Quickstop Option Code</Name>
 										<Info>
-											<DefaultData>2</DefaultData>
+											<DefaultData>02</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1841,7 +1841,7 @@
 									<SubItem>
 										<Name>Shutdown Option Code</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1859,7 +1859,7 @@
 									<SubItem>
 										<Name>Disable Operation Option Code</Name>
 										<Info>
-											<DefaultData>1</DefaultData>
+											<DefaultData>01</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1877,7 +1877,7 @@
 									<SubItem>
 										<Name>Fault Reaction Code</Name>
 										<Info>
-											<DefaultData>2</DefaultData>
+											<DefaultData>02</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1895,7 +1895,7 @@
 									<SubItem>
 										<Name>Modes of Operation</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1914,7 +1914,7 @@
 									<SubItem>
 										<Name>Modes of Operation Display</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1933,7 +1933,7 @@
 									<SubItem>
 										<Name>Position Actual Value</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1952,7 +1952,7 @@
 									<SubItem>
 										<Name>Velocity Actual Value</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1971,7 +1971,7 @@
 									<SubItem>
 										<Name>Target Torque</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -1990,7 +1990,7 @@
 									<SubItem>
 										<Name>Torque Actual Value</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2009,7 +2009,7 @@
 									<SubItem>
 										<Name>Target Position</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2058,7 +2058,7 @@
 									<SubItem>
 										<Name>Torque offset</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2077,7 +2077,7 @@
 									<SubItem>
 										<Name>Quickstop Declaration</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2095,19 +2095,19 @@
 									<SubItem>
 										<Name>SubIndex 000</Name>
 										<Info>
-											<DefaultData>2</DefaultData>
+											<DefaultData>02</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Interpolation period</Name>
 										<Info>
-											<DefaultData>1</DefaultData>
+											<DefaultData>01</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Interpolation Index</Name>
 										<Info>
-											<DefaultData>-3</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2125,7 +2125,7 @@
 									<SubItem>
 										<Name>Target Velocity</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2144,7 +2144,7 @@
 									<SubItem>
 										<Name>Supported Drive Modes</Name>
 										<Info>
-											<DefaultData>256</DefaultData>
+											<DefaultData>0256</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2168,13 +2168,13 @@
 									<SubItem>
 										<Name>Module index distance</Name>
 										<Info>
-											<DefaultData>800</DefaultData>
+											<DefaultData>0800</DefaultData>
 										</Info>
 									</SubItem>
 									<SubItem>
 										<Name>Maximum number of modules</Name>
 										<Info>
-											<DefaultData>2</DefaultData>
+											<DefaultData>02</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2264,7 +2264,7 @@
 									<SubItem>
 										<Name>External Position Value</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2283,7 +2283,7 @@
 									<SubItem>
 										<Name>Id PropGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2301,7 +2301,7 @@
 									<SubItem>
 										<Name>Id IntegGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2319,7 +2319,7 @@
 									<SubItem>
 										<Name>Id DiffGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2337,7 +2337,7 @@
 									<SubItem>
 										<Name>Iq PropGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2355,7 +2355,7 @@
 									<SubItem>
 										<Name>Iq IntegGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2373,7 +2373,7 @@
 									<SubItem>
 										<Name>Iq DiffGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2391,7 +2391,7 @@
 									<SubItem>
 										<Name>Speed PropGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2409,7 +2409,7 @@
 									<SubItem>
 										<Name>Speed IntegGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2427,7 +2427,7 @@
 									<SubItem>
 										<Name>Speed DiffGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2445,7 +2445,7 @@
 									<SubItem>
 										<Name>Postion PropGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2463,7 +2463,7 @@
 									<SubItem>
 										<Name>Postion IntegGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2481,7 +2481,7 @@
 									<SubItem>
 										<Name>Postion DiffGain</Name>
 										<Info>
-											<DefaultData>0</DefaultData>
+											<DefaultData>00</DefaultData>
 										</Info>
 									</SubItem>
 								</Info>
@@ -2662,8 +2662,6 @@
 				<Name>Axis only supports csp</Name>
 				<RxPdo Fixed="1" Sm="2">
 					<Index DependOnSlot="true">#x1601</Index>
-					<Exclude>#x1600</Exclude>
-					<Exclude>#x1602</Exclude>
 					<Name>Outputs</Name>
 					<Entry>
 						<Index DependOnSlot="true">#x6040</Index>
@@ -2684,8 +2682,6 @@
 				</RxPdo>
 				<TxPdo Fixed="1" Sm="3">
 					<Index DependOnSlot="true">#x1a01</Index>
-					<Exclude>#x1a00</Exclude>
-					<Exclude>#x1a02</Exclude>
 					<Name>Inputs</Name>
 					<Entry>
 						<Index DependOnSlot="true">#x6041</Index>
@@ -2723,8 +2719,6 @@
 				<Name>Axis only supports csv</Name>
 				<RxPdo Fixed="1" Sm="2">
 					<Index DependOnSlot="true">#x1602</Index>
-					<Exclude>#x1600</Exclude>
-					<Exclude>#x1601</Exclude>
 					<Name>Outputs</Name>
 					<Entry>
 						<Index DependOnSlot="true">#x6040</Index>
@@ -2745,8 +2739,6 @@
 				</RxPdo>
 				<TxPdo Fixed="1" Sm="3">
 					<Index DependOnSlot="true">#x1a02</Index>
-					<Exclude>#x1a00</Exclude>
-					<Exclude>#x1a01</Exclude>
 					<Name>Inputs</Name>
 					<Entry>
 						<Index DependOnSlot="true">#x6041</Index>
