@@ -141,7 +141,7 @@ int main(void) {
 
     NVIC_Config();
 
-#ifndef ETHERCAT_ENABLE
+#ifndef ETHERCAT_RUN
     g_stJC2JD.init(BAUDRATE_RS485);
 #endif
 
@@ -169,7 +169,7 @@ int main(void) {
 
 #if SIN_POSITION_TEST == 0
 
-#ifndef ETHERCAT_ENABLE
+#ifndef ETHERCAT_RUN
         if (guc_RS485_Flag == 1) {
             g_stJC2JD.Inst_Process();
         }
@@ -211,7 +211,7 @@ int main(void) {
 #endif
 
         if (Flag_10_ms == 1) {
-#ifdef ETHERCAT_ENABLE
+#ifdef ETHERCAT_RUN
             if (bRunApplication == TRUE) {
                 MainLoop();
             }

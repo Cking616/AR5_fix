@@ -65,7 +65,7 @@ u16 h_ADCTemp = 0;
 u16 ADC_MCU_Temp = 0;
 u16 ADC_Vrefint = 0;
 u16 ADC_Motor_Temp;
-float fMUC_TEMP = 25.0;
+float fMUC_TEMP = 25.0f;
 unsigned char AlignmentDone;
 
 u32 Flash_Read_Buffer[BUFFER_SIZE];
@@ -377,6 +377,10 @@ void ADC_Value_Read(void) {
 #ifdef ETHERCAT_ENABLE
     gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
     gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
+	//gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 100.0f;
+    //gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 100.0f;
+    //gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 2.5f  * 9.1f / 13.8f / (60.0f * R_SAMPLE);
+    //gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 2.5f * 9.1f / 13.8f / (60.0f * R_SAMPLE);
 #else
     gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) * 0.0179443359375f;
     gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) * 0.0179443359375f;

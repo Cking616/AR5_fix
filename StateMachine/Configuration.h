@@ -12,7 +12,7 @@
 //#define USB_ENABLE
 
 #define ZZ_MOTOR 1
-#define SMALL_PPR_982 1
+#define SMALL_PPR_982 0
 #define MAGNET_ENCODER_FBK 1
 #define NEW_MAG_FIXTURE 1
 
@@ -24,7 +24,7 @@
 #define KOLLMORGEN 0
 
 #define AUTORUN 0
-#define AUTORUN_SPEED 500
+#define AUTORUN_SPEED 1500
 
 #if BIG_ID_ENABLE == 1
 #define HALL_SENSOR 1
@@ -42,7 +42,7 @@
 
 #define IS_17BITS_MAGNET_ENCODER 1
 
-#define INIT_LOCATING 1
+#define INIT_LOCATING 0
 
 #define COMM_ERROR_ALERT 1
 
@@ -52,7 +52,7 @@
 
 #define STUCK_CHECK 0
 
-//#define HFI
+#define HFI
 
 /* ---------------ADC--------------*/
 
