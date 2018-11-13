@@ -1320,6 +1320,9 @@ void APPL_InputMapping(UINT16 *pData) {
             to the hardware
 */
 ///////////////////////////////////////////////////////////////////////////////////////
+static float g_last_postion_cmd = 0.0f;
+static int   g_last_in_out_time = 0;
+
 void APPL_OutputMapping(UINT16 *pData) {
     UINT16 j = 0;
     // UINT16  Servo_controlall=0;
@@ -1364,11 +1367,35 @@ void APPL_OutputMapping(UINT16 *pData) {
                 break;
         }
 
-        gsM1_Drive.sPositionControl.f32PositionCmd = (float)LocalAxes[AxisIndex].Objects.objTargetPosition / (float)MAGNET_ENCODER_BITS * 360 / HARMONIC_AMPLIFY;  //ECAT_MOD
+        gsM1_Drive.sPositionControl.f32PositionCmd = (float)LocalAxes[AxisIndex].Objects.objTargetPosition / MAGNET_ENCODER_BITS * 360 / HARMONIC_AMPLIFY;  //ECAT_MOD
         gsM1_Drive.sSpeed.f32SpeedCmd = LocalAxes[AxisIndex].Objects.objTargetVelocity / MAGNET_ENCODER_BITS * 60;
         if (LocalAxes[AxisIndex].Objects.objModesOfOperation == 10) {
             gsM1_Drive.sFocPMSM.sIDQReq.f32Q = (float)LocalAxes[AxisIndex].Objects.objTargetTorque  / Kt / 10000.0f;
         }
+
+        int _this_in_adc_time = SysTick->VAL;
+        float _delta = 0.0f;
+        if(g_last_in_out_time > _this_in_adc_time)
+        {
+            _delta =  g_last_in_out_time - _this_in_adc_time;
+        }
+        else
+        {
+            _delta = (1 << 24) - _this_in_adc_time + g_last_in_out_time;
+        }
+        g_last_in_out_time = _this_in_adc_time;
+        float _delta_time = (float)_delta / 168000.0f;
+
+        _delta = ((float)LocalAxes[AxisIndex].Objects.objTargetPosition - g_last_postion_cmd) / MAGNET_ENCODER_BITS;
+        gsM1_Drive.sSpeed.f32SpeedFF = _delta * 1000.0f / _delta_time;
+        
+        if(gsM1_Drive.sSpeed.f32SpeedFF > POSITIONLOOP_UPPER_LIMIT)
+            gsM1_Drive.sSpeed.f32SpeedFF = POSITIONLOOP_UPPER_LIMIT;
+        
+        if(gsM1_Drive.sSpeed.f32SpeedFF < POSITIONLOOP_LOWER_LIMIT)
+            gsM1_Drive.sSpeed.f32SpeedFF = POSITIONLOOP_LOWER_LIMIT;
+
+        g_last_postion_cmd =   (float)LocalAxes[AxisIndex].Objects.objTargetPosition;
 
         gsM1_Drive.sFocPMSM.sIdPiParams.f32PropGain = ((float)LocalAxes[AxisIndex].Objects.IdPropGain) / 1000;
         gsM1_Drive.sFocPMSM.sIdPiParams.f32IntegGain = ((float)LocalAxes[AxisIndex].Objects.IdIntegGain) / 1000;

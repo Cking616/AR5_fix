@@ -489,9 +489,11 @@ void Enc_Speed_Cal(void) {
 
 float speedmax, omegamax, wDelta_enc_max, speedmin;
 u8 speedoverrun, speedoverruncnt;
+s32 g_delta_enc = 0;
+static int  g_last_in_speed_count = 0;
 
 void Enc_Speed_Cal_Pulse(void) {
-    static s32 wDelta_enc;
+    //static s32 wDelta_enc;
 
     gsM1_Drive.sPositionEnc.s32PulseCaptured = TIM8->CNT;
 
@@ -503,13 +505,27 @@ void Enc_Speed_Cal_Pulse(void) {
 
     gsM1_Drive.sPositionEnc.s32PulseCapturedPre = gsM1_Drive.sPositionEnc.s32PulseCaptured;
 
-    gsM1_Drive.sPositionEnc.s32EncCaptured = gsM1_Drive.sPositionEnc.s32EncoderTurns * ENCODER_PPR * 4 + TIM8->CNT;
+    gsM1_Drive.sPositionEnc.s32EncCaptured = gsM1_Drive.sPositionEnc.s32EncoderTurns * ENCODER_PPR * 4 + gsM1_Drive.sPositionEnc.s32PulseCaptured;
 
-    wDelta_enc = gsM1_Drive.sPositionEnc.s32EncCaptured - gsM1_Drive.sPositionEnc.s32EncCapturedOld;
+    g_delta_enc = gsM1_Drive.sPositionEnc.s32EncCaptured - gsM1_Drive.sPositionEnc.s32EncCapturedOld;
+
+
+    int _this_in_adc_time = SysTick->VAL;
+    float _delta = 0.0f;
+    if(g_last_in_speed_count > _this_in_adc_time)
+    {
+        _delta =  g_last_in_speed_count - _this_in_adc_time;
+    }
+    else
+    {
+        _delta = (1 << 24) - _this_in_adc_time + g_last_in_speed_count;
+    }
+    g_last_in_speed_count = _this_in_adc_time;
+    float _delta_time = (float)_delta / 168000.0f;
+
+    gsM1_Drive.sPositionEnc.f32Speed = ((float)(g_delta_enc) / ((float)ENCODER_PPR * 4.0f)) / SPEEDLOOP_PERIOD * 60.0f / _delta_time;
 
     gsM1_Drive.sPositionEnc.s32EncCapturedOld = gsM1_Drive.sPositionEnc.s32EncCaptured;
-
-    gsM1_Drive.sPositionEnc.f32Speed = ((float)wDelta_enc / ((float)ENCODER_PPR * 4.0f)) / SPEEDLOOP_PERIOD * 60.0f;
 
     gsM1_Drive.sPositionEnc.f32SpeedFilt = 0.05f * gsM1_Drive.sPositionEnc.f32SpeedFilt + 0.95f * gsM1_Drive.sPositionEnc.f32Speed;
 

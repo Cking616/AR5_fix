@@ -233,7 +233,7 @@ void TIM4_IRQHandler(void) {
         Enc_Speed_Cal();
 
         MagnetEncDataRead();
-
+      
         geM1_StateRunLoop = SLOW;
 
         SM_StateMachine(&gsM1_Ctrl);
@@ -290,15 +290,20 @@ void DMA1_Stream3_IRQHandler(void) {
         GPIO_SetBits(GPIOB, GPIO_Pin_12);
 
         DMA_ClearITPendingBit(DMA1_Stream3, DMA_IT_TCIF3);
+
+        //table_index++;
     }
 #ifdef SYSVIEW_DEBUG
     SEGGER_SYSVIEW_RecordExitISR();
 #endif
 }
 
-#if 1
-int max_adc_time = 0;
-float max_e_value = 0.0f;
+#if 0
+int g_last_out_time = 0;
+int g_this_in_time = 0;
+int g_max_adc_time = 0;
+int g_max_adc_delta = 0;
+int lDeltaTim1 = 0;
 #endif
 
 void ADC_IRQHandler(void) {
@@ -308,7 +313,22 @@ void ADC_IRQHandler(void) {
 
     if ((ADC1->SR & ADC_FLAG_JEOC) == ADC_FLAG_JEOC) {
 #if 0
+    g_this_in_time = SysTick->VAL;
 	int lStartTim  = SysTick->VAL;
+    
+    if(g_last_out_time >= g_this_in_time)
+    {
+    	lDeltaTim1 = g_last_out_time - g_this_in_time;
+    }
+    else
+    {
+        lDeltaTim1 = (1 << 24) - g_this_in_time + g_last_out_time;
+    }
+
+    if(lDeltaTim1 > g_max_adc_delta)
+    {
+        g_max_adc_delta = lDeltaTim1;
+    }
 #endif
 
         ADC_Value_Read();
@@ -317,6 +337,7 @@ void ADC_IRQHandler(void) {
 
         SM_StateMachine(&gsM1_Ctrl);
 
+        geM1_StateRunLoop = SLOW;
 #ifdef USB_ENABLE
 
         if ((stScopePara.iCommType == COMM_USB_MODE) &&
@@ -339,11 +360,12 @@ void ADC_IRQHandler(void) {
         lDeltaTim = (1 << 24) - lEndTim + lStartTim;
     }
 
-	if(lDeltaTim > max_adc_time)
+	if(lDeltaTim > g_max_adc_time)
 	{
-		max_adc_time = lDeltaTim;
-		max_e_value = gsM1_Drive.sPositionEnc.f32PositionEl;
+		g_max_adc_time = lDeltaTim;
 	}
+
+    g_last_out_time =  SysTick->VAL;
 #endif
     }
 

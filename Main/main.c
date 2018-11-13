@@ -179,6 +179,8 @@ int main(void) {
 
 #endif
 
+
+						
 #ifdef USB_ENABLE 
         if ((gsM1_Ctrl.eState != RUN) && (gsM1_Ctrl.eState != ALIGN)) {
             if (stParaList.iParaRecover == 1) {
@@ -210,12 +212,14 @@ int main(void) {
         }
 #endif
 
+        #ifdef ETHERCAT_RUN
+        if (bRunApplication == TRUE) {
+            MainLoop();
+        }
+        #endif
+
         if (Flag_10_ms == 1) {
-#ifdef ETHERCAT_RUN
-            if (bRunApplication == TRUE) {
-                MainLoop();
-            }
-#endif
+
             Flag_10_ms = 0;
         }
 

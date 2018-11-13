@@ -17,7 +17,7 @@
 #define NEW_MAG_FIXTURE 1
 
 #define Modbus_RTU_ENABLE 0
-#define BIG_ID_ENABLE 0
+#define BIG_ID_ENABLE 1
 
 #define HARDWARE_TEST 0
 #define RENISHAW 1
@@ -42,7 +42,7 @@
 
 #define IS_17BITS_MAGNET_ENCODER 1
 
-#define INIT_LOCATING 0
+#define INIT_LOCATING 1
 
 #define COMM_ERROR_ALERT 1
 
@@ -52,7 +52,7 @@
 
 #define STUCK_CHECK 0
 
-#define HFI
+//#define HFI
 
 /* ---------------ADC--------------*/
 

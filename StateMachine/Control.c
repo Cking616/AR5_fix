@@ -371,33 +371,43 @@ void MCU_Temp_Cal(void) {
     fMUC_TEMP = (25.0f + ((float)(ADC_MCU_Temp)*3.3f / 4096.0f - 0.76f) / 0.0025f) * 0.1f + fMUC_TEMP * 0.9f;
 }
 
+float   g_fq_on_over_current = 0.0f;
+int     g_pha_value_on_over_current = 0;
+int     g_phb_value_on_over_current = 0;
+float   g_offseta_value_on_over_current = 0.0f;
+float   g_offsetb_value_on_over_current = 0.0f;
 void ADC_Value_Read(void) {
+	  int pha = ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1);
+    int phb = ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1);
 #if HALL_SENSOR == 1
 
+
 #ifdef ETHERCAT_ENABLE
-    gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
-    gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
-	//gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 100.0f;
-    //gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 100.0f;
+    gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)pha - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
+    gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)phb - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
+		//gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 100.0f;
+		//gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 100.0f;
     //gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 2.5f  * 9.1f / 13.8f / (60.0f * R_SAMPLE);
     //gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 2.5f * 9.1f / 13.8f / (60.0f * R_SAMPLE);
 #else
-    gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) * 0.0179443359375f;
-    gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) * 0.0179443359375f;
+    gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 0.0179443359375f;
+    gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 0.0179443359375f;
 #endif
 
 #else
     /* Res AD8417 */
-    gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
-    gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
+    gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)pha - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
+    gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)phb - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
 #endif
 
     gsM1_Drive.sFocPMSM.sIABC.f32C = -gsM1_Drive.sFocPMSM.sIABC.f32A - gsM1_Drive.sFocPMSM.sIABC.f32B;
 
     if (fabsf(gsM1_Drive.sFocPMSM.sIABC.f32A) > gsM1_Drive.sFocPMSM.sIABC_Peak.f32A) {
+        g_pha_value_on_over_current = pha;
         gsM1_Drive.sFocPMSM.sIABC_Peak.f32A = fabsf(gsM1_Drive.sFocPMSM.sIABC.f32A);
     }
     if (fabsf(gsM1_Drive.sFocPMSM.sIABC.f32B) > gsM1_Drive.sFocPMSM.sIABC_Peak.f32B) {
+        g_phb_value_on_over_current = phb;
         gsM1_Drive.sFocPMSM.sIABC_Peak.f32B = fabsf(gsM1_Drive.sFocPMSM.sIABC.f32B);
     }
     if (fabsf(gsM1_Drive.sFocPMSM.sIABC.f32C) > gsM1_Drive.sFocPMSM.sIABC_Peak.f32C) {
@@ -415,7 +425,12 @@ void ADC_Value_Read(void) {
             gsM1_Drive.sFaultThresholds.u32CurrentOverErrorCnt = 0;
         }
 
-        if (gsM1_Drive.sFaultThresholds.u32CurrentOverErrorCnt >= 6) {
+        if (gsM1_Drive.sFaultThresholds.u32CurrentOverErrorCnt >= 3) {
+            g_fq_on_over_current = gsM1_Drive.sFocPMSM.sIDQReq.f32Q;
+            g_pha_value_on_over_current = pha;
+            g_phb_value_on_over_current = phb;
+            g_offseta_value_on_over_current = gsM1_Drive.sADCOffset.f32PhA;
+            g_offsetb_value_on_over_current = gsM1_Drive.sADCOffset.f32PhB;
             gsM1_Drive.sFaultId.B.OverCurrent |= 1;
             PWM_OUT_DISABLE();
             gsM1_Drive.sFaultThresholds.u32CurrentOverErrorCnt = 0;
