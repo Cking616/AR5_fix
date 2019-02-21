@@ -51,6 +51,7 @@ volatile u8 Flag_50_ms = 0;
 volatile u8 Flag_100_ms = 0;
 volatile u8 Flag_500_ms = 0;
 volatile u8 Flag_1000_ms = 0;
+volatile int Tick_ms = 0;
 
 extern uint8_t SPI3_Rx_Buff[];
 extern __IO u8 guc_RS485_Error_Flag;
@@ -80,7 +81,7 @@ void Led_Fault_Indication_Set(void) {
 #if BIG_ID_ENABLE == 1
     GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 #else
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
     GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 #else
     GPIO_ResetBits(GPIOB, GPIO_Pin_14);
@@ -99,7 +100,7 @@ void Led_Fault_Indication_Clr(void) {
 #if BIG_ID_ENABLE == 1
     GPIO_SetBits(GPIOC, GPIO_Pin_9);
 #else
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
     GPIO_SetBits(GPIOC, GPIO_Pin_9);
 #else
     GPIO_SetBits(GPIOB, GPIO_Pin_14);
@@ -117,7 +118,7 @@ void gLEDState(void) {
 #if BIG_ID_ENABLE == 1
     GPIO_ToggleBits(GPIOC, GPIO_Pin_8);
 #else
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
     GPIO_ToggleBits(GPIOC, GPIO_Pin_8);
 #else
     GPIO_ToggleBits(GPIOB, GPIO_Pin_13);
@@ -128,7 +129,8 @@ void gLEDState(void) {
 
 void One_ms_Tick(void) {
     counter_1_ms++;
-
+	Tick_ms++;
+	
     if (counter_1_ms % 2 == 0) {
         Flag_2_ms = 1;
     }
@@ -196,7 +198,7 @@ u8 crc8_4B(u32 bb) {
 void MagnetEncDataRead(void) {
 #if RENISHAW == 1
 
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
 
     SPI_I2S_ReceiveData(SPI2);
     GPIO_ResetBits(GPIOB, GPIO_Pin_12);
@@ -281,7 +283,7 @@ void Fault_Management(void) {
         gsM1_Drive.sFaultThresholds.u32SpeedOverCnt = 0;
     }
 
-    if ((gsM1_Drive.uw16CtrlMode != TORQUE_CONTROL) && (fabsf(gsM1_Drive.sPositionEnc.f32SpeedFilt) <= 0.2f) && (fabsf(gsM1_Drive.sFocPMSM.sIDQ.f32Q) >= gsM1_Drive.sFaultThresholds.f32LockRotorOver)) {
+    if ((gsM1_Drive.sHFISearch.u8Step >= 12) && (gsM1_Drive.uw16CtrlMode != TORQUE_CONTROL) && (fabsf(gsM1_Drive.sPositionEnc.f32SpeedFilt) <= 0.2f) && (fabsf(gsM1_Drive.sFocPMSM.sIDQ.f32Q) >= gsM1_Drive.sFaultThresholds.f32LockRotorOver)) {
         gsM1_Drive.sFaultThresholds.u32LockRotorErrorCnt++;
     } else {
         gsM1_Drive.sFaultThresholds.u32LockRotorErrorCnt = 0;
@@ -382,16 +384,18 @@ void ADC_Value_Read(void) {
 #if HALL_SENSOR == 1
 
 
-#ifdef ETHERCAT_ENABLE
-    gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)pha - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
-    gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)phb - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
+#if HARDWARE_VERSION_2_2
+    //gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)pha - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
+    //gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)phb - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
 		//gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 100.0f;
 		//gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 100.0f;
-    //gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 2.5f  * 9.1f / 13.8f / (60.0f * R_SAMPLE);
-    //gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 2.5f * 9.1f / 13.8f / (60.0f * R_SAMPLE);
+  	gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 1.65f / 10.0f * 14.7f / 0.02f / 2048;
+		gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 1.65f / 10.0f * 14.7f / 0.02f / 2048;
 #else
-    gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 0.0179443359375f;
-    gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 0.0179443359375f;
+    //gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 0.0179443359375f;
+    //gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 0.0179443359375f;
+		gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 1.65f / 10.0f * 14.7f / 0.066f / 2048;
+		gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 1.65f / 10.0f * 14.7f / 0.066f / 2048;
 #endif
 
 #else
@@ -499,7 +503,7 @@ void I_QD_Ref_Reset(void) {
 }
 
 void Brake_On(void) {
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
 #if BIG_ID_ENABLE == 1
     GPIO_ResetBits(GPIOA, GPIO_Pin_3);
     GPIO_ResetBits(GPIOA, GPIO_Pin_2);
@@ -514,7 +518,7 @@ void Brake_On(void) {
 }
 
 void Brake_Hold(void) {
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
 #if BIG_ID_ENABLE == 1
     GPIO_ResetBits(GPIOA, GPIO_Pin_3);
 #else
@@ -526,7 +530,7 @@ void Brake_Hold(void) {
 }
 
 void Brake_Off(void) {
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
 #if BIG_ID_ENABLE == 1
     GPIO_SetBits(GPIOA, GPIO_Pin_3);
     GPIO_SetBits(GPIOA, GPIO_Pin_2);
@@ -541,7 +545,7 @@ void Brake_Off(void) {
 }
 
 u8 Brake_Off_Check(void) {
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
 #if BIG_ID_ENABLE == 1
     return GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_3) || GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_2);
 #else
@@ -553,7 +557,7 @@ u8 Brake_Off_Check(void) {
 }
 
 u8 Brake_Start_Check(void) {
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
 #if BIG_ID_ENABLE == 1
     return GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_3);
 #else

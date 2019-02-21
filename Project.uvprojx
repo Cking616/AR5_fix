@@ -78,7 +78,7 @@
             <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
-            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
             <UserProg1Name>fromelf.exe --bin -o "$L@L.bin" "#L"</UserProg1Name>
             <UserProg2Name></UserProg2Name>
@@ -210,7 +210,7 @@
             <AdsLven>1</AdsLven>
             <AdsLsxf>1</AdsLsxf>
             <RvctClst>1</RvctClst>
-            <GenPPlst>1</GenPPlst>
+            <GenPPlst>0</GenPPlst>
             <AdsCpuType>"Cortex-M4"</AdsCpuType>
             <RvctDeviceName></RvctDeviceName>
             <mOS>0</mOS>
@@ -309,8 +309,8 @@
               </OCR_RVCT3>
               <OCR_RVCT4>
                 <Type>1</Type>
-                <StartAddress>0x8000000</StartAddress>
-                <Size>0x100000</Size>
+                <StartAddress>0x8010000</StartAddress>
+                <Size>0xf0000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -788,60 +788,15 @@
               <FileType>1</FileType>
               <FilePath>.\StateMachine\Motor_Drive.c</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>EtherCAT</GroupName>
-          <Files>
             <File>
-              <FileName>cia402appl.c</FileName>
+              <FileName>EEPROM_RW.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\cia402appl.c</FilePath>
+              <FilePath>.\StateMachine\EEPROM_RW.c</FilePath>
             </File>
             <File>
-              <FileName>coeappl.c</FileName>
+              <FileName>FLASH4_EEPROM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\coeappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecatappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecatappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecatcoe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecatcoe.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecatslv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecatslv.c</FilePath>
-            </File>
-            <File>
-              <FileName>mailbox.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\mailbox.c</FilePath>
-            </File>
-            <File>
-              <FileName>objdef.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\objdef.c</FilePath>
-            </File>
-            <File>
-              <FileName>sdoserv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\sdoserv.c</FilePath>
-            </File>
-            <File>
-              <FileName>SPI1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\SPI1.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f405hw.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\stm32f405hw.c</FilePath>
+              <FilePath>.\StateMachine\FLASH4_EEPROM.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1712,60 +1667,15 @@
               <FileType>1</FileType>
               <FilePath>.\StateMachine\Motor_Drive.c</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>EtherCAT</GroupName>
-          <Files>
             <File>
-              <FileName>cia402appl.c</FileName>
+              <FileName>EEPROM_RW.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\cia402appl.c</FilePath>
+              <FilePath>.\StateMachine\EEPROM_RW.c</FilePath>
             </File>
             <File>
-              <FileName>coeappl.c</FileName>
+              <FileName>FLASH4_EEPROM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\coeappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecatappl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecatappl.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecatcoe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecatcoe.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecatslv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\ecatslv.c</FilePath>
-            </File>
-            <File>
-              <FileName>mailbox.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\mailbox.c</FilePath>
-            </File>
-            <File>
-              <FileName>objdef.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\objdef.c</FilePath>
-            </File>
-            <File>
-              <FileName>sdoserv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\sdoserv.c</FilePath>
-            </File>
-            <File>
-              <FileName>SPI1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\SPI1.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f405hw.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EtherCAT\src\stm32f405hw.c</FilePath>
+              <FilePath>.\StateMachine\FLASH4_EEPROM.c</FilePath>
             </File>
           </Files>
         </Group>

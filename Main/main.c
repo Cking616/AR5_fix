@@ -15,60 +15,11 @@
 #include "M1_statemachine.h"
 #include "Motor_Drive.h"
 #include "include_c.h"
+#include "EEPROM_RW.h"
 
 #ifdef SYSVIEW_DEBUG
 #include "SEGGER_SYSVIEW.h"
 #endif
-
-uint32_t _reboot_cookie __attribute__((section(".noinit")));
-extern char __initial_sp;
-//extern char _estack; // provided by the linker script
-
-int g_is_upgrade = 0;
-// Gets called from the startup assembly code
-void early_start_checks(void) {
-    if (_reboot_cookie == 0xDEADFE75) {
-        /* The STM DFU bootloader enables internal pull-up resistors on PB10 (AUX_H)
-    * and PB11 (AUX_L), thereby causing shoot-through on the brake resistor
-    * FETs and obliterating them unless external 3.3k pull-down resistors are
-    * present. Pull-downs are only present on ODrive 3.5 or newer.
-    * On older boards we disable DFU by default but if the user insists
-    * there's only one thing left that might save it: time.
-    * The brake resistor gate driver needs a certain 10V supply (GVDD) to
-    * make it work. This voltage is supplied by the motor gate drivers which get
-    * disabled at system reset. So over time GVDD voltage _should_ below
-    * dangerous levels. This is completely handwavy and should not be relied on
-    * so you are on your own on if you ignore this warning.
-    *
-    * This loop takes 5 cycles per iteration and at this point the system runs
-    * on the internal 16MHz RC oscillator so the delay is about 2 seconds.
-    */
-        for (size_t i = 0; i < (16000000UL / 5UL * 2UL); ++i) {
-            __NOP();
-        }
-        _reboot_cookie = 0xDEADBEEF;
-    }
-
-    /* We could jump to the bootloader directly on demand without rebooting
-  but that requires us to reset several peripherals and interrupts for it
-  to function correctly. Therefore it's easier to just reset the entire chip. */
-    if (_reboot_cookie == 0xDEADBEEF) {
-        _reboot_cookie = 0xCAFEFEED;  //Reset bootloader trigger
-        __set_MSP((uintptr_t)&__initial_sp);
-        //__set_MSP((uintptr_t)&_estack);
-        // http://www.st.com/content/ccc/resource/technical/document/application_note/6a/17/92/02/58/98/45/0c/CD00264379.pdf/files/CD00264379.pdf
-        void (*builtin_bootloader)(void) = (void (*)(void))(*((uint32_t *)0x1FFF0004));
-        builtin_bootloader();
-    }
-
-    /* The bootloader might fail to properly clean up after itself,
-  so if we're not sure that the system is in a clean state we
-  just reset it again */
-    if (_reboot_cookie != 42) {
-        _reboot_cookie = 42;
-        NVIC_SystemReset();
-    }
-}
 
 void __init_delay_ms(int ms) {
     static u32 tickcnt;
@@ -88,14 +39,8 @@ void __init_delay_ms(int ms) {
     }
 }
 
-void enter_dfu_mode() {
-    //__asm volatile ("CPSID I\n\t":::"memory"); // disable interrupts
-    __disable_irq();
-    _reboot_cookie = 0xDEADBEEF;
-    NVIC_SystemReset();
-}
-
 int main(void) {
+	NVIC_SetVectorTable(NVIC_VectTab_FLASH , 0x10000);
     SysTick->CTRL |= 0x0004;
     SysTick->LOAD = 0x00FFFFFF;
     SysTick->CTRL |= 0x0001;
@@ -118,7 +63,7 @@ int main(void) {
 
     DMA_Config();
 
-#ifdef ETHERCAT_ENABLE
+#ifdef HARDWARE_VERSION_2_2
     SPI2_Config();
 #else
     SPI3_Config();
@@ -212,14 +157,12 @@ int main(void) {
         }
 #endif
 
-        #ifdef ETHERCAT_RUN
-        if (bRunApplication == TRUE) {
-            MainLoop();
-        }
-        #endif
-
         if (Flag_10_ms == 1) {
-
+            #ifdef ETHERCAT_RUN
+            if (bRunApplication == TRUE) {
+                MainLoop();
+            }
+		    #endif
             Flag_10_ms = 0;
         }
 
@@ -343,15 +286,6 @@ int main(void) {
 
 #endif
 
-            if (g_is_upgrade) {
-                gsM1_Ctrl.uiCtrl = SM_CTRL_FAULT;
-                __init_delay_ms(200);
-                __init_delay_ms(200);
-                __init_delay_ms(200);
-                __init_delay_ms(200);
-                __init_delay_ms(200);
-                enter_dfu_mode();
-            }
             Flag_1000_ms = 0;
         }
     }

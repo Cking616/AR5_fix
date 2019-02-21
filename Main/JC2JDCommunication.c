@@ -44,6 +44,7 @@ static void CheckData(void);
 static void Cycle_Rsp(u16, s16);
 static void ParaSetCallback(void);
 static void ParaQueryCallback(void);
+static float First_Order_lowPass_Filter(float filter_obj);
 //---------------------------- Static Variable ----------------------------//
 JC2JDParaSet_t ParaSet_JC2JD;						//参数设置指令变量
 JD2JCParaSetRsp_t ParaSetRsp_JC2JD;					//参数设置指令应答变量
@@ -57,6 +58,8 @@ JD2JCCycleRsp_t CycleRsp_JC2JD;						//周期性指令应答变量
 
 /*用于调试*/
 //static uint32_t time_Start_JC2JD = 0;		//用于记录程序运行起始时间
+//一阶低通滤波器
+
 
 //---------------------------- Global Variable ----------------------------//
 JC2JDCycle_Buf_t gt_RS485_RX_Buf;			//RS485接受缓冲区，用于处理，不用于接受
@@ -356,12 +359,12 @@ static void Cycle_Rsp(u16 status, s16 torque)
 						if((gsM1_Drive.uw16CtrlMode == TORQUE_CONTROL)&&(gsM1_Drive.sInitLocating.u8LocatingStep >= 14))
 						#endif
 						{
-							gsM1_Drive.sFocPMSM.sIDQReq.f32Q = (float)gt_RS485_RX_Buf.Cycle.m_sTorque / HARMONIC_AMPLIFY / Kt / 100.0f;
+							gsM1_Drive.sFocPMSM.sIDQReq.f32Q = (float)gt_RS485_RX_Buf.Cycle.m_sTorque / HARMONIC_AMPLIFY;
 						}
 				#else
 						if(gsM1_Drive.uw16CtrlMode == TORQUE_CONTROL)
 						{
-							gsM1_Drive.sFocPMSM.sIDQReq.f32Q = (float)gt_RS485_RX_Buf.Cycle.m_sTorque / HARMONIC_AMPLIFY / Kt / 100.0f;
+							gsM1_Drive.sFocPMSM.sIDQReq.f32Q = (float)gt_RS485_RX_Buf.Cycle.m_sTorque / HARMONIC_AMPLIFY;
 						}
 				#endif	
 						
@@ -498,10 +501,10 @@ static void Cycle_Rsp(u16 status, s16 torque)
 	
 	CycleRsp_JC2JD.Cyc_Rsp.m_sVelocityOut = (short)(gsM1_Drive.sPositionEnc.f32MagnetEncoderSpeedFilt*100.0f);				
 	
-	CycleRsp_JC2JD.Cyc_Rsp.m_sAccOut = (short)(gsM1_Drive.sPositionEnc.f32MagnetEncoderAccelerationFlt*100.0f);				
+	CycleRsp_JC2JD.Cyc_Rsp.m_sAccOut = (short)(gsM1_Drive.sPositionEnc.f32MagnetEncoderAccelerationFlt*10.0f);				
 
 
-	CycleRsp_JC2JD.Cyc_Rsp.m_sCurrentEquality = (short)(gsM1_Drive.sFocPMSM.sIDQ.f32Q*100.0f);							
+	CycleRsp_JC2JD.Cyc_Rsp.m_sCurrentEquality = (short)(gf_Current_Q*100.0f);					
 
 	CycleRsp_JC2JD.Cyc_Rsp.m_sVoltage	= (short)(gsM1_Drive.sFocPMSM.f32UDcBusFilt * 10.0f);									 
 	
@@ -532,4 +535,32 @@ static void CheckData(void)
 	}
 
 }
+/*
+----------------------------------------------------------------------------
+ * Name					: Filter current
+ * Description			:对电流进行一阶低通滤波
+ * Author				: zhenyonghit
+ * return				: 
+ * Para					:
+ *
+ * History
+ * ----------------------
+ * Rev					: V1.00
+ * Create Date			: $NOW
+ * ----------------------
+ * Modify Author		: zhenyonghit
+ * Modify Description	: TODO
+ * Modify Date			: $NOW
+ * ----------------------
+----------------------------------------------------------------------------
+ */
+static float First_Order_lowPass_Filter(float filter_obj)
+{
+	static float result = 0;
+	static float s_f_K1 = 0.95f;
+	static float s_f_K2 = 0.05f;
+	
+	result = s_f_K1*result + s_f_K2*filter_obj;
 
+	return result;
+}

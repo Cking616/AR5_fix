@@ -210,7 +210,7 @@ void  SysResetProcess(void)
 }
 
 
-extern int g_is_upgrade;
+
 //设置参数数据交换处理常量表:保证(参数个数/EEPROM页存储参数个数)为整数，如果空余则用保留参数填充
 const StructTypetDataInterfaceTag stDataInterface[] =
 {
@@ -219,7 +219,7 @@ const StructTypetDataInterfaceTag stDataInterface[] =
 /*P0.01*/{{&stParaList.iAlignEnable,                           &stParaList.iAlignEnable                        }, {0,           1,              0,             0     },       &AlignCtrl,        { _UNSAVE, _B16,   _B16,    _INST }},/*P0.01*///
 /*P0.02*/{{&gsM1_Drive.uw16CtrlMode,                           &gsM1_Drive.uw16CtrlMode                        }, {0,           6,              2,             0     },       NULL,              { _SAVE,   _B16,   _B16,    _INST }},/*P0.02*///
 /*P0.03*/{{&stParaList.iRigidSet,                              &stParaList.iRigidSet                           }, {0,           31,             0,             0     },       NULL,              { _SAVE,   _B16,   _B16,    _INST }},/*P0.03*///
-/*P0.04*/{{&g_is_upgrade,                           		   &g_is_upgrade                                   }, {0,           1,              0,             0     },       NULL,              { _UNSAVE, _B32,   _B32,    _INST }},/*P0.04*///
+/*P0.04*/{{&stParaList.lSetIndex[4],                           &stParaList.lSetIndex[4]                        }, {0,           1,              0,             0     },       NULL,              { _UNSAVE, _B32,   _B32,    _INST }},/*P0.04*///
 /*P0.05*/{{&stParaList.lSetIndex[5],                           &stParaList.lSetIndex[5]                        }, {0,           10000,          0,             0     },       NULL,              { _SAVE,   _B32,   _B32,    _INST }},/*P0.05*///
 /*P0.06*/{{&stParaList.lSetIndex[6],                           &stParaList.lSetIndex[6]                        }, {0,           10000,          0,             0     },       NULL,              { _SAVE,   _B32,   _B32,    _INST }},/*P0.06*///
 /*P0.07*/{{&stParaList.lSetIndex[7],                           &stParaList.lSetIndex[7]                        }, {0,           10000,          0,             0     },       NULL,              { _SAVE,   _B32,   _B32,    _INST }},/*P0.07*///

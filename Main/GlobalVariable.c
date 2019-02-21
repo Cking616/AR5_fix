@@ -50,7 +50,7 @@ __IO u32 gui_RS485_RX_Num = 0;					//接收到的数据帧的长度
 
 Para_t g_gstParaCodeDef[256];					//生成参数编码
 /*参数列表值*/
-int JOINT_No = Joint1;							//关节编号
+int JOINT_No = Joint3;							//关节编号
 int g_iJDVersion = 2;							//JD主版本编号
 int g_iJDSubVersion = 13;						//JD副版本编号
 

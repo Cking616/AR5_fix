@@ -21,7 +21,7 @@ void GPIO_Config(void) {
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
 #if BIG_ID_ENABLE == 1
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
@@ -124,7 +124,7 @@ void GPIO_Config(void) {
     GPIO_SetBits(GPIOC, GPIO_Pin_9);
 #else
 
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -290,7 +290,7 @@ void DMA_Config(void) {
     DMA_InitTypeDef DMA_InitStructure;
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
 
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
     DMA_Cmd(DMA1_Stream3, DISABLE);
     DMA_DeInit(DMA1_Stream3);
 #else
@@ -301,7 +301,7 @@ void DMA_Config(void) {
 #if RENISHAW == 1
     DMA_InitStructure.DMA_Channel = DMA_Channel_0;
 
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
     DMA_InitStructure.DMA_PeripheralBaseAddr = ((uint32_t)&SPI2->DR);
     DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)SPI3_Rx_Buff;
 #else
@@ -322,7 +322,7 @@ void DMA_Config(void) {
     DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
     DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
 
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
     DMA_Init(DMA1_Stream3, &DMA_InitStructure);
 #else
     DMA_Init(DMA1_Stream0, &DMA_InitStructure);
@@ -349,7 +349,7 @@ void DMA_Config(void) {
 
 #endif
 
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
     DMA_ITConfig(DMA1_Stream3, DMA_IT_TC, ENABLE);
 #else
     DMA_ITConfig(DMA1_Stream0, DMA_IT_TC, ENABLE);
@@ -429,7 +429,7 @@ void SPI3_Config(void) {
 #endif
 }
 
-#ifdef ETHERCAT_ENABLE
+#if HARDWARE_VERSION_2_2
 void SPI2_Config(void) {
     GPIO_InitTypeDef GPIO_InitStructure;
     SPI_InitTypeDef SPI_InitStructure;
@@ -569,6 +569,7 @@ void PWM_Config(void) {
     TIM_ITConfig(TIM1, TIM_IT_Update, DISABLE);
 
     DBGMCU_APB2PeriphConfig(DBGMCU_TIM1_STOP, ENABLE);
+		DBGMCU_APB2PeriphConfig(DBGMCU_TIM8_STOP, ENABLE);
     TIM_Cmd(TIM1, ENABLE);
     TIM_CtrlPWMOutputs(TIM1, DISABLE);
 }
@@ -590,7 +591,7 @@ void NVIC_Config(void) {
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-#ifdef ETHERCAT_ENABLE  //ECAT_MOD
+#if HARDWARE_VERSION_2_2  //ECAT_MOD
     NVIC_InitStructure.NVIC_IRQChannel = DMA1_Stream3_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;

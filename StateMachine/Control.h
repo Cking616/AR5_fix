@@ -81,6 +81,7 @@ extern volatile u8 Flag_50_ms;
 extern volatile u8 Flag_100_ms;
 extern volatile u8 Flag_500_ms;
 extern volatile u8 Flag_1000_ms;
+extern volatile int Tick_ms;
 
 extern float Ext_Temperature;
 

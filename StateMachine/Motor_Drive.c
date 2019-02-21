@@ -3,6 +3,7 @@
 #include "Configuration.h"
 #include "Control.h"
 #include "M1_statemachine.h"
+#include "GlobalVariable.h"
 
 extern uint8_t SPI3_Rx_Buff[7];
 extern uint32_t SACE_SPI3_Rx_Buff;
@@ -288,16 +289,16 @@ void MotorDrive_Init(void) {
     gsM1_Drive.sSpeed.f32SpeedFF_Pre = 0;
 
     gsM1_Drive.sPositionControl.bOpenLoop = 0;
-    gsM1_Drive.sPositionControl.f32Position = 0;
-    gsM1_Drive.sPositionControl.f32PositionComp = 0;
+    //gsM1_Drive.sPositionControl.f32Position = 0;
+    //gsM1_Drive.sPositionControl.f32PositionComp = 0;
     gsM1_Drive.sPositionControl.f32PositionCompPre = gsM1_Drive.sPositionControl.f32PositionCompPre;
-    gsM1_Drive.sPositionControl.f32PositionCmd = 0;
+    //gsM1_Drive.sPositionControl.f32PositionCmd = 0;
     gsM1_Drive.sPositionControl.f32PositionError = 0;
     gsM1_Drive.sPositionControl.f32PositionRampOut = 0;
     gsM1_Drive.sPositionControl.f32PositionRampOutFilt = 0;
     gsM1_Drive.sPositionControl.f32PositionRampStep = POSITION_RAMP_STEP;
     gsM1_Drive.sPositionControl.bPositionTargetChange = 0;
-    gsM1_Drive.sPositionControl.f32PositionCmd = 0;
+    //gsM1_Drive.sPositionControl.f32PositionCmd = 0;
     gsM1_Drive.sPositionControl.f32PositionCmdPrevious = 0;
     gsM1_Drive.sPositionControl.f32StartInterval = START_INTERVAL;
     gsM1_Drive.sPositionControl.f32StopInterval = STOP_INTERVAL;
@@ -534,7 +535,7 @@ void Enc_Speed_Cal_Pulse(void) {
     gsM1_Drive.sSpeed.f32SpeedFilt = gsM1_Drive.sPositionEnc.f32SpeedFilt;
     gsM1_Drive.sSpeed.f32Speed = gsM1_Drive.sPositionEnc.f32Speed;
 
-    gsM1_Drive.sPositionEnc.f32PositionMech = gsM1_Drive.sPositionControl.f32PositionMechnicalStart + (float)gsM1_Drive.sPositionEnc.s32EncoderTurns / HARMONIC_AMPLIFY * 360.0f + (float)TIM8->CNT / HARMONIC_AMPLIFY / (float)ENCODER_PPR * 90.0f;
+    gsM1_Drive.sPositionEnc.f32PositionMech = gsM1_Drive.sPositionControl.f32PositionMechnicalStart + (float)gsM1_Drive.sPositionEnc.s32EncoderTurns / HARMONIC_AMPLIFY * 360.0f + (float)gsM1_Drive.sPositionEnc.s32PulseCaptured / HARMONIC_AMPLIFY / (float)ENCODER_PPR * 90.0f;
 }
 
 unsigned char odd16_check(int p) {
@@ -931,9 +932,12 @@ void Motor_Drive_DutyCycleCal(MCLIB_2_COOR_SYST_ALPHA_BETA_T Stat_Volt_Input, fl
 }
 
 void Motor_Drive_FOC(void) {
+	float k = 0.99F;
+	
     gsM1_Drive.sFocPMSM.sIAlBe = Motor_Drive_Clarke(gsM1_Drive.sFocPMSM.sIABC);
     gsM1_Drive.sFocPMSM.sIDQ = Motor_Drive_Park(gsM1_Drive.sFocPMSM.sIAlBe, gsM1_Drive.sFocPMSM.sAnglePosEl);
-
+	gf_Current_Q = k*gf_Current_Q + (1-k)*gsM1_Drive.sFocPMSM.sIDQ.f32Q;
+	
     if (gsM1_Drive.uw16CtrlMode != OPENLOOP_PWM) {
         gsM1_Drive.sFocPMSM.sUDQReq.f32D = Motor_Drive_Cur_PID_Regulator(gsM1_Drive.sFocPMSM.sIDQReq.f32D, gsM1_Drive.sFocPMSM.sIDQ.f32D, &gsM1_Drive.sFocPMSM.sIdPiParams);
 
@@ -989,10 +993,11 @@ void RampControl(float cmd, float step, float period, float *out) {
 void PositionCtrlInit(void) {
     static u16 inc;
     static u32 u32MagnetEncoderPosition_AVG;
+	static int start_tick;
     float f32ME_Position = 0;
 
     gsM1_Drive.sPositionEnc.u8MagnetEncInitPositionCheck = 1;
-
+	start_tick = Tick_ms;
     while (inc < 512) {
         if (gsM1_Drive.sPositionEnc.u8MagnetEncoderUpdateFlag == 1) {
             u32MagnetEncoderPosition_AVG += gsM1_Drive.sPositionEnc.u32MagnetEncoderPosition;
@@ -1002,6 +1007,13 @@ void PositionCtrlInit(void) {
 
         if ((gsM1_Drive.sFaultId.B.MagnetEncoderError != 0) || (gsM1_Drive.sFaultId.B.MagnetEncoderCRCError != 0))
             break;
+		
+		int tick = Tick_ms;
+		if(tick - start_tick >= 1000)
+		{
+			gsM1_Drive.sFaultId.B.MagnetEncoderError = 1;
+			break;
+		}
     }
 
     if ((gsM1_Drive.sFaultId.B.MagnetEncoderError == 0) && (gsM1_Drive.sFaultId.B.MagnetEncoderCRCError == 0)) {
@@ -1628,7 +1640,8 @@ void HFI_Search(void) {
             if ((gsM1_Ctrl.eState == RUN) && (meM1_StateRun == READY)) {
                 gsM1_Drive.sHFISearch.f32EstAngle = 0;
                 gsM1_Drive.sHFISearch.f32RadCnt = 0;
-
+				gsM1_Drive.sHFISearch.u8Direction = 0;
+				gsM1_Drive.sHFISearch.f32Start = 0.0f;
 #if BIG_ID_ENABLE == 1
                 gsM1_Drive.sHFISearch.f32IdhPre = 0.0f;
                 gsM1_Drive.sHFISearch.f32Idh = 0.0f;
@@ -1813,14 +1826,14 @@ void HFI_Search(void) {
             Encoder_Reset();
 
 #if MAGNET_ENCODER_FBK == 0
-
+			gsM1_Drive.sHFISearch.f32Start = gsM1_Drive.sPositionEnc.f32PositionMech;
             gsM1_Drive.sPositionControl.f32PositionMechnicalStart = gsM1_Drive.sPositionEnc.f32PositionMech;
             gsM1_Drive.sPositionControl.f32PositionCmd = gsM1_Drive.sPositionEnc.f32PositionMech;
             gsM1_Drive.sPositionControl.f32PositionCmdPrevious = gsM1_Drive.sPositionEnc.f32PositionMech;
             gsM1_Drive.sPositionControl.f32PositionComp = gsM1_Drive.sPositionEnc.f32PositionMech;
 
 #else
-
+			gsM1_Drive.sHFISearch.f32Start = gsM1_Drive.sPositionEnc.f32PositionMech;
             gsM1_Drive.sPositionControl.f32PositionMechnicalStart = gsM1_Drive.sPositionControl.f32PositionComp;
             gsM1_Drive.sPositionControl.f32PositionCmd = gsM1_Drive.sPositionControl.f32PositionComp;
             gsM1_Drive.sPositionControl.f32PositionCmdPrevious = gsM1_Drive.sPositionControl.f32PositionComp;
@@ -1840,8 +1853,6 @@ void HFI_Search(void) {
 
             PWM_OUT_ENABLE();
 
-            Brake_Off();
-
 #if BIG_ID_ENABLE == 1
             gsM1_Drive.sPositionControl.sPositionPiParams.f32UpperLimit = 100.0f;
             gsM1_Drive.sPositionControl.sPositionPiParams.f32LowerLimit = -100.0f;
@@ -1850,16 +1861,15 @@ void HFI_Search(void) {
             break;
 
         case 8:
-            gsM1_Drive.uw16CtrlMode = POSITION_CONTROL;
-
+            gsM1_Drive.uw16CtrlMode = SPEED_CONTROL;
+        
             if (gsM1_Drive.sHFISearch.u32CtrlDelay < JITTER_COUNT) {
                 gsM1_Drive.sHFISearch.u32CtrlDelay++;
-            } else {
+                }
+            else {
                 gsM1_Drive.sHFISearch.u32CtrlDelay = 0;
                 gsM1_Drive.sHFISearch.u8Step = 9;
             }
-
-            gsM1_Drive.sPositionControl.f32PositionCmd = gsM1_Drive.sPositionControl.f32PositionMechnicalStart + 1.0f;
 
             if (gsM1_Drive.sHFISearch.u32Scale < 19) {
                 gsM1_Drive.sHFISearch.u32Scale++;
@@ -1870,22 +1880,16 @@ void HFI_Search(void) {
             } else {
                 gsM1_Drive.sHFISearch.u32Scale = 0;
 
-#if MAGNET_ENCODER_FBK == 0
-                gsM1_Drive.sPositionControl.f32PositionComp = gsM1_Drive.sPositionEnc.f32PositionMech;
-#else
-#endif
-
-                if (gsM1_Drive.sPositionControl.f32PositionCmd != gsM1_Drive.sPositionControl.f32PositionCmdPrevious) {
-                    gsM1_Drive.sPositionControl.bPositionTargetChange = 1;
-                    gsM1_Drive.sPositionControl.f32PositionStart = gsM1_Drive.sPositionControl.f32PositionComp;
-                    gsM1_Drive.sPositionControl.f32PositionRampOut = gsM1_Drive.sPositionControl.f32PositionStart;
-                    gsM1_Drive.sPositionControl.f32PositionCmdPrevious = gsM1_Drive.sPositionControl.f32PositionCmd;
-                } else {
-                    gsM1_Drive.sPositionControl.bPositionTargetChange = 0;
+                if(gsM1_Drive.sSpeed.f32SpeedFilt > 17.0f)
+                {
+                    gsM1_Drive.sHFISearch.u8Direction = 1;
+                    gsM1_Drive.sHFISearch.u32CtrlDelay = 0;
+                    Brake_Off();
+                    gsM1_Drive.sHFISearch.u8Step = 10;
                 }
 
-                gsM1_Drive.sSpeed.f32SpeedCmd = Motor_Drive_Pos_PID_Regulator(gsM1_Drive.sPositionControl.f32PositionCmd, gsM1_Drive.sPositionControl.f32PositionComp, &gsM1_Drive.sPositionControl.sPositionPiParams);
-
+                gsM1_Drive.sSpeed.f32SpeedCmd = SPEED_REQ;
+                
                 RampControl(gsM1_Drive.sSpeed.f32SpeedCmd, gsM1_Drive.sSpeed.f32SpeedRampStep, SPEEDLOOP_PERIOD, &gsM1_Drive.sSpeed.f32SpeedReq);
 
                 gsM1_Drive.sFocPMSM.sIDQReq.f32Q = Motor_Drive_Spd_PID_Regulator(gsM1_Drive.sSpeed.f32SpeedReq, gsM1_Drive.sSpeed.f32SpeedFilt, &gsM1_Drive.sSpeed.sSpeedPiParams);
@@ -1905,11 +1909,7 @@ void HFI_Search(void) {
             } else {
                 gsM1_Drive.sHFISearch.u32CtrlDelay = 0;
                 gsM1_Drive.sHFISearch.u8Step = 10;
-
-                Brake_Hold();
             }
-
-            gsM1_Drive.sPositionControl.f32PositionCmd = gsM1_Drive.sPositionControl.f32PositionMechnicalStart - 1.0f;
 
             if (gsM1_Drive.sHFISearch.u32Scale < 19) {
                 gsM1_Drive.sHFISearch.u32Scale++;
@@ -1920,21 +1920,16 @@ void HFI_Search(void) {
             } else {
                 gsM1_Drive.sHFISearch.u32Scale = 0;
 
-#if MAGNET_ENCODER_FBK == 0
-                gsM1_Drive.sPositionControl.f32PositionComp = gsM1_Drive.sPositionEnc.f32PositionMech;
-#else
-#endif
-
-                if (gsM1_Drive.sPositionControl.f32PositionCmd != gsM1_Drive.sPositionControl.f32PositionCmdPrevious) {
-                    gsM1_Drive.sPositionControl.bPositionTargetChange = 1;
-                    gsM1_Drive.sPositionControl.f32PositionStart = gsM1_Drive.sPositionControl.f32PositionComp;
-                    gsM1_Drive.sPositionControl.f32PositionRampOut = gsM1_Drive.sPositionControl.f32PositionStart;
-                    gsM1_Drive.sPositionControl.f32PositionCmdPrevious = gsM1_Drive.sPositionControl.f32PositionCmd;
-                } else {
-                    gsM1_Drive.sPositionControl.bPositionTargetChange = 0;
+                if(gsM1_Drive.sSpeed.f32SpeedFilt < -17.0f)
+                {
+                    gsM1_Drive.sHFISearch.u8Direction = 2;
+                    gsM1_Drive.sHFISearch.u32CtrlDelay = 0;
+                    Brake_Off();
+                    gsM1_Drive.sHFISearch.u8Step = 10;
                 }
 
-                gsM1_Drive.sSpeed.f32SpeedCmd = Motor_Drive_Pos_PID_Regulator(gsM1_Drive.sPositionControl.f32PositionCmd, gsM1_Drive.sPositionControl.f32PositionComp, &gsM1_Drive.sPositionControl.sPositionPiParams);
+
+                gsM1_Drive.sSpeed.f32SpeedCmd = -SPEED_REQ;
 
                 RampControl(gsM1_Drive.sSpeed.f32SpeedCmd, gsM1_Drive.sSpeed.f32SpeedRampStep, SPEEDLOOP_PERIOD, &gsM1_Drive.sSpeed.f32SpeedReq);
 
@@ -1949,7 +1944,8 @@ void HFI_Search(void) {
         case 10:
             gsM1_Drive.uw16CtrlMode = POSITION_CONTROL;
 
-            gsM1_Drive.sSpeed.sSpeedPiParams.f32UpperLimit = STUCK_CHECK_CURRENT;
+            //gsM1_Drive.sSpeed.sSpeedPiParams.f32UpperLimit = STUCK_CHECK_CURRENT;
+			gsM1_Drive.sSpeed.sSpeedPiParams.f32UpperLimit = gsM1_Drive.sSpeed.sSpeedPiParams.f32UpperLimit;
             gsM1_Drive.sSpeed.sSpeedPiParams.f32LowerLimit = -gsM1_Drive.sSpeed.sSpeedPiParams.f32UpperLimit;
 
 #if BIG_ID_ENABLE == 1
@@ -1957,17 +1953,28 @@ void HFI_Search(void) {
             gsM1_Drive.sPositionControl.sPositionPiParams.f32LowerLimit = -50.0f;
 #endif
 
-            if (gsM1_Drive.sHFISearch.u32CtrlDelay < 10000) {
+            if(gsM1_Drive.sHFISearch.u8Direction == 0)
+            {
+                gsM1_Drive.sFaultId.B.StartUpFail = 1;
+				//gsM1_Ctrl.uiCtrl |= SM_CTRL_FAULT;
+				break;
+            }
+
+            if (gsM1_Drive.sHFISearch.u32CtrlDelay < 5000) {
                 gsM1_Drive.sHFISearch.u32CtrlDelay++;
             } else {
                 gsM1_Drive.sHFISearch.u32CtrlDelay = 0;
                 gsM1_Drive.sHFISearch.u8Step = 11;
-
-                if (gsM1_Drive.sPositionEnc.f32PositionMech - gsM1_Drive.sPositionControl.f32PositionMechnicalStart < 0.5f)
-                    gsM1_Drive.sFaultId.B.StartUpFail = 1;
             }
 
-            gsM1_Drive.sPositionControl.f32PositionCmd = gsM1_Drive.sPositionControl.f32PositionMechnicalStart + 2.0f;
+            if(gsM1_Drive.sHFISearch.u8Direction == 1)
+            {
+                gsM1_Drive.sPositionControl.f32PositionCmd = gsM1_Drive.sHFISearch.f32Start + 0.4f;
+            }
+            else
+            {
+                gsM1_Drive.sPositionControl.f32PositionCmd = gsM1_Drive.sHFISearch.f32Start - 0.4f;
+            }
 
             if (gsM1_Drive.sHFISearch.u32Scale < 19) {
                 gsM1_Drive.sHFISearch.u32Scale++;
@@ -1978,10 +1985,8 @@ void HFI_Search(void) {
             } else {
                 gsM1_Drive.sHFISearch.u32Scale = 0;
 
-#if MAGNET_ENCODER_FBK == 0
-                gsM1_Drive.sPositionControl.f32PositionComp = gsM1_Drive.sPositionEnc.f32PositionMech;
-#else
-#endif
+                //gsM1_Drive.sPositionControl.f32PositionComp = gsM1_Drive.sPositionEnc.f32PositionMech;
+
 
                 if (gsM1_Drive.sPositionControl.f32PositionCmd != gsM1_Drive.sPositionControl.f32PositionCmdPrevious) {
                     gsM1_Drive.sPositionControl.bPositionTargetChange = 1;
@@ -1992,7 +1997,7 @@ void HFI_Search(void) {
                     gsM1_Drive.sPositionControl.bPositionTargetChange = 0;
                 }
 
-                gsM1_Drive.sSpeed.f32SpeedCmd = Motor_Drive_Pos_PID_Regulator(gsM1_Drive.sPositionControl.f32PositionCmd, gsM1_Drive.sPositionControl.f32PositionComp, &gsM1_Drive.sPositionControl.sPositionPiParams);
+                gsM1_Drive.sSpeed.f32SpeedCmd = Motor_Drive_Pos_PID_Regulator(gsM1_Drive.sPositionControl.f32PositionCmd, gsM1_Drive.sPositionEnc.f32PositionMech, &gsM1_Drive.sPositionControl.sPositionPiParams);
 
                 RampControl(gsM1_Drive.sSpeed.f32SpeedCmd, gsM1_Drive.sSpeed.f32SpeedRampStep, SPEEDLOOP_PERIOD, &gsM1_Drive.sSpeed.f32SpeedReq);
 
@@ -2007,14 +2012,12 @@ void HFI_Search(void) {
         case 11:
             gsM1_Drive.uw16CtrlMode = POSITION_CONTROL;
 
-            if (gsM1_Drive.sHFISearch.u32CtrlDelay < 10000) {
+            if (gsM1_Drive.sHFISearch.u32CtrlDelay < 5000) {
                 gsM1_Drive.sHFISearch.u32CtrlDelay++;
             } else {
                 gsM1_Drive.sHFISearch.u32CtrlDelay = 0;
+                Brake_Hold();
                 gsM1_Drive.sHFISearch.u8Step = 12;
-
-                if (fabsf(gsM1_Drive.sPositionEnc.f32PositionMech - gsM1_Drive.sPositionControl.f32PositionMechnicalStart) > 0.5f)
-                    gsM1_Drive.sFaultId.B.StartUpFail = 1;
 
                 gsM1_Drive.uw16CtrlMode = POSITION_CONTROL;
                 PWM_OUT_DISABLE();
@@ -2037,7 +2040,7 @@ void HFI_Search(void) {
 #endif
             }
 
-            gsM1_Drive.sPositionControl.f32PositionCmd = gsM1_Drive.sPositionControl.f32PositionMechnicalStart;
+            gsM1_Drive.sPositionControl.f32PositionCmd = gsM1_Drive.sHFISearch.f32Start;
 
             if (gsM1_Drive.sHFISearch.u32Scale < 19) {
                 gsM1_Drive.sHFISearch.u32Scale++;
@@ -2047,11 +2050,7 @@ void HFI_Search(void) {
                 Motor_Drive_FOC();
             } else {
                 gsM1_Drive.sHFISearch.u32Scale = 0;
-
-#if MAGNET_ENCODER_FBK == 0
-                gsM1_Drive.sPositionControl.f32PositionComp = gsM1_Drive.sPositionEnc.f32PositionMech;
-#else
-#endif
+                //gsM1_Drive.sPositionControl.f32PositionComp = gsM1_Drive.sPositionEnc.f32PositionMech;
 
                 if (gsM1_Drive.sPositionControl.f32PositionCmd != gsM1_Drive.sPositionControl.f32PositionCmdPrevious) {
                     gsM1_Drive.sPositionControl.bPositionTargetChange = 1;
@@ -2062,7 +2061,7 @@ void HFI_Search(void) {
                     gsM1_Drive.sPositionControl.bPositionTargetChange = 0;
                 }
 
-                gsM1_Drive.sSpeed.f32SpeedCmd = Motor_Drive_Pos_PID_Regulator(gsM1_Drive.sPositionControl.f32PositionCmd, gsM1_Drive.sPositionControl.f32PositionComp, &gsM1_Drive.sPositionControl.sPositionPiParams);
+                gsM1_Drive.sSpeed.f32SpeedCmd = Motor_Drive_Pos_PID_Regulator(gsM1_Drive.sPositionControl.f32PositionCmd, gsM1_Drive.sPositionEnc.f32PositionMech, &gsM1_Drive.sPositionControl.sPositionPiParams);
 
                 RampControl(gsM1_Drive.sSpeed.f32SpeedCmd, gsM1_Drive.sSpeed.f32SpeedRampStep, SPEEDLOOP_PERIOD, &gsM1_Drive.sSpeed.f32SpeedReq);
 
@@ -2079,5 +2078,4 @@ void HFI_Search(void) {
             break;
     }
 }
-
 #endif

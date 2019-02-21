@@ -406,10 +406,12 @@ typedef struct
 #define PULSE_VOLTAGE 6.0f
 #define IIR2_FREQ 300.0f
 #define STUCK_CHECK_CURRENT 12.0f
-#define PULSE_WIDTH 10
-#define JITTER_COUNT 4000
-
+#define PULSE_WIDTH 20
+#define JITTER_COUNT 5000
+#define SPEED_REQ 60.0f
+	
 #else
+	
 #define HFI_FREQ 625.0f
 #define HFI_PERIOD 32.0f
 #define HFI_AMPLITUDE 25.0f
@@ -418,8 +420,9 @@ typedef struct
 #define PULSE_VOLTAGE 20.0f
 #define IIR2_FREQ 300.0f
 #define STUCK_CHECK_CURRENT 8.0f
-#define PULSE_WIDTH 12
-#define JITTER_COUNT 8000
+#define PULSE_WIDTH 23
+#define JITTER_COUNT 10000
+#define SPEED_REQ 120.0f
 #endif
 
     u8 u8Step;
@@ -449,6 +452,8 @@ typedef struct
     GDFLIB_FILTER_IIR2_T sCosFilter;
     u32 u32CtrlDelay;
     u32 u32Scale;
+	u8 u8Direction;
+	float f32Start;
 } MCSTRUC_HFI_SEARCH_T;
 
 typedef struct

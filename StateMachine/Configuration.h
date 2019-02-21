@@ -6,10 +6,6 @@
 #define HARDWARE_VERSION_2_0 0
 #define HARDWARE_VERSION_2_1 0
 #define HARDWARE_VERSION_2_2 1
-#define ETHERCAT_ENABLE
-#define ETHERCAT_RUN
-//#define SYSVIEW_DEBUG
-//#define USB_ENABLE
 
 #define ZZ_MOTOR 1
 #define SMALL_PPR_982 0
@@ -42,7 +38,7 @@
 
 #define IS_17BITS_MAGNET_ENCODER 1
 
-#define INIT_LOCATING 1
+#define INIT_LOCATING 0
 
 #define COMM_ERROR_ALERT 1
 
@@ -52,7 +48,7 @@
 
 #define STUCK_CHECK 0
 
-//#define HFI
+#define HFI
 
 /* ---------------ADC--------------*/
 
@@ -107,7 +103,7 @@ void PWM_Config(void);
 
 void NVIC_Config(void);
 
-#ifdef ETHERCAT_ENABLE
+#ifdef HARDWARE_VERSION_2_2
 void SPI2_Config(void);
 #endif
 

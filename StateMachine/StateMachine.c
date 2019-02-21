@@ -38,8 +38,8 @@ static void SM_StateInit(SM_APP_CTRL_T *psAppCtrl);
 static void SM_StateStop(SM_APP_CTRL_T *psAppCtrl);
 static void SM_StateRun(SM_APP_CTRL_T *psAppCtrl);
 static void SM_StateAlign(SM_APP_CTRL_T *psAppCtrl);
-
-const PFCN_VOID_PSM gSM_STATE_TABLE[5] = {SM_StateFault, SM_StateInit, SM_StateStop, SM_StateRun, SM_StateAlign};
+static void SM_Updata(SM_APP_CTRL_T *psAppCtrl);
+const PFCN_VOID_PSM gSM_STATE_TABLE[6] = {SM_StateFault, SM_StateInit, SM_StateStop, SM_StateRun, SM_StateAlign, SM_Updata};
 
 void SM_StateMachine(SM_APP_CTRL_T *sAppCtrl) {
     gSM_STATE_TABLE[sAppCtrl->eState](sAppCtrl);
@@ -92,12 +92,20 @@ static void SM_StateStop(SM_APP_CTRL_T *psAppCtrl) {
         }
     }
 
-    else if ((psAppCtrl->uiCtrl & SM_CTRL_ALIGN) > 0) {
-        psAppCtrl->psTrans->StopAlign();
-
+    else if ((psAppCtrl->uiCtrl & SM_CTRL_ALIGN) > 0) {    
+		psAppCtrl->psTrans->StopAlign();
+		
         psAppCtrl->uiCtrl &= ~(SM_CTRL_ALIGN);
 
         psAppCtrl->eState = ALIGN;
+    }
+
+    else if ((psAppCtrl->uiCtrl & SM_CTRL_CODE_UPDATA) > 0) {
+        psAppCtrl->psTrans->StopUpdate();
+
+        psAppCtrl->uiCtrl &= ~(SM_CTRL_CODE_UPDATA);
+
+        psAppCtrl->eState = CODE_UPDATA;
     }
 }
 
@@ -134,7 +142,12 @@ static void SM_StateAlign(SM_APP_CTRL_T *psAppCtrl) {
         psAppCtrl->eState = STOP;
     }
 }
-
+static void SM_Updata(SM_APP_CTRL_T *psAppCtrl)
+{
+	psAppCtrl->psState->Update();
+	
+	
+}
 /******************************************************************************
 * Inline functions
 ******************************************************************************/

@@ -21,6 +21,8 @@ typedef enum {
     STOP = 2,
     RUN = 3,
     ALIGN = 4,
+    CODE_UPDATA = 5,
+    PARA_UPDATA = 6,
 } SM_APP_STATE_T;
 
 typedef enum {
@@ -40,6 +42,7 @@ typedef struct
     PFCN_VOID_VOID Stop;
     PFCN_VOID_VOID Run;
     PFCN_VOID_VOID Align;
+    PFCN_VOID_VOID Update;
 } SM_APP_STATE_FCN_T;
 
 typedef struct
@@ -55,6 +58,7 @@ typedef struct
     PFCN_VOID_VOID AlignStop;
     PFCN_VOID_VOID StopAlign;
     PFCN_VOID_VOID AlignFault;
+    PFCN_VOID_VOID StopUpdate;
 } SM_APP_TRANS_FCN_T;
 
 typedef struct
@@ -78,6 +82,8 @@ typedef void (*PFCN_VOID_PSM)(SM_APP_CTRL_T* sAppCtrl);
 #define SM_CTRL_RUN_ACK 0x40
 #define SM_CTRL_INIT_DONE 0x80
 #define SM_CTRL_ALIGN_DONE 0x100
+#define SM_CTRL_CODE_UPDATA 0x200
+#define SM_CTRL_PARA_UPDATA 0x400
 
 void SM_StateMachine(SM_APP_CTRL_T* sAppCtrl);
 

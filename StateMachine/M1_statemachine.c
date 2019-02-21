@@ -8,6 +8,7 @@
 #include "Motor_Drive.h"
 #include "include_c.h"
 #include "motor_structure.h"
+#include "EEPROM_RW.h"
 
 u8 braketest;
 u8 TBtest;
@@ -32,6 +33,7 @@ static void M1_StateInit(void);
 static void M1_StateStop(void);
 static void M1_StateRun(void);
 static void M1_StateAlign(void);
+static void M1_StateUpdate(void);
 
 static void M1_TransFaultInit(void);
 static void M1_TransInitFault(void);
@@ -44,10 +46,12 @@ static void M1_TransRunStop(void);
 static void M1_TransStopAlign(void);
 static void M1_TransAlignStop(void);
 static void M1_TransAlignFault(void);
+static void M1_TransAlignFault(void);
+static void M1_TransStopUpdate(void);
 
-static const SM_APP_STATE_FCN_T msSTATE = {M1_StateFault, M1_StateInit, M1_StateStop, M1_StateRun, M1_StateAlign};
+static const SM_APP_STATE_FCN_T msSTATE = {M1_StateFault, M1_StateInit, M1_StateStop, M1_StateRun, M1_StateAlign, M1_StateUpdate};
 
-static const SM_APP_TRANS_FCN_T msTRANS = {M1_TransFaultInit, M1_TransInitFault, M1_TransInitStop, M1_TransStopFault, M1_TransStopInit, M1_TransStopRun, M1_TransRunFault, M1_TransRunStop, M1_TransAlignStop, M1_TransStopAlign, M1_TransAlignFault};
+static const SM_APP_TRANS_FCN_T msTRANS = {M1_TransFaultInit, M1_TransInitFault, M1_TransInitStop, M1_TransStopFault, M1_TransStopInit, M1_TransStopRun, M1_TransRunFault, M1_TransRunStop, M1_TransAlignStop, M1_TransStopAlign, M1_TransAlignFault, M1_TransStopUpdate};
 
 SM_APP_CTRL_T gsM1_Ctrl =
     {
@@ -73,6 +77,29 @@ static const PFCN_VOID_VOID mM1_STATE_RUN_TABLE[2][2] =
         {M1_StateRunRotation, M1_StateRunRotationSlow},
 };
 
+static void M1_StateUpdate(void)
+{
+    PWM_OUT_DISABLE();
+    Brake_On();
+
+    static int i = 0;
+    static bool oncedo = FALSE;
+    if(geM1_StateRunLoop == SLOW)
+    {
+        if(FALSE == oncedo)
+        {
+            i++;
+            if(i>20)
+            {
+                i = 0;
+                g_stEEPROM_RW.m_Write_IAP_Flag(g_stIAPFlag.buf,(u32)2);//
+                //Fanpengcan TODO need to confirm the waite date
+                oncedo = TRUE;
+            }
+        }
+    }
+}
+
 u8 FaultStep;
 u16 Fault_Hold_Delay;
 u32 lCtrlErrOld;
@@ -90,7 +117,7 @@ static void M1_StateFault(void) {
             }
 
             if ((gsM1_Drive.sSpeed.f32Speed == 0) && (Brake_Off_Check() == 0)) {
-                FaultStep = 4;
+                FaultStep = 3;
             }
 
             break;
@@ -148,11 +175,13 @@ static void M1_StateFault(void) {
     if (gsM1_Drive.sFaultId.R > 0) {
         gsM1_Ctrl.uiCtrl |= SM_CTRL_FAULT;
     }
-
+		
+#ifdef ETHERCAT_RUN
     if ((lCtrlErrOld == 0) && (gsM1_Drive.sFaultId.R > 0)) {
         CiA402_LocalError((Uint16)(gsM1_Drive.sFaultId.R & 0xFFFF));
     }
-
+#endif
+		
     lCtrlErrOld = gsM1_Drive.sFaultId.R;
 }
 
@@ -295,7 +324,7 @@ static void M1_StateStop(void) {
                 }
             } else {
                 PWM_OUT_DISABLE();
-                StopStep = 4;
+                StopStep = 3;
             }
 
             break;
@@ -456,6 +485,19 @@ static void M1_TransStopFault(void) {
     Motor_Drive_DutyCycleCal(gsM1_Drive.sFocPMSM.sUAlBeReq, gsM1_Drive.sFocPMSM.f32UDcBus);
 
     Led_Fault_Indication_Set();
+
+    StopStep = 0;
+}
+
+static void M1_TransStopUpdate(void) {
+    PWM_OUT_DISABLE();
+
+    V_AlphaBeta_Reset();
+    I_AlphaBeta_Reset();
+    V_QD_Reset();
+    I_QD_Reset();
+
+    Motor_Drive_DutyCycleCal(gsM1_Drive.sFocPMSM.sUAlBeReq, gsM1_Drive.sFocPMSM.f32UDcBus);
 
     StopStep = 0;
 }
