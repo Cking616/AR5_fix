@@ -389,8 +389,8 @@ void ADC_Value_Read(void) {
     //gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)phb - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
 		//gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 100.0f;
 		//gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 100.0f;
-  	gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 1.65f / 10.0f * 14.7f / 0.02f / 2048;
-		gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 1.65f / 10.0f * 14.7f / 0.02f / 2048;
+  	gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 1.65f / 9.1f * 13.8f / 0.02f / 2048;
+		gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 1.65f / 9.1f * 13.8f / 0.02f / 2048;
 #else
     //gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 0.0179443359375f;
     //gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 0.0179443359375f;
