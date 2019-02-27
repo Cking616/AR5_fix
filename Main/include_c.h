@@ -74,10 +74,10 @@
 //EtherCAT
 
 //#include "sys.h"
-#include "ecat_def.h"
-#include "applInterface.h"
-#include "coeappl.h"
-#include "cia402appl.h"
+//#include "ecat_def.h"
+//#include "applInterface.h"
+//#include "coeappl.h"
+//#include "cia402appl.h"
 //#include "el9800hw.h"
 
 #endif  // end of #ifndef _INCLUDE_C_H

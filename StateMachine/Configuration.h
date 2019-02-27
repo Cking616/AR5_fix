@@ -4,23 +4,25 @@
 #include "stm32f4xx.h"
 
 #define HARDWARE_VERSION_2_0 0
-#define HARDWARE_VERSION_2_1 0
-#define HARDWARE_VERSION_2_2 1
+#define HARDWARE_VERSION_2_1 1
+#define HARDWARE_VERSION_2_2 0
+
+//#define SYSVIEW_DEBUG
 
 #define ZZ_MOTOR 1
-#define SMALL_PPR_982 0
+#define SMALL_PPR_982 1
 #define MAGNET_ENCODER_FBK 1
 #define NEW_MAG_FIXTURE 1
 
 #define Modbus_RTU_ENABLE 0
-#define BIG_ID_ENABLE 1
+#define BIG_ID_ENABLE 0
 
 #define HARDWARE_TEST 0
 #define RENISHAW 1
 #define KOLLMORGEN 0
 
 #define AUTORUN 0
-#define AUTORUN_SPEED 1500
+#define AUTORUN_SPEED 600
 
 #if BIG_ID_ENABLE == 1
 #define HALL_SENSOR 1
@@ -103,7 +105,7 @@ void PWM_Config(void);
 
 void NVIC_Config(void);
 
-#ifdef HARDWARE_VERSION_2_2
+#if HARDWARE_VERSION_2_2
 void SPI2_Config(void);
 #endif
 

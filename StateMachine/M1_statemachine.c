@@ -713,11 +713,6 @@ static void M1_TransRunReadyRotation(void) {
     meM1_StateRun = ROTATION;
 }
 
-//static void M1_TransRunRotationReady(void)
-//{
-//
-//}
-
 static void M1_StateRunRotation(void) {
     Motor_Drive_Get_Electrical_Angle();
 
@@ -763,8 +758,33 @@ static void M1_StateRunRotationSlow(void) {
         } else {
             gsM1_Drive.sPositionControl.bPositionTargetChange = 0;
         }
+				
+				float __f_a = 1.0f;
+				/*        
+        float __error = fabs(gsM1_Drive.sPositionControl.sPositionPiParams.f32ErrPartK);
 
-        gsM1_Drive.sPositionControl.sPositionPiParams.f32FFPartK = gsM1_Drive.sSpeed.f32SpeedFF;
+        if(__error * gsM1_Drive.sSpeed.f32SpeedFF > 0.0f)
+        {
+            if(__error >= 3.0f)
+            {
+                __f_a = 2.0f;
+            }
+            else if(__error <= 0.4f)
+            {
+                __f_a = 0.5f;
+            }
+            else
+            {
+             __f_a = 0.5f + 1.5f * (__error - 0.4f) / 2.60f;
+            }
+        }
+        else
+        {
+            __f_a = 0.5f;
+        }
+        */
+
+        gsM1_Drive.sPositionControl.sPositionPiParams.f32FFPartK = gsM1_Drive.sSpeed.f32SpeedFF * __f_a;
         gsM1_Drive.sSpeed.f32SpeedCmd = Motor_Drive_Pos_PID_Regulator(gsM1_Drive.sPositionControl.f32PositionCmd, gsM1_Drive.sPositionControl.f32PositionComp, &gsM1_Drive.sPositionControl.sPositionPiParams);
         RampControl(gsM1_Drive.sSpeed.f32SpeedCmd, gsM1_Drive.sSpeed.f32SpeedRampStep, SPEEDLOOP_PERIOD, &gsM1_Drive.sSpeed.f32SpeedReq);
 

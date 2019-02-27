@@ -44,7 +44,7 @@ static void CheckData(void);
 static void Cycle_Rsp(u16, s16);
 static void ParaSetCallback(void);
 static void ParaQueryCallback(void);
-static float First_Order_lowPass_Filter(float filter_obj);
+
 //---------------------------- Static Variable ----------------------------//
 JC2JDParaSet_t ParaSet_JC2JD;						//参数设置指令变量
 JD2JCParaSetRsp_t ParaSetRsp_JC2JD;					//参数设置指令应答变量
@@ -534,33 +534,4 @@ static void CheckData(void)
 		guc_RS485_Error_Flag = NO_ERROR;
 	}
 
-}
-/*
-----------------------------------------------------------------------------
- * Name					: Filter current
- * Description			:对电流进行一阶低通滤波
- * Author				: zhenyonghit
- * return				: 
- * Para					:
- *
- * History
- * ----------------------
- * Rev					: V1.00
- * Create Date			: $NOW
- * ----------------------
- * Modify Author		: zhenyonghit
- * Modify Description	: TODO
- * Modify Date			: $NOW
- * ----------------------
-----------------------------------------------------------------------------
- */
-static float First_Order_lowPass_Filter(float filter_obj)
-{
-	static float result = 0;
-	static float s_f_K1 = 0.95f;
-	static float s_f_K2 = 0.05f;
-	
-	result = s_f_K1*result + s_f_K2*filter_obj;
-
-	return result;
 }

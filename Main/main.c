@@ -40,7 +40,7 @@ void __init_delay_ms(int ms) {
 }
 
 int main(void) {
-	NVIC_SetVectorTable(NVIC_VectTab_FLASH , 0x10000);
+		NVIC_SetVectorTable(NVIC_VectTab_FLASH , 0x10000);
     SysTick->CTRL |= 0x0004;
     SysTick->LOAD = 0x00FFFFFF;
     SysTick->CTRL |= 0x0001;
@@ -63,17 +63,17 @@ int main(void) {
 
     DMA_Config();
 
-#ifdef HARDWARE_VERSION_2_2
+#if HARDWARE_VERSION_2_2 == 1
     SPI2_Config();
 #else
     SPI3_Config();
 #endif
 
+    ADC_Config();
+
     TIM_Config();
 
     PWM_Config();
-
-    ADC_Config();
 
 #ifdef USB_ENABLE
     USBConfig();  // USB  ÅäÖÃ
@@ -84,11 +84,11 @@ int main(void) {
     SEGGER_SYSVIEW_Conf();
 #endif
 
-    NVIC_Config();
-
 #ifndef ETHERCAT_RUN
     g_stJC2JD.init(BAUDRATE_RS485);
 #endif
+
+		NVIC_Config();
 
     __init_delay_ms(50);
 

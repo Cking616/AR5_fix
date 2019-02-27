@@ -174,7 +174,7 @@ static void init1(unsigned long int baudrate)
 	USART_InitTypeDef USART_InitStruct;
 	
 #if EN_USART1_RXIT == 1
-	NVIC_InitTypeDef NVIC_InitStruct;
+	//NVIC_InitTypeDef NVIC_InitStruct;
 #endif
 	
 	RCC_AHB1PeriphClockCmd(USART1_TX_CLK,ENABLE);						//GPIOA时钟使能
@@ -215,15 +215,15 @@ static void init1(unsigned long int baudrate)
 	
 	USART_Cmd(USART1, ENABLE);												//使能USART1                                             	 //读取寄存器操作
 #if EN_USART1_RXIT == 1
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+	//NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	
-	NVIC_InitStruct.NVIC_IRQChannel = USART1_IRQn;
+	//NVIC_InitStruct.NVIC_IRQChannel = USART1_IRQn;
 //	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0x01;
 //	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 1;
-	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 3;
-	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 3;
-	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStruct);
+	//NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 3;
+	//NVIC_InitStruct.NVIC_IRQChannelSubPriority = 3;
+	//NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+	//NVIC_Init(&NVIC_InitStruct);
 #endif
 }
 #endif

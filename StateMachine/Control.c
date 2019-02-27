@@ -385,23 +385,23 @@ void ADC_Value_Read(void) {
 
 
 #if HARDWARE_VERSION_2_2
-    //gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)pha - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
-    //gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)phb - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
-		//gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 100.0f;
-		//gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1) - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 100.0f;
   	gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 1.65f / 9.1f * 13.8f / 0.02f / 2048;
 		gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 1.65f / 9.1f * 13.8f / 0.02f / 2048;
 #else
-    //gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 0.0179443359375f;
-    //gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 0.0179443359375f;
 		gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 1.65f / 10.0f * 14.7f / 0.066f / 2048;
 		gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 1.65f / 10.0f * 14.7f / 0.066f / 2048;
 #endif
 
 #else
+	#if HARDWARE_VERSION_2_2
+  	gsM1_Drive.sFocPMSM.sIABC.f32A = ((float)pha - gsM1_Drive.sADCOffset.f32PhA) * 1.65f / 9.1f * 13.8f / 0.066f / 2048;
+	gsM1_Drive.sFocPMSM.sIABC.f32B = ((float)phb - gsM1_Drive.sADCOffset.f32PhB) * 1.65f / 9.1f * 13.8f / 0.066f / 2048;
+#else
     /* Res AD8417 */
     gsM1_Drive.sFocPMSM.sIABC.f32A = (((float)pha - gsM1_Drive.sADCOffset.f32PhA) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
     gsM1_Drive.sFocPMSM.sIABC.f32B = (((float)phb - gsM1_Drive.sADCOffset.f32PhB) / 2048.0f) * 1.65f / (60.0f * R_SAMPLE);
+#endif
+
 #endif
 
     gsM1_Drive.sFocPMSM.sIABC.f32C = -gsM1_Drive.sFocPMSM.sIABC.f32A - gsM1_Drive.sFocPMSM.sIABC.f32B;
@@ -504,13 +504,8 @@ void I_QD_Ref_Reset(void) {
 
 void Brake_On(void) {
 #if HARDWARE_VERSION_2_2
-#if BIG_ID_ENABLE == 1
     GPIO_ResetBits(GPIOA, GPIO_Pin_3);
     GPIO_ResetBits(GPIOA, GPIO_Pin_2);
-#else
-    GPIO_ResetBits(GPIOB, GPIO_Pin_9);
-    GPIO_ResetBits(GPIOB, GPIO_Pin_8);
-#endif
 #else
     GPIO_ResetBits(GPIOB, GPIO_Pin_9);
     GPIO_ResetBits(GPIOB, GPIO_Pin_8);
@@ -519,11 +514,7 @@ void Brake_On(void) {
 
 void Brake_Hold(void) {
 #if HARDWARE_VERSION_2_2
-#if BIG_ID_ENABLE == 1
     GPIO_ResetBits(GPIOA, GPIO_Pin_3);
-#else
-    GPIO_ResetBits(GPIOB, GPIO_Pin_9);
-#endif
 #else
     GPIO_ResetBits(GPIOB, GPIO_Pin_9);
 #endif
@@ -531,13 +522,8 @@ void Brake_Hold(void) {
 
 void Brake_Off(void) {
 #if HARDWARE_VERSION_2_2
-#if BIG_ID_ENABLE == 1
     GPIO_SetBits(GPIOA, GPIO_Pin_3);
     GPIO_SetBits(GPIOA, GPIO_Pin_2);
-#else
-    GPIO_SetBits(GPIOB, GPIO_Pin_9);
-    GPIO_SetBits(GPIOB, GPIO_Pin_8);
-#endif
 #else
     GPIO_SetBits(GPIOB, GPIO_Pin_9);
     GPIO_SetBits(GPIOB, GPIO_Pin_8);
@@ -546,11 +532,7 @@ void Brake_Off(void) {
 
 u8 Brake_Off_Check(void) {
 #if HARDWARE_VERSION_2_2
-#if BIG_ID_ENABLE == 1
     return GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_3) || GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_2);
-#else
-    return GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_9) || GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_8);
-#endif
 #else
     return GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_9) || GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_8);
 #endif
@@ -558,11 +540,7 @@ u8 Brake_Off_Check(void) {
 
 u8 Brake_Start_Check(void) {
 #if HARDWARE_VERSION_2_2
-#if BIG_ID_ENABLE == 1
     return GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_3);
-#else
-    return GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_9);
-#endif
 #else
     return GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_9);
 #endif

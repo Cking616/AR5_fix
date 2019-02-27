@@ -205,35 +205,22 @@ void SysTick_Handler(void)
   * @}
   */
 
-int g_motor_position_cmd = 0;
-int g_motor_speed = 0;
-int g_motor_torque = 0;
-
-//extern float f32Idh_table[180];
-int g_Idh_table = 0;
-int table_index = 0;
-
 void TIM4_IRQHandler(void) {
 #ifdef SYSVIEW_DEBUG
     SEGGER_SYSVIEW_RecordEnterISR();
 #endif
 
-    //g_Idh_table = f32Idh_table[table_index] * 1000;
-    table_index = (table_index + 1) % 180;
-    g_motor_position_cmd = (int)(gsM1_Drive.sPositionControl.f32PositionCmd * 100) & 0xFFFFFFFF;
-    g_motor_speed = (int)(gsM1_Drive.sSpeed.f32SpeedFilt * 100);
-    g_motor_torque = (short)(gsM1_Drive.sFocPMSM.sIDQ.f32Q * Kt * 10000.0f);
     if (SET == TIM_GetITStatus(TIM4, TIM_IT_Update)) {
         if (gsM1_Drive.uw16CtrlMode != OPENLOOP_PWM) {
             Fault_Management();
         }
 
         One_ms_Tick();
-
+				
+				MagnetEncDataRead();
+				
         Enc_Speed_Cal();
 
-        MagnetEncDataRead();
-      
         geM1_StateRunLoop = SLOW;
 
         SM_StateMachine(&gsM1_Ctrl);
