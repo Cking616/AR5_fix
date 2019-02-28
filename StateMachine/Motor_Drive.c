@@ -510,7 +510,7 @@ void Enc_Speed_Cal_Pulse(void) {
 
     g_delta_enc = gsM1_Drive.sPositionEnc.s32EncCaptured - gsM1_Drive.sPositionEnc.s32EncCapturedOld;
 
-
+    __disable_irq();
     int _this_in_adc_time = SysTick->VAL;
     float _delta = 0.0f;
     if(g_last_in_speed_count > _this_in_adc_time)
@@ -523,6 +523,7 @@ void Enc_Speed_Cal_Pulse(void) {
     }
     g_last_in_speed_count = _this_in_adc_time;
     float _delta_time = (float)_delta / 168000.0f;
+    __enable_irq();
 
     gsM1_Drive.sPositionEnc.f32Speed = ((float)(g_delta_enc) / ((float)ENCODER_PPR * 4.0f)) / SPEEDLOOP_PERIOD * 60.0f / _delta_time;
 
@@ -897,38 +898,153 @@ float Motor_Drive_Pos_PID_Regulator(float hReference, float hPresentFeedback, GF
     }
 }
 
+static const float one_by_sqrt3 = 0.57735026919f;
+static const float two_by_sqrt3 = 1.15470053838f;
+
 void Motor_Drive_DutyCycleCal(MCLIB_2_COOR_SYST_ALPHA_BETA_T Stat_Volt_Input, float Udc) {
-    static float x, y, z, max, min, dutyA, dutyB, dutyC, temp, Ta, Tb, Tc;
+    int Sextant;
+    float tA = 0.0f;
+    float tB = 0.0f;
+    float tC = 0.0f;
+    float alpha = Stat_Volt_Input.f32Alpha / ((2.0f / 3.0f) * Udc);
+    float beta = Stat_Volt_Input.f32Beta / ((2.0f / 3.0f) * Udc);
 
-    x = Stat_Volt_Input.f32Alpha / Udc;
-    y = (-0.5f * Stat_Volt_Input.f32Alpha - 0.5f * SQRT3 * Stat_Volt_Input.f32Beta) / Udc;
-    z = (-0.5f * Stat_Volt_Input.f32Alpha + 0.5f * SQRT3 * Stat_Volt_Input.f32Beta) / Udc;
+    if (beta >= 0.0f) {
+        if (alpha >= 0.0f) {
+            //quadrant I
+            if (one_by_sqrt3 * beta > alpha)
+                Sextant = 2; //sextant v2-v3
+            else
+                Sextant = 1; //sextant v1-v2
 
-    max = fmaxf(x, fmaxf(y, z));
-    min = fminf(x, fminf(y, z));
-    temp = 0.5f * (max + min);
-
-    if (max - min > 2.0f * DEFAULT_DUTY_CYCLE_LIMIT - 1.0f) {
-        dutyA = (x - temp) * (2.0f * DEFAULT_DUTY_CYCLE_LIMIT - 1.0f) / (max - min) + 0.5f;
-        dutyB = (y - temp) * (2.0f * DEFAULT_DUTY_CYCLE_LIMIT - 1.0f) / (max - min) + 0.5f;
-        dutyC = (z - temp) * (2.0f * DEFAULT_DUTY_CYCLE_LIMIT - 1.0f) / (max - min) + 0.5f;
+        } else {
+            //quadrant II
+            if (-one_by_sqrt3 * beta > alpha)
+                Sextant = 3; //sextant v3-v4
+            else
+                Sextant = 2; //sextant v2-v3
+        }
     } else {
-        dutyA = (x - temp) + 0.5f;
-        dutyB = (y - temp) + 0.5f;
-        dutyC = (z - temp) + 0.5f;
+        if (alpha >= 0.0f) {
+            //quadrant IV
+            if (-one_by_sqrt3 * beta > alpha)
+                Sextant = 5; //sextant v5-v6
+            else
+                Sextant = 6; //sextant v6-v1
+        } else {
+            //quadrant III
+            if (one_by_sqrt3 * beta > alpha)
+                Sextant = 4; //sextant v4-v5
+            else
+                Sextant = 5; //sextant v5-v6
+        }
     }
 
-    Ta = (float)PWM_PERIOD * dutyA;
-    Tb = (float)PWM_PERIOD * dutyB;
-    Tc = (float)PWM_PERIOD * dutyC;
+    switch (Sextant) {
+        // sextant v1-v2
+        case 1: {
+            // Vector on-times
+            float t1 = alpha - one_by_sqrt3 * beta;
+            float t2 = two_by_sqrt3 * beta;
 
-    TIM1->CCR1 = (u16)Ta;
-    TIM1->CCR2 = (u16)Tb;
-    TIM1->CCR3 = (u16)Tc;
+            // PWM timings
+            tA = (1.0f - t1 - t2) * 0.5f;
+            tC = tA + t1;
+            tB = tC + t2;
 
-    gsM1_Drive.sFocPMSM.sDutyABC.f32A = dutyA;
-    gsM1_Drive.sFocPMSM.sDutyABC.f32B = dutyB;
-    gsM1_Drive.sFocPMSM.sDutyABC.f32C = dutyC;
+            break;
+        }
+        // sextant v2-v3
+        case 2: {
+            // Vector on-times
+            float t2 = alpha + one_by_sqrt3 * beta;
+            float t3 = -alpha + one_by_sqrt3 * beta;
+
+            // PWM timings
+            tC = (1.0f - t2 - t3) * 0.5f;
+            tA = tC + t3;
+            tB = tA + t2;
+
+            break;
+        }
+        // sextant v3-v4
+        case 3: {
+            // Vector on-times
+            float t3 = two_by_sqrt3 * beta;
+            float t4 = -alpha - one_by_sqrt3 * beta;
+
+            // PWM timings
+            tC = (1.0f - t3 - t4) * 0.5f;
+            tB = tC + t3;
+            tA = tB + t4;
+
+            break;
+        }
+        // sextant v4-v5
+        case 4: {
+            // Vector on-times
+            float t4 = -alpha + one_by_sqrt3 * beta;
+            float t5 = -two_by_sqrt3 * beta;
+
+            // PWM timings
+            tB = (1.0f - t4 - t5) * 0.5f;
+            tC = tB + t5;
+            tA = tC + t4;
+
+            break;
+        }
+        // sextant v5-v6
+        case 5: {
+            // Vector on-times
+            float t5 = -alpha - one_by_sqrt3 * beta;
+            float t6 = alpha - one_by_sqrt3 * beta;
+
+            // PWM timings
+            tB = (1.0f - t5 - t6) * 0.5f;
+            tA = tB + t5;
+            tC = tA + t6;
+
+            break;
+        }
+        // sextant v6-v1
+        case 6: {
+            // Vector on-times
+            float t6 = -two_by_sqrt3 * beta;
+            float t1 = alpha + one_by_sqrt3 * beta;
+
+            // PWM timings
+            tA = (1.0f - t6 - t1) * 0.5f;
+            tB = tA + t1;
+            tC = tB + t6;
+
+            break;
+        }
+    }
+
+    tA = 1.0f - tA;
+    tB = 1.0f - tB;
+    tC = 1.0f - tC;
+    // if any of the results becomes NaN, result_valid will evaluate to false
+    int result_valid =
+            tA >= 0.0f && tA <= 1.0f
+         && tB >= 0.0f && tB <= 1.0f
+         && tC >= 0.0f && tC <= 1.0f;
+    if(result_valid)
+    {
+        float Ta = (float)PWM_PERIOD * tA;
+        float Tb = (float)PWM_PERIOD * tB;
+        float Tc = (float)PWM_PERIOD * tC;
+
+        TIM1->CCR1 = (u16)Ta;
+        TIM1->CCR2 = (u16)Tb;
+        TIM1->CCR3 = (u16)Tc;
+    }
+    else
+    {
+        TIM1->CCR1 = 0;
+        TIM1->CCR2 = 0;
+        TIM1->CCR3 = 0;
+    }  
 }
 
 void Motor_Drive_FOC(void) {
