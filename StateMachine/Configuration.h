@@ -21,8 +21,8 @@
 #define RENISHAW 1
 #define KOLLMORGEN 0
 
-#define AUTORUN 1
-#define AUTORUN_SPEED 600
+#define AUTORUN 0
+#define AUTORUN_SPEED 3000
 
 #if BIG_ID_ENABLE == 1
 #define HALL_SENSOR 1

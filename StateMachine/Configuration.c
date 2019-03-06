@@ -15,6 +15,10 @@ uint32_t SACE_SPI3_Rx_Buff;
 
 void GPIO_Config(void) {
     GPIO_InitTypeDef GPIO_InitStructure;
+		GPIO_DeInit(GPIOA);
+		GPIO_DeInit(GPIOB);
+		GPIO_DeInit(GPIOC);
+		GPIO_DeInit(GPIOD);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE, ENABLE);
 
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
@@ -511,7 +515,7 @@ void PWM_Config(void) {
     TIM_ITConfig(TIM1, TIM_IT_Update, DISABLE);
 
     DBGMCU_APB2PeriphConfig(DBGMCU_TIM1_STOP, ENABLE);
-		DBGMCU_APB2PeriphConfig(DBGMCU_TIM8_STOP, ENABLE);
+		//DBGMCU_APB2PeriphConfig(DBGMCU_TIM8_STOP, ENABLE);
     TIM_Cmd(TIM1, ENABLE);
     TIM_CtrlPWMOutputs(TIM1, DISABLE);
 }
