@@ -40,7 +40,7 @@ void __init_delay_ms(int ms) {
 }
 
 int main(void) {
-		//NVIC_SetVectorTable(NVIC_VectTab_FLASH , 0x10000);
+		NVIC_SetVectorTable(NVIC_VectTab_FLASH , 0x10000);
     SysTick->CTRL |= 0x0004;
     SysTick->LOAD = 0x00FFFFFF;
     SysTick->CTRL |= 0x0001;
