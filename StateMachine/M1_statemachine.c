@@ -772,7 +772,24 @@ static void M1_StateRunRotationSlow(void) {
         g_pos_cmd = gsM1_Drive.sPositionControl.f32PositionCmd * g_cmd_fliter + g_last_pos_cmd * (1 - g_cmd_fliter);
         gsM1_Drive.sSpeed.f32SpeedCmd = Motor_Drive_Pos_PID_Regulator(g_pos_cmd, gsM1_Drive.sPositionControl.f32PositionComp, &gsM1_Drive.sPositionControl.sPositionPiParams);
         g_last_pos_cmd = g_pos_cmd;
+        float last_speed_req = gsM1_Drive.sSpeed.f32SpeedReq;
 		RampControl(gsM1_Drive.sSpeed.f32SpeedCmd, gsM1_Drive.sSpeed.f32SpeedRampStep, SPEEDLOOP_PERIOD, &gsM1_Drive.sSpeed.f32SpeedReq);
+        float last_acc_req = gsM1_Drive.sSpeed.f32SpeedAcceleration;
+        gsM1_Drive.sSpeed.f32SpeedAcceleration = (gsM1_Drive.sSpeed.f32SpeedReq - last_speed_req);
+        gsM1_Drive.sSpeed.f32SpeedJerk = gsM1_Drive.sSpeed.f32SpeedAcceleration - last_acc_req;
+
+        if( gsM1_Drive.sSpeed.f32SpeedJerk > 0.98f)
+        {
+            gsM1_Drive.sSpeed.f32SpeedAcceleration = last_acc_req + 0.98f;
+        }
+
+        if( gsM1_Drive.sSpeed.f32SpeedJerk < -0.98f)
+        {
+            gsM1_Drive.sSpeed.f32SpeedAcceleration = last_acc_req - 0.98f;
+        }
+
+        gsM1_Drive.sSpeed.f32SpeedReq = last_speed_req + gsM1_Drive.sSpeed.f32SpeedAcceleration;
+
 #if TORQUE_FEEDFORWARD == 1
         gsM1_Drive.sSpeed.sSpeedPiParams.f32FFPartK = gsM1_Drive.sPositionControl.f32FeedforwardTorque;
         gsM1_Drive.sFocPMSM.sIDQReq.f32Q = Motor_Drive_Spd_PID_Regulator(gsM1_Drive.sSpeed.f32SpeedReq, gsM1_Drive.sSpeed.f32SpeedFilt, &gsM1_Drive.sSpeed.sSpeedPiParams);

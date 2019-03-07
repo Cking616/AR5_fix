@@ -280,10 +280,10 @@ void MotorDrive_Init(void) {
     gsM1_Drive.sSpeed.w16SpeedScaleCnt = 0;
     gsM1_Drive.sSpeed.sSpeedPiParams.f32IntegScale = SPEEDLOOP_SCALE;
 
-    gsM1_Drive.sSpeed.f32SpeedAcceleration = SPEED_MAX_ACCELERATION;
-    gsM1_Drive.sSpeed.f32SpeedAccelerationSet = SPEED_MAX_ACCELERATION;
-    gsM1_Drive.sSpeed.f32SpeedJerk = SPEED_JERK;
-    gsM1_Drive.sSpeed.f32SpeedJerkSet = SPEED_JERK;
+    gsM1_Drive.sSpeed.f32SpeedAcceleration = 0;
+    gsM1_Drive.sSpeed.f32SpeedAccelerationSet = 0;
+    gsM1_Drive.sSpeed.f32SpeedJerk = 0;
+    gsM1_Drive.sSpeed.f32SpeedJerkSet = 0;
 
     gsM1_Drive.sSpeed.f32SpeedFF = 0;
     gsM1_Drive.sSpeed.f32SpeedFF_Pre = 0;
