@@ -723,9 +723,13 @@ float g_last_speed_f = 0.0f;
 float g_speed_f = 0.0f;
 float g_pos_cmd = 0.0f;
 float g_last_pos_cmd = 0.0f;
-float g_feedforword_fliter = 0.25f;
+float g_feedforword_fliter = 0.125f;
 float g_cmd_fliter = 0.25f;
-float g_feed_k = 0.85f;
+float g_feed_k = 0.875f;
+float g_feedforword_acc_k = 0.0035f;
+float g_feedforword_ba_k = 0.00055f;
+float g_feedforword_acc_fliter = 0.25f;
+
 static void M1_StateRunRotationSlow(void) {
     gsM1_Drive.sSpeed.sSpeedPiParams.f32PropGain = gsM1_Drive.sSpeed.sSpeedPiParamsSet.f32PropGain;
     gsM1_Drive.sSpeed.sSpeedPiParams.f32IntegGain = gsM1_Drive.sSpeed.sSpeedPiParamsSet.f32IntegGain;
@@ -767,34 +771,29 @@ static void M1_StateRunRotationSlow(void) {
         }
 			
         g_speed_f = gsM1_Drive.sSpeed.f32SpeedFF * g_feedforword_fliter +  g_last_speed_f * (1 - g_feedforword_fliter);
-		gsM1_Drive.sPositionControl.sPositionPiParams.f32FFPartK = g_speed_f * g_feed_k;     
+				gsM1_Drive.sPositionControl.sPositionPiParams.f32FFPartK = g_speed_f * g_feed_k;     
         g_last_speed_f = g_speed_f;
         g_pos_cmd = gsM1_Drive.sPositionControl.f32PositionCmd * g_cmd_fliter + g_last_pos_cmd * (1 - g_cmd_fliter);
         gsM1_Drive.sSpeed.f32SpeedCmd = Motor_Drive_Pos_PID_Regulator(g_pos_cmd, gsM1_Drive.sPositionControl.f32PositionComp, &gsM1_Drive.sPositionControl.sPositionPiParams);
         g_last_pos_cmd = g_pos_cmd;
         float last_speed_req = gsM1_Drive.sSpeed.f32SpeedReq;
-		RampControl(gsM1_Drive.sSpeed.f32SpeedCmd, gsM1_Drive.sSpeed.f32SpeedRampStep, SPEEDLOOP_PERIOD, &gsM1_Drive.sSpeed.f32SpeedReq);
-        float last_acc_req = gsM1_Drive.sSpeed.f32SpeedAcceleration;
-        gsM1_Drive.sSpeed.f32SpeedAcceleration = (gsM1_Drive.sSpeed.f32SpeedReq - last_speed_req);
-        gsM1_Drive.sSpeed.f32SpeedJerk = gsM1_Drive.sSpeed.f32SpeedAcceleration - last_acc_req;
-
-        if( gsM1_Drive.sSpeed.f32SpeedJerk > 0.98f)
-        {
-            gsM1_Drive.sSpeed.f32SpeedAcceleration = last_acc_req + 0.98f;
-        }
-
-        if( gsM1_Drive.sSpeed.f32SpeedJerk < -0.98f)
-        {
-            gsM1_Drive.sSpeed.f32SpeedAcceleration = last_acc_req - 0.98f;
-        }
-
-        gsM1_Drive.sSpeed.f32SpeedReq = last_speed_req + gsM1_Drive.sSpeed.f32SpeedAcceleration;
-
+	    RampControl(gsM1_Drive.sSpeed.f32SpeedCmd, gsM1_Drive.sSpeed.f32SpeedRampStep, SPEEDLOOP_PERIOD, &gsM1_Drive.sSpeed.f32SpeedReq);
+        float acc_cmd_ = gsM1_Drive.sSpeed.f32SpeedReq - last_speed_req;
 #if TORQUE_FEEDFORWARD == 1
         gsM1_Drive.sSpeed.sSpeedPiParams.f32FFPartK = gsM1_Drive.sPositionControl.f32FeedforwardTorque;
         gsM1_Drive.sFocPMSM.sIDQReq.f32Q = Motor_Drive_Spd_PID_Regulator(gsM1_Drive.sSpeed.f32SpeedReq, gsM1_Drive.sSpeed.f32SpeedFilt, &gsM1_Drive.sSpeed.sSpeedPiParams);
 #else
-        gsM1_Drive.sSpeed.sSpeedPiParams.f32FFPartK = 0;
+       	float ffpark = 0.0f;
+        gsM1_Drive.sSpeed.f32SpeedAcceleration = acc_cmd_ * 0.125f + gsM1_Drive.sSpeed.f32SpeedAcceleration * 0.875f;
+        if(gsM1_Drive.sSpeed.f32SpeedAcceleration * gsM1_Drive.sSpeed.f32SpeedReq > 0)
+        {
+            ffpark = g_feedforword_ba_k * gsM1_Drive.sSpeed.f32SpeedFilt + g_feedforword_acc_k * gsM1_Drive.sSpeed.f32SpeedAcceleration;
+        }
+        else
+        {
+            ffpark = g_feedforword_acc_k * gsM1_Drive.sSpeed.f32SpeedAcceleration - g_feedforword_ba_k * gsM1_Drive.sSpeed.f32SpeedFilt;
+        }
+        gsM1_Drive.sSpeed.sSpeedPiParams.f32FFPartK = ffpark * g_feedforword_acc_fliter +  gsM1_Drive.sSpeed.sSpeedPiParams.f32FFPartK * (1 - g_feedforword_acc_fliter);
         gsM1_Drive.sFocPMSM.sIDQReq.f32Q = Motor_Drive_Spd_PID_Regulator(gsM1_Drive.sSpeed.f32SpeedReq, gsM1_Drive.sSpeed.f32SpeedFilt, &gsM1_Drive.sSpeed.sSpeedPiParams);
 #endif
     }

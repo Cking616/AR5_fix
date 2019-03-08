@@ -536,6 +536,20 @@ void Enc_Speed_Cal_Pulse(void) {
     gsM1_Drive.sSpeed.f32SpeedFilt = gsM1_Drive.sPositionEnc.f32SpeedFilt;
     gsM1_Drive.sSpeed.f32Speed = gsM1_Drive.sPositionEnc.f32Speed;
 
+    /*
+    float abs_speed =   fabs(gsM1_Drive.sSpeed.f32SpeedFilt);
+
+    if(abs_speed < 2100.0f)
+    {
+        gsM1_Drive.sSpeed.sSpeedPiParams.f32UpperLimit = SPEEDLOOP_UPPER_LIMIT;
+        gsM1_Drive.sSpeed.sSpeedPiParams.f32LowerLimit = SPEEDLOOP_LOWER_LIMIT;
+    }
+    else
+    {
+        gsM1_Drive.sSpeed.sSpeedPiParams.f32UpperLimit = SPEEDLOOP_UPPER_LIMIT * (3900.0f - abs_speed) / 1800.0f;
+        gsM1_Drive.sSpeed.sSpeedPiParams.f32UpperLimit = SPEEDLOOP_LOWER_LIMIT * (3900.0f - abs_speed) / 1800.0f;
+    }
+    */
     gsM1_Drive.sPositionEnc.f32PositionMech = gsM1_Drive.sPositionControl.f32PositionMechnicalStart + (float)gsM1_Drive.sPositionEnc.s32EncoderTurns / HARMONIC_AMPLIFY * 360.0f + (float)gsM1_Drive.sPositionEnc.s32PulseCaptured / HARMONIC_AMPLIFY / (float)ENCODER_PPR * 90.0f;
 }
 
@@ -832,24 +846,7 @@ float Motor_Drive_Spd_PID_Regulator(float hReference, float hPresentFeedback, GF
     PID_Struct->f32ErrPartK = hReference - hPresentFeedback;
 
     float err_abs_ = fabs(PID_Struct->f32ErrPartK);
-
-    if(err_abs_ < 10.0f)
-    {
-        PID_Struct->f32PropGain = SPEED_KP * 0.5f;
-        PID_Struct->f32IntegGain = SPEED_KI * 2.0f;
-    }
-    else if(err_abs_ >= 10.0f && err_abs_ < 60.0f)
-    {
-        PID_Struct->f32PropGain = SPEED_KP * (0.5f + 1.5f * (err_abs_ - 10.0f) / 50.0f); 
-        PID_Struct->f32IntegGain = SPEED_KI * (2.0f - 1.5f * (err_abs_ - 10.0f) / 50.0f);
-    }
-    else
-    {
-        PID_Struct->f32PropGain = SPEED_KP * 2.0f;
-        PID_Struct->f32IntegGain = SPEED_KI * 0.5f;
-    }
     
-
     PID_Struct->f32PropPartK = PID_Struct->f32PropGain * PID_Struct->f32ErrPartK;
 
     PID_Struct->f32DiffPartK = PID_Struct->f32DiffGain * (PID_Struct->f32ErrPartK - PID_Struct->f32ErrPartK_1) / PID_Struct->f32SampleTime;
