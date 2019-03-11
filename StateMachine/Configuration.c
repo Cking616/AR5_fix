@@ -92,7 +92,7 @@ void GPIO_Config(void) {
     GPIO_SetBits(GPIOB, GPIO_Pin_14);
 #endif
 
-#if (HARDWARE_VERSION_2_1 == 1) || (HARDWARE_VERSION_2_2 == 1)
+#if (HARDWARE_VERSION_2_2 == 1)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -109,6 +109,44 @@ void GPIO_Config(void) {
 
     GPIO_SetBits(GPIOC, GPIO_Pin_8);
     GPIO_SetBits(GPIOC, GPIO_Pin_9);
+#endif
+
+#if (HARDWARE_VERSION_2_1 == 1)
+#if BIG_ID_ENABLE == 1
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+    GPIO_SetBits(GPIOC, GPIO_Pin_8);
+    GPIO_SetBits(GPIOC, GPIO_Pin_9);
+#else
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+    GPIO_SetBits(GPIOB, GPIO_Pin_13);
+    GPIO_SetBits(GPIOB, GPIO_Pin_14);
+#endif
 #endif
 }
 
