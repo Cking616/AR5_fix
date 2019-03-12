@@ -719,6 +719,7 @@ static void M1_StateRunRotation(void) {
     Motor_Drive_FOC();
 }
 
+#if BIG_ID_ENABLE == 1 
 float g_last_speed_f = 0.0f;
 float g_speed_f = 0.0f;
 float g_pos_cmd = 0.0f;
@@ -729,6 +730,18 @@ float g_feed_k = 0.875f;
 float g_feedforword_acc_k = 0.0035f;
 float g_feedforword_ba_k = 0.00055f;
 float g_feedforword_acc_fliter = 0.25f;
+#else
+float g_last_speed_f = 0.0f;
+float g_speed_f = 0.0f;
+float g_pos_cmd = 0.0f;
+float g_last_pos_cmd = 0.0f;
+float g_feedforword_fliter = 0.25f;
+float g_cmd_fliter = 0.25f;
+float g_feed_k = 0.90f;
+float g_feedforword_acc_k = 0.0f;
+float g_feedforword_ba_k = 0.0f;
+float g_feedforword_acc_fliter = 0.25f;
+#endif
 
 static void M1_StateRunRotationSlow(void) {
     gsM1_Drive.sSpeed.sSpeedPiParams.f32PropGain = gsM1_Drive.sSpeed.sSpeedPiParamsSet.f32PropGain;
