@@ -10,12 +10,12 @@
 //#define SYSVIEW_DEBUG
 
 #define ZZ_MOTOR 1
-#define SMALL_PPR_982 1
+#define SMALL_PPR_982 0
 #define MAGNET_ENCODER_FBK 1
 #define NEW_MAG_FIXTURE 1
 
 #define Modbus_RTU_ENABLE 0
-#define BIG_ID_ENABLE 0
+#define BIG_ID_ENABLE 1
 
 #define HARDWARE_TEST 0
 #define RENISHAW 1
