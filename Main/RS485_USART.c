@@ -176,7 +176,7 @@ static void init1(unsigned long int baudrate)
 #if EN_USART1_RXIT == 1
 	//NVIC_InitTypeDef NVIC_InitStruct;
 #endif
-	
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);				//USART1时钟使能
 	RCC_AHB1PeriphClockCmd(USART1_TX_CLK,ENABLE);						//GPIOA时钟使能
 	RCC_AHB1PeriphClockCmd(USART1_RX_CLK,ENABLE);						//GPIOA时钟使能
 	
@@ -195,7 +195,6 @@ static void init1(unsigned long int baudrate)
 	
 	USART_DeInit(USART1);
 	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);				//USART1时钟使能
 	  
 	USART_InitStruct.USART_BaudRate = baudrate;							//波特率
 	USART_InitStruct.USART_WordLength = USART_WordLength_8b;			//8个数据位
@@ -206,14 +205,18 @@ static void init1(unsigned long int baudrate)
 	USART_Init(USART1, &USART_InitStruct);								//初始化USART1
 	
 #if EN_USART1_RXIT == 1
-//	USART_ITConfig(USART1, USART_IT_PE, ENABLE);							//使能奇偶检验错误中断
-//	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);							//打开USART1的中断
-	USART_ITConfig(USART1, USART_IT_IDLE, ENABLE);							//打开USART1的空闲总线中断
-	USART_ITConfig(USART1, USART_IT_TC, ENABLE);							//打开USART1的空闲总线中断
+//	USART_ITConfig(USART1, USART_IT_PE, ENABLE);						//使能奇偶检验错误中断
+//	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);						//打开USART1的中断
+	USART_ITConfig(USART1, USART_IT_IDLE, ENABLE);						//打开USART1的空闲总线中断
+	USART_ITConfig(USART1, USART_IT_TC, ENABLE);						//打开USART1的空闲总线中断
 
 #endif
 	
-	USART_Cmd(USART1, ENABLE);												//使能USART1                                             	 //读取寄存器操作
+	USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);						//使能串口的DMA接收
+	USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);						//使能串口的DMA发送
+	
+	USART_Cmd(USART1, ENABLE);											//使能USART1                                             	 //读取寄存器操作
+	
 #if EN_USART1_RXIT == 1
 	//NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	

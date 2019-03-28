@@ -120,13 +120,12 @@ RS485_JC2JD_t rs485_JC2JD =
 ----------------------------------------------------------------------------
  */
 static void init(unsigned long int baudrate)
-{
-	rs485_JC2JD.rs485_usart->initTXE();
-	rs485_JC2JD.rs485_usart->init(baudrate);
-	
+{	
 	rs485_JC2JD.rs485_dma_usart->init_DMA_Tx();
 	rs485_JC2JD.rs485_dma_usart->init_DMA_Rx();
 	
+	rs485_JC2JD.rs485_usart->initTXE();
+	rs485_JC2JD.rs485_usart->init(baudrate);
 //	rs485_JC2JD.Status_Flag = RX_ABLE;
 //	rs485_JC2JD.Error_Flag = NO_ERROR;
 }

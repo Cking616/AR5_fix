@@ -201,7 +201,7 @@ static void init_DMA_Tx1(void)
 	
 //	DMA_ITConfig(USART1_TX_DMA_STREAM, DMA_IT_TC, ENABLE);
 	
-	USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);							//使能串口的DMA发送
+//	USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);							//使能串口的DMA发送
 		
 //	NVIC_InitStruct.NVIC_IRQChannel = DMA2_Stream7_IRQn;
 //	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
@@ -482,7 +482,7 @@ static void init_DMA_Rx1(void)
 	
 //	DMA_ITConfig(USART_RX_DMA_STREAM(1), DMA_IT_HT, ENABLE);				//打开半传输中标志
 	
-	USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);							//使能串口的DMA接收
+//	USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);							//使能串口的DMA接收
 	
 	DMA_Cmd(USART_RX_DMA_STREAM(1), ENABLE);								//开启DMA传输
 			
